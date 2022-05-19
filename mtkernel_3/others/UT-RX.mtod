@@ -1,0 +1,675 @@
+// uT-Kernel3.0 for RX tuned OS Definition File V3.00.00 //
+
+FILEVERSION {
+    FileVersionData = "Partner OS Aware Debugging Plug-in V3.00";
+};
+
+OS {
+    OSResourceEnable = TRUE;
+    OSTraceEnable    = TRUE;
+    OSINFORMATION {
+        OSNAME {
+            OSNameString     = "uT-Kernel3.0 for RX tuned";
+            OSSpecificSymbol = "knl_ctxtsk", "knl_schedtsk", "knl_tcb_table";
+        };
+        CURRENTTASK {
+            CONDITION {
+                CheckAddress   = "knl_ctxtsk";
+                CheckType      = TYPE_SYMBOL;
+                AccessType     = ;
+                EffectiveData  = "";
+                InvalidityData = "";
+            };
+            CURRENTDATA {
+                TopAddress       = "knl_ctxtsk";
+                AccessType       = ;
+                DataMode         = MODE_TASKCB;
+                TaskCBTopAddress = "knl_tcb_table[0]";
+                TaskCBTableSize  = ;
+                OSID             = 0;
+                OSTaskCB         = 0;
+                OSIDStatus       = TRUE;
+                OSIDDisplay      = "OS or Idle";
+            };
+        };
+    };
+};
+
+OBJECT Task {
+    NUMBER {
+        MinNumber      = 1;
+        MinDefineType  = TYPE_VALUE;
+        MaxNumber      = "_cfn_max_tskid";
+        MaxDefineType  = TYPE_SYMBOL;
+        MaxAccessType  = TYPE_DWORD;
+    };
+    KIND Status {
+        ACCESSAREA {
+            TopAddress   = "knl_tcb_table[0].state";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = CURRENTTASK;
+                MaskValue   = 0;
+                ResultTrue  = "RUNNING";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0;
+                ResultTrue  = "NON-EXISTENT";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 1;
+                ResultTrue  = "READY";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 2;
+                ResultTrue  = "WAITING";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 4;
+                ResultTrue  = "SUSPENDED";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 6;
+                ResultTrue  = "WAITING-SUSPENDED";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 8;
+                ResultTrue  = "DORMANT";
+            };
+        };
+    };
+    KIND WaitFactor {
+        ACCESSAREA {
+            TopAddress       = "knl_tcb_table[0].wspec";
+            NextAccessType   = TYPE_DWORD;
+            NextListType     = TYPE_ARRAY;
+            NextMaskType     = EQU;
+            NextMaskValue    = 0;
+        };
+            ACCESSAREA {
+                TopAddress       = "";
+                AccessOffset     = 0;
+                AccessType       = TYPE_DWORD;
+            };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0;
+                ResultTrue  = " ";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0x0001;
+                ResultTrue  = "SLP";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0x0002;
+                ResultTrue  = "DLY";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0x0004;
+                ResultTrue  = "SEM";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0x0008;
+                ResultTrue  = "FLG";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0x0040;
+                ResultTrue  = "MBX";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0x0080;
+                ResultTrue  = "MTX";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0x0100;
+                ResultTrue  = "SMBF";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0x0200;
+                ResultTrue  = "RMBF";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0x2000;
+                ResultTrue  = "MPF";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0x4000;
+                ResultTrue  = "MPL";
+            };
+        };
+    };
+    KIND WaitingObjectID {
+        ACCESSAREA {
+            TopAddress   = "knl_tcb_table[0].wid";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0;
+                ResultTrue  = " ";
+            };
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+            };
+        };
+    };
+    KIND Priority {
+        ACCESSAREA {
+            TopAddress   = "knl_tcb_table[0].priority";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+                ReviseValue = 1;
+            };
+        };
+    };
+    KIND BasePriority {
+        ACCESSAREA {
+            TopAddress   = "knl_tcb_table[0].bpriority";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+                ReviseValue = 1;
+            };
+        };
+    };
+    KIND WakeupCount {
+        ACCESSAREA {
+            TopAddress   = "knl_tcb_table[0].wupcnt";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+            };
+        };
+    };
+    KIND SuspendCount {
+        ACCESSAREA {
+            TopAddress   = "knl_tcb_table[0].suscnt";
+        };
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+        };
+    };
+    KIND ExtendedInformation {
+        ACCESSAREA {
+            TopAddress   = "knl_tcb_table[0].exinf";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE16;
+            };
+        };
+    };
+    KIND TaskStartAddress {
+        ACCESSAREA {
+            TopAddress   = "knl_tcb_table[0].task";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0;
+                ResultTrue  = " ";
+            };
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_SYMBOL;
+            };
+        };
+    };
+    KIND StackSize(bytes) {
+        ACCESSAREA {
+            TopAddress   = "knl_tcb_table[0].sstksz";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0;
+                ResultTrue  = " ";
+            };
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+            };
+        };
+    };
+    KIND StackPointerInitialValue {
+        ACCESSAREA {
+            TopAddress   = "knl_tcb_table[0].isstack";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0;
+                ResultTrue  = " ";
+            };
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE16;
+            };
+        };
+    };
+    OTHER EntryAddress {
+        ACCESSAREA {
+            TopAddress   = "knl_tcb_table[0].name";
+            CharType     = TYPE_ARRAY;
+            CharLength   = "knl_tcb_table[0].name";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_CHAR;
+            };
+        };
+    };
+};
+
+OBJECT Semaphore {
+    NUMBER {
+        MinNumber      = 1;
+        MinDefineType  = TYPE_VALUE;
+        MaxNumber      = "_cfn_max_semid";
+        MaxDefineType  = TYPE_SYMBOL;
+        MaxAccessType  = TYPE_DWORD;
+    };
+    KIND Count {
+        ACCESSAREA {
+            TopAddress   = "knl_semcb_table[0].semcnt";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+            };
+        };
+    };
+    OTHER EntryAddress {
+        ACCESSAREA {
+            TopAddress   = "knl_semcb_table[0].name";
+            CharType     = TYPE_ARRAY;
+            CharLength   = "knl_semcb_table[0].name";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_CHAR;
+            };
+        };
+    };
+};
+
+OBJECT EventFlag {
+    NUMBER {
+        MinNumber      = 1;
+        MinDefineType  = TYPE_VALUE;
+        MaxNumber      = "_cfn_max_flgid";
+        MaxDefineType  = TYPE_SYMBOL;
+        MaxAccessType  = TYPE_DWORD;
+    };
+    KIND Pattern {
+        ACCESSAREA {
+            TopAddress   = "knl_flgcb_table[0].flgptn";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE16;
+            };
+        };
+    };
+    OTHER EntryAddress {
+        ACCESSAREA {
+            TopAddress   = "knl_flgcb_table[0].name";
+            CharType     = TYPE_ARRAY;
+            CharLength   = "knl_flgcb_table[0].name";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_CHAR;
+            };
+        };
+    };
+};
+
+OBJECT Mailbox {
+    NUMBER {
+        MinNumber      = 1;
+        MinDefineType  = TYPE_VALUE;
+        MaxNumber      = "_cfn_max_mbxid";
+        MaxDefineType  = TYPE_SYMBOL;
+        MaxAccessType  = TYPE_DWORD;
+    };
+    KIND MessageAddress {
+        ACCESSAREA {
+            TopAddress   = "knl_mbxcb_table[0].mq_head";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0;
+                ResultTrue  = " ";
+            };
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_SYMBOL;
+            };
+        };
+    };
+    OTHER EntryAddress {
+        ACCESSAREA {
+            TopAddress   = "knl_mbxcb_table[0].name";
+            CharType     = TYPE_ARRAY;
+            CharLength   = "knl_mbxcb_table[0].name";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_CHAR;
+            };
+        };
+    };
+};
+
+OBJECT Mutex {
+    NUMBER {
+        MinNumber      = 1;
+        MinDefineType  = TYPE_VALUE;
+        MaxNumber      = "_cfn_max_mtxid";
+        MaxDefineType  = TYPE_SYMBOL;
+        MaxAccessType  = TYPE_DWORD;
+    };
+    KIND HoldTaskID {
+        ACCESSAREA {
+            TopAddress       = "knl_mtxcb_table[0].mtxtsk";
+            NextAccessType   = TYPE_DWORD;
+            NextListType     = TYPE_ARRAY;
+            NextMaskType     = EQU;
+            NextMaskValue    = 0;
+        };
+            ACCESSAREA {
+                TopAddress       = "";
+                AccessOffset     = 8;
+                AccessType       = TYPE_DWORD;
+            };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+            };
+        };
+    };
+    OTHER EntryAddress {
+        ACCESSAREA {
+            TopAddress   = "knl_mtxcb_table[0].name";
+            CharType     = TYPE_ARRAY;
+            CharLength   = "knl_mtxcb_table[0].name";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_CHAR;
+            };
+        };
+    };
+};
+
+OBJECT MessageBuffer {
+    NUMBER {
+        MinNumber      = 1;
+        MinDefineType  = TYPE_VALUE;
+        MaxNumber      = "_cfn_max_mbfid";
+        MaxDefineType  = TYPE_SYMBOL;
+        MaxAccessType  = TYPE_DWORD;
+    };
+    KIND FreeBufferSize(bytes) {
+        ACCESSAREA {
+            TopAddress   = "knl_mbfcb_table[0].frbufsz";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+            };
+        };
+    };
+    KIND MaximumMessageSize(bytes) {
+        ACCESSAREA {
+            TopAddress   = "knl_mbfcb_table[0].maxmsz";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+            };
+        };
+    };
+    OTHER EntryAddress {
+        ACCESSAREA {
+            TopAddress   = "knl_mbfcb_table[0].name";
+            CharType     = TYPE_ARRAY;
+            CharLength   = "knl_mbfcb_table[0].name";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_CHAR;
+            };
+        };
+    };
+};
+
+OBJECT Fixed-sizeMemoryPool {
+    NUMBER {
+        MinNumber      = 1;
+        MinDefineType  = TYPE_VALUE;
+        MaxNumber      = "_cfn_max_mpfid";
+        MaxDefineType  = TYPE_SYMBOL;
+        MaxAccessType  = TYPE_DWORD;
+    };
+    KIND FreeBlockCount {
+        ACCESSAREA {
+            TopAddress   = "knl_mpfcb_table[0].frbcnt";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+            };
+        };
+    };
+    KIND TotalBlockCount {
+        ACCESSAREA {
+            TopAddress   = "knl_mpfcb_table[0].mpfcnt";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+            };
+        };
+    };
+    KIND BlockSize(bytes) {
+        ACCESSAREA {
+            TopAddress   = "knl_mpfcb_table[0].blfsz";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+            };
+        };
+    };
+    OTHER EntryAddress {
+        ACCESSAREA {
+            TopAddress   = "knl_mpfcb_table[0].name";
+            CharType     = TYPE_ARRAY;
+            CharLength   = "knl_mpfcb_table[0].name";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_CHAR;
+            };
+        };
+    };
+};
+
+OBJECT Variable-sizeMemoryPool {
+    NUMBER {
+        MinNumber      = 1;
+        MinDefineType  = TYPE_VALUE;
+        MaxNumber      = "_cfn_max_mplid";
+        MaxDefineType  = TYPE_SYMBOL;
+        MaxAccessType  = TYPE_DWORD;
+    };
+    KIND MemoryPoolSize(bytes) {
+        ACCESSAREA {
+            TopAddress   = "knl_mplcb_table[0].mplsz";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_VALUE10;
+            };
+        };
+    };
+    OTHER EntryAddress {
+        ACCESSAREA {
+            TopAddress   = "knl_mplcb_table[0].name";
+            CharType     = TYPE_ARRAY;
+            CharLength   = "knl_mplcb_table[0].name";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_CHAR;
+            };
+        };
+    };
+};
+
+OBJECT CyclicHandler {
+    NUMBER {
+        MinNumber      = 1;
+        MinDefineType  = TYPE_VALUE;
+        MaxNumber      = "_cfn_max_cycid";
+        MaxDefineType  = TYPE_SYMBOL;
+        MaxAccessType  = TYPE_DWORD;
+    };
+    KIND Status {
+        ACCESSAREA {
+            TopAddress   = "knl_cyccb_table[0].cycstat";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0;
+                ResultTrue  = "STOP";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 1;
+                ResultTrue  = "START";
+            };
+        };
+    };
+    KIND CycleTime {
+        ACCESSAREA {
+            TopAddress   = "knl_cyccb_table[0].cyctim";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0;
+                ResultTrue  = " ";
+            };
+            TESTDATA {
+                MaskType    = NONE;
+                MaskValue   = 0;
+                ResultTrue  = TYPE_VALUE10;
+            };
+        };
+    };
+    OTHER EntryAddress {
+        ACCESSAREA {
+            TopAddress   = "knl_cyccb_table[0].name";
+            CharType     = TYPE_ARRAY;
+            CharLength   = "knl_cyccb_table[0].name";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_CHAR;
+            };
+        };
+    };
+};
+
+OBJECT AlarmHandler {
+    NUMBER {
+        MinNumber      = 1;
+        MinDefineType  = TYPE_VALUE;
+        MaxNumber      = "_cfn_max_almid";
+        MaxDefineType  = TYPE_SYMBOL;
+        MaxAccessType  = TYPE_DWORD;
+    };
+    KIND Status {
+        ACCESSAREA {
+            TopAddress   = "knl_almcb_table[0].almstat";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 0;
+                ResultTrue  = "STOP";
+            };
+            TESTDATA {
+                MaskType    = EQU;
+                MaskValue   = 1;
+                ResultTrue  = "START";
+            };
+        };
+    };
+    OTHER EntryAddress {
+        ACCESSAREA {
+            TopAddress   = "knl_almcb_table[0].name";
+            CharType     = TYPE_ARRAY;
+            CharLength   = "knl_almcb_table[0].name";
+        };
+        DISPLAY {
+            TESTDATA {
+                MaskType    = NONE;
+                ResultTrue  = TYPE_CHAR;
+            };
+        };
+    };
+};
+
+// Copyright (C) 2012 Renesas Electronics Corporation //
