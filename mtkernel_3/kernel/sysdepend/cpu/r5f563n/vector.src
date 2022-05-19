@@ -1,0 +1,538 @@
+;/*
+; *----------------------------------------------------------------------
+; *    micro T-Kernel 3.00.00
+; *
+; *    Copyright (C) 2006-2019 by Ken Sakamura.
+; *    This software is distributed under the T-License 2.1.
+; *----------------------------------------------------------------------
+; *
+; *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
+; *
+; *----------------------------------------------------------------------
+; */
+
+.INCLUDE sys/machine.inc
+.IF CPU_R5F563N == 1
+;/*
+; *	vector.src (R5F563N)
+; *	Exception/Interrupt Vector Table
+; */
+
+;	 Vector No, func.			; .RVECTOR --> C$VECT
+;	.RVECTOR   0, _knl_hll_inthdr		; BRK
+;	.RVECTOR   1, knl_inthdr_entry1		;
+;	.RVECTOR   2, knl_inthdr_entry2		;
+;	.RVECTOR   3, knl_inthdr_entry3		;
+;	.RVECTOR   4, knl_inthdr_entry4		;
+;	.RVECTOR   5, knl_inthdr_entry5		;
+;	.RVECTOR   6, knl_inthdr_entry6		;
+;	.RVECTOR   7, knl_inthdr_entry7		;
+;	.RVECTOR   8, knl_inthdr_entry8		;
+;	.RVECTOR   9, knl_inthdr_entry9		;
+;	.RVECTOR  10, knl_inthdr_entry10	;
+;	.RVECTOR  11, knl_inthdr_entry11	;
+;	.RVECTOR  12, knl_inthdr_entry12	;
+;	.RVECTOR  13, knl_inthdr_entry13	;
+;	.RVECTOR  14, knl_inthdr_entry14	;
+;	.RVECTOR  15, knl_inthdr_entry15	;
+	.RVECTOR  16, knl_inthdr_entry16	; BUSERR
+;	.RVECTOR  17, knl_inthdr_entry17	;
+;	.RVECTOR  18, knl_inthdr_entry18	;
+;	.RVECTOR  19, knl_inthdr_entry19	;
+;	.RVECTOR  20, knl_inthdr_entry20	;
+	.RVECTOR  21, knl_inthdr_entry21	; FCU    FIFERR
+;	.RVECTOR  22, knl_inthdr_entry22	;
+	.RVECTOR  23, knl_inthdr_entry23	; FCU    FRDYI
+;	.RVECTOR  24, knl_inthdr_entry24	;
+;	.RVECTOR  25, knl_inthdr_entry25	;
+;	.RVECTOR  26, knl_inthdr_entry26	;
+	.RVECTOR  27, knl_inthdr_entry27	; ICU    SWINT
+;	.RVECTOR  28, _knl_systim_inthdr	; CMT0   CMI0	--> Tick Timer
+	.RVECTOR  29, knl_inthdr_entry29	; CMT1   CMI1
+	.RVECTOR  30, knl_inthdr_entry30	; CMT2   CMI2
+	.RVECTOR  31, knl_inthdr_entry31	; CMT3   CMI3
+	.RVECTOR  32, knl_inthdr_entry32	; Ether  EINT
+	.RVECTOR  33, knl_inthdr_entry33	; USB0   D0FIFO0
+	.RVECTOR  34, knl_inthdr_entry34	;        D1FIFO0
+	.RVECTOR  35, knl_inthdr_entry35	;        USBI0
+	.RVECTOR  36, knl_inthdr_entry36	; USB1   D0FIFO1
+	.RVECTOR  37, knl_inthdr_entry37	;        D1FIFO1
+	.RVECTOR  38, knl_inthdr_entry38	;        USBI1
+	.RVECTOR  39, knl_inthdr_entry39	; RSPI0  SPRI0
+	.RVECTOR  40, knl_inthdr_entry40	;        SPTI0
+	.RVECTOR  41, knl_inthdr_entry41	;        SPII0
+	.RVECTOR  42, knl_inthdr_entry42	; RSPI1  SPRI1
+	.RVECTOR  43, knl_inthdr_entry43	;        SPTI1
+	.RVECTOR  44, knl_inthdr_entry44	;        SPII1
+	.RVECTOR  45, knl_inthdr_entry45	; RSPI2  SPRI2
+	.RVECTOR  46, knl_inthdr_entry46	;        SPTI2
+	.RVECTOR  47, knl_inthdr_entry47	;        SPII2
+	.RVECTOR  48, knl_inthdr_entry48	; CAN0   RXF0
+	.RVECTOR  49, knl_inthdr_entry49	;        TXF0
+	.RVECTOR  50, knl_inthdr_entry50	;        RXM0
+	.RVECTOR  51, knl_inthdr_entry51	;        TXM0
+	.RVECTOR  52, knl_inthdr_entry52	; CAN1   RXF1
+	.RVECTOR  53, knl_inthdr_entry53	;        TXF1
+	.RVECTOR  54, knl_inthdr_entry54	;        RXM1
+	.RVECTOR  55, knl_inthdr_entry55	;        TXM1
+	.RVECTOR  56, knl_inthdr_entry56	; CAN2   RXF2
+	.RVECTOR  57, knl_inthdr_entry57	;        TXF2
+	.RVECTOR  58, knl_inthdr_entry58	;        RXM2
+	.RVECTOR  59, knl_inthdr_entry59	;        TXM2
+;	.RVECTOR  60, knl_inthdr_entry60	;
+;	.RVECTOR  61, knl_inthdr_entry61	;
+	.RVECTOR  62, knl_inthdr_entry62	; RTC    CUP
+;	.RVECTOR  63, knl_inthdr_entry63	;
+	.RVECTOR  64, knl_inthdr_entry64	; ICU    IRQ0
+	.RVECTOR  65, knl_inthdr_entry65	;        IRQ1
+	.RVECTOR  66, knl_inthdr_entry66	;        IRQ2
+	.RVECTOR  67, knl_inthdr_entry67	;        IRQ3
+	.RVECTOR  68, knl_inthdr_entry68	;        IRQ4
+	.RVECTOR  69, knl_inthdr_entry69	;        IRQ5
+	.RVECTOR  70, knl_inthdr_entry70	;        IRQ6
+	.RVECTOR  71, knl_inthdr_entry71	;        IRQ7
+	.RVECTOR  72, knl_inthdr_entry72	;        IRQ8
+	.RVECTOR  73, knl_inthdr_entry73	;        IRQ9
+	.RVECTOR  74, knl_inthdr_entry74	;        IRQ10
+	.RVECTOR  75, knl_inthdr_entry75	;        IRQ11
+	.RVECTOR  76, knl_inthdr_entry76	;        IRQ12
+	.RVECTOR  77, knl_inthdr_entry77	;        IRQ13
+	.RVECTOR  78, knl_inthdr_entry78	;        IRQ14
+	.RVECTOR  79, knl_inthdr_entry79	;        IRQ15
+;	.RVECTOR  80, knl_inthdr_entry80	;
+;	.RVECTOR  81, knl_inthdr_entry81	;
+;	.RVECTOR  82, knl_inthdr_entry82	;
+;	.RVECTOR  83, knl_inthdr_entry83	;
+;	.RVECTOR  84, knl_inthdr_entry84	;
+;	.RVECTOR  85, knl_inthdr_entry85	;
+;	.RVECTOR  86, knl_inthdr_entry86	;
+;	.RVECTOR  87, knl_inthdr_entry87	;
+;	.RVECTOR  88, knl_inthdr_entry88	;
+;	.RVECTOR  89, knl_inthdr_entry89	;
+	.RVECTOR  90, knl_inthdr_entry90	; USB0   USBR0
+	.RVECTOR  91, knl_inthdr_entry91	;        USBR1
+	.RVECTOR  92, knl_inthdr_entry92	; RTC    ALM
+	.RVECTOR  93, knl_inthdr_entry93	;        PRD
+;	.RVECTOR  94, knl_inthdr_entry94	;
+;	.RVECTOR  95, knl_inthdr_entry95	;
+;	.RVECTOR  96, knl_inthdr_entry96	;
+;	.RVECTOR  97, knl_inthdr_entry97	;
+	.RVECTOR  98, knl_inthdr_entry98	; AD     ADI0
+;	.RVECTOR  99, knl_inthdr_entry99	;
+;	.RVECTOR 100, knl_inthdr_entry100	;
+;	.RVECTOR 101, knl_inthdr_entry101	;
+	.RVECTOR 102, knl_inthdr_entry102	; S12AD  S12ADI0
+;	.RVECTOR 103, knl_inthdr_entry103	;
+;	.RVECTOR 104, knl_inthdr_entry104	;
+;	.RVECTOR 105, knl_inthdr_entry105	;
+	.RVECTOR 106, knl_inthdr_entry106	; ICU    GROUP0
+	.RVECTOR 107, knl_inthdr_entry107	;        GROUP1
+	.RVECTOR 108, knl_inthdr_entry108	;        GROUP2
+	.RVECTOR 109, knl_inthdr_entry109	;        GROUP3
+	.RVECTOR 110, knl_inthdr_entry110	;        GROUP4
+	.RVECTOR 111, knl_inthdr_entry111	;        GROUP5
+	.RVECTOR 112, knl_inthdr_entry112	;        GROUP6
+;	.RVECTOR 113, knl_inthdr_entry113	;
+;	.RVECTOR 114, knl_inthdr_entry114	;
+;	.RVECTOR 115, knl_inthdr_entry115	;
+;	.RVECTOR 116, knl_inthdr_entry116	;
+;	.RVECTOR 117, knl_inthdr_entry117	;
+;	.RVECTOR 118, knl_inthdr_entry118	;
+;	.RVECTOR 119, knl_inthdr_entry119	;
+;	.RVECTOR 120, knl_inthdr_entry120	;
+;	.RVECTOR 121, knl_inthdr_entry121	;
+	.RVECTOR 122, knl_inthdr_entry122	; SCI12  SCIX0
+	.RVECTOR 123, knl_inthdr_entry123	;        SCIX1
+	.RVECTOR 124, knl_inthdr_entry124	;        SCIX2
+	.RVECTOR 125, knl_inthdr_entry125	;        SCIX3
+	.RVECTOR 126, knl_inthdr_entry126	; TPU0   TGI0A
+	.RVECTOR 127, knl_inthdr_entry127	;        TGI0B
+	.RVECTOR 128, knl_inthdr_entry128	;        TGI0C
+	.RVECTOR 129, knl_inthdr_entry129	;        TGI0D
+	.RVECTOR 130, knl_inthdr_entry130	; TPU1   TGI1A
+	.RVECTOR 131, knl_inthdr_entry131	;        TGI1B
+	.RVECTOR 132, knl_inthdr_entry132	; TPU2   TGI2A
+	.RVECTOR 133, knl_inthdr_entry133	;        TGI2B
+	.RVECTOR 134, knl_inthdr_entry134	; TPU3   TGI3A
+	.RVECTOR 135, knl_inthdr_entry135	;        TGI3B
+	.RVECTOR 136, knl_inthdr_entry136	;        TGI3C
+	.RVECTOR 137, knl_inthdr_entry137	;        TGI3D
+	.RVECTOR 138, knl_inthdr_entry138	; TPU4   TGI4A
+	.RVECTOR 139, knl_inthdr_entry139	;        TGI4B
+	.RVECTOR 140, knl_inthdr_entry140	; TPU5   TGI5A
+	.RVECTOR 141, knl_inthdr_entry141	;        TGI5B
+	.RVECTOR 142, knl_inthdr_entry142	; TPU6   TGI6A  MTU0   TGIA0
+	.RVECTOR 143, knl_inthdr_entry143	;        TGI6B         TGIB0
+	.RVECTOR 144, knl_inthdr_entry144	;        TGI6C         TGIC0
+	.RVECTOR 145, knl_inthdr_entry145	;        TGI6D         TGID0
+	.RVECTOR 146, knl_inthdr_entry146	;                      TGIE0
+	.RVECTOR 147, knl_inthdr_entry147	;                      TGIF0
+	.RVECTOR 148, knl_inthdr_entry148	; TPU7   TGI7A  MTU1   TGIA1
+	.RVECTOR 149, knl_inthdr_entry149	;        TGI7B         TGIB1
+	.RVECTOR 150, knl_inthdr_entry150	; TPU8   TGI8A  MTU2   TGIA2
+	.RVECTOR 151, knl_inthdr_entry151	;        TGI8B         TGIB2
+	.RVECTOR 152, knl_inthdr_entry152	; TPU9   TGI9A  MTU3   TGIA3
+	.RVECTOR 153, knl_inthdr_entry153	;        TGI9B         TGIB3
+	.RVECTOR 154, knl_inthdr_entry154	;        TGI9C         TGIC3
+	.RVECTOR 155, knl_inthdr_entry155	;        TGI9D         TGID3
+	.RVECTOR 156, knl_inthdr_entry156	; TPU10  TGI10A MTU4   TGIA4
+	.RVECTOR 157, knl_inthdr_entry157	;        TGI10B        TGIB4
+	.RVECTOR 158, knl_inthdr_entry158	;                      TGIC4
+	.RVECTOR 159, knl_inthdr_entry159	;                      TGID4
+	.RVECTOR 160, knl_inthdr_entry160	;                      TGIV4
+	.RVECTOR 161, knl_inthdr_entry161	;               MTU5   TGIU5
+	.RVECTOR 162, knl_inthdr_entry162	;                      TGIV5
+	.RVECTOR 163, knl_inthdr_entry163	;                      TGIW5
+	.RVECTOR 164, knl_inthdr_entry164	; TPU11  TGI11A
+	.RVECTOR 165, knl_inthdr_entry165	;        TGI11B
+	.RVECTOR 166, knl_inthdr_entry166	; POE    OEI1
+	.RVECTOR 167, knl_inthdr_entry167	;        OEI2
+;	.RVECTOR 168, knl_inthdr_entry168	;
+;	.RVECTOR 169, knl_inthdr_entry169	;
+	.RVECTOR 170, knl_inthdr_entry170	; TMR0   CMIA0
+	.RVECTOR 171, knl_inthdr_entry171	;        CMIB0
+	.RVECTOR 172, knl_inthdr_entry172	;        OVI0
+	.RVECTOR 173, knl_inthdr_entry173	; TMR1   CMIA1
+	.RVECTOR 174, knl_inthdr_entry174	;        CMIB1
+	.RVECTOR 175, knl_inthdr_entry175	;        OVI1
+	.RVECTOR 176, knl_inthdr_entry176	; TMR2   CMIA2
+	.RVECTOR 177, knl_inthdr_entry177	;        CMIB2
+	.RVECTOR 178, knl_inthdr_entry178	;        OVI2
+	.RVECTOR 179, knl_inthdr_entry179	; TMR3   CMIA3
+	.RVECTOR 180, knl_inthdr_entry180	;        CMIB3
+	.RVECTOR 181, knl_inthdr_entry181	;        OVI3
+	.RVECTOR 182, knl_inthdr_entry182	; RIIC0  EEI0
+	.RVECTOR 183, knl_inthdr_entry183	;        RXI0
+	.RVECTOR 184, knl_inthdr_entry184	;        TXI0
+	.RVECTOR 185, knl_inthdr_entry185	;        TEI0
+	.RVECTOR 186, knl_inthdr_entry186	; RIIC1  EEI1
+	.RVECTOR 187, knl_inthdr_entry187	;        RXI1
+	.RVECTOR 188, knl_inthdr_entry188	;        TXI1
+	.RVECTOR 189, knl_inthdr_entry189	;        TEI1
+	.RVECTOR 190, knl_inthdr_entry190	; RIIC2  EEI2
+	.RVECTOR 191, knl_inthdr_entry191	;        RXI2
+	.RVECTOR 192, knl_inthdr_entry192	;        TXI2
+	.RVECTOR 193, knl_inthdr_entry193	;        TEI2
+	.RVECTOR 194, knl_inthdr_entry194	; RIIC3  EEI3
+	.RVECTOR 195, knl_inthdr_entry195	;        RXI3
+	.RVECTOR 196, knl_inthdr_entry196	;        TXI3
+	.RVECTOR 197, knl_inthdr_entry197	;        TEI3
+	.RVECTOR 198, knl_inthdr_entry198	; DMAC   DMAC0I
+	.RVECTOR 199, knl_inthdr_entry199	;        DMAC1I
+	.RVECTOR 200, knl_inthdr_entry200	;        DMAC2I
+	.RVECTOR 201, knl_inthdr_entry201	;        DMAC3I
+	.RVECTOR 202, knl_inthdr_entry202	; EXDMAC EXDMAC0I
+	.RVECTOR 203, knl_inthdr_entry203	;        EXDMAC1I
+;	.RVECTOR 204, knl_inthdr_entry204	;
+;	.RVECTOR 205, knl_inthdr_entry205	;
+	.RVECTOR 206, knl_inthdr_entry206	; DEU    DEU0
+	.RVECTOR 207, knl_inthdr_entry207	;        DEU1
+	.RVECTOR 208, knl_inthdr_entry208	; PDC    PCDFI
+	.RVECTOR 209, knl_inthdr_entry209	;        PCFEI
+	.RVECTOR 210, knl_inthdr_entry210	;        PCERI
+;	.RVECTOR 211, knl_inthdr_entry211	;
+;	.RVECTOR 212, knl_inthdr_entry212	;
+;	.RVECTOR 213, knl_inthdr_entry213	;
+	.RVECTOR 214, knl_inthdr_entry214	; SCI0   RXI0
+	.RVECTOR 215, knl_inthdr_entry215	;        TXI0
+	.RVECTOR 216, knl_inthdr_entry216	;        TEI0
+	.RVECTOR 217, knl_inthdr_entry217	; SCI1   RXI1
+	.RVECTOR 218, knl_inthdr_entry218	;        TXI1
+	.RVECTOR 219, knl_inthdr_entry219	;        TEI1
+	.RVECTOR 220, knl_inthdr_entry220	; SCI2   RXI2
+	.RVECTOR 221, knl_inthdr_entry221	;        TXI2
+	.RVECTOR 222, knl_inthdr_entry222	;        TEI2
+	.RVECTOR 223, knl_inthdr_entry223	; SCI3   RXI3
+	.RVECTOR 224, knl_inthdr_entry224	;        TXI3
+	.RVECTOR 225, knl_inthdr_entry225	;        TEI3
+	.RVECTOR 226, knl_inthdr_entry226	; SCI4   RXI4
+	.RVECTOR 227, knl_inthdr_entry227	;        TXI4
+	.RVECTOR 228, knl_inthdr_entry228	;        TEI4
+	.RVECTOR 229, knl_inthdr_entry229	; SCI5   RXI5
+	.RVECTOR 230, knl_inthdr_entry230	;        TXI5
+	.RVECTOR 231, knl_inthdr_entry231	;        TEI5
+	.RVECTOR 232, knl_inthdr_entry232	; SCI6   RXI6
+	.RVECTOR 233, knl_inthdr_entry233	;        TXI6
+	.RVECTOR 234, knl_inthdr_entry234	;        TEI6
+	.RVECTOR 235, knl_inthdr_entry235	; SCI7   RXI7
+	.RVECTOR 236, knl_inthdr_entry236	;        TXI7
+	.RVECTOR 237, knl_inthdr_entry237	;        TEI7
+	.RVECTOR 238, knl_inthdr_entry238	; SCI8   RXI8
+	.RVECTOR 239, knl_inthdr_entry239	;        TXI8
+	.RVECTOR 240, knl_inthdr_entry240	;        TEI8
+	.RVECTOR 241, knl_inthdr_entry241	; SCI9   RXI9
+	.RVECTOR 242, knl_inthdr_entry242	;        TXI9
+	.RVECTOR 243, knl_inthdr_entry243	;        TEI9
+	.RVECTOR 244, knl_inthdr_entry244	; SCI10  RXI10
+	.RVECTOR 245, knl_inthdr_entry245	;        TXI10
+	.RVECTOR 246, knl_inthdr_entry246	;        TEI10
+	.RVECTOR 247, knl_inthdr_entry247	; SCI11  RXI11
+	.RVECTOR 248, knl_inthdr_entry248	;        TXI11
+	.RVECTOR 249, knl_inthdr_entry249	;        TEI11
+	.RVECTOR 250, knl_inthdr_entry250	; SCI12  RXI12
+	.RVECTOR 251, knl_inthdr_entry251	;        TXI12
+	.RVECTOR 252, knl_inthdr_entry252	;        TEI12
+	.RVECTOR 253, knl_inthdr_entry253	; IEB    IEBINT
+;	.RVECTOR 254, knl_inthdr_entry254	;
+;	.RVECTOR 255, knl_inthdr_entry255	;
+
+	.GLB		call_table
+       .SECTION		P,CODE
+call_table:		BRK
+knl_inthdr_entry2:	BRK
+knl_inthdr_entry3:	BRK
+knl_inthdr_entry4:	BRK
+knl_inthdr_entry5:	BRK
+knl_inthdr_entry6:	BRK
+knl_inthdr_entry7:	BRK
+knl_inthdr_entry8:	BRK
+knl_inthdr_entry9:	BRK
+knl_inthdr_entry10:	BRK
+knl_inthdr_entry11:	BRK
+knl_inthdr_entry12:	BRK
+knl_inthdr_entry13:	BRK
+knl_inthdr_entry14:	BRK
+knl_inthdr_entry15:	BRK
+knl_inthdr_entry16:	BRK
+knl_inthdr_entry17:	BRK
+knl_inthdr_entry18:	BRK
+knl_inthdr_entry19:	BRK
+knl_inthdr_entry20:	BRK
+knl_inthdr_entry21:	BRK
+knl_inthdr_entry22:	BRK
+knl_inthdr_entry23:	BRK
+knl_inthdr_entry24:	BRK
+knl_inthdr_entry25:	BRK
+knl_inthdr_entry26:	BRK
+knl_inthdr_entry27:	BRK
+knl_inthdr_entry28:	BRK	; --> Tick Timer
+knl_inthdr_entry29:	BRK
+knl_inthdr_entry30:	BRK
+knl_inthdr_entry31:	BRK
+knl_inthdr_entry32:	BRK
+knl_inthdr_entry33:	BRK
+knl_inthdr_entry34:	BRK
+knl_inthdr_entry35:	BRK
+knl_inthdr_entry36:	BRK
+knl_inthdr_entry37:	BRK
+knl_inthdr_entry38:	BRK
+knl_inthdr_entry39:	BRK
+knl_inthdr_entry40:	BRK
+knl_inthdr_entry41:	BRK
+knl_inthdr_entry42:	BRK
+knl_inthdr_entry43:	BRK
+knl_inthdr_entry44:	BRK
+knl_inthdr_entry45:	BRK
+knl_inthdr_entry46:	BRK
+knl_inthdr_entry47:	BRK
+knl_inthdr_entry48:	BRK
+knl_inthdr_entry49:	BRK
+knl_inthdr_entry50:	BRK
+knl_inthdr_entry51:	BRK
+knl_inthdr_entry52:	BRK
+knl_inthdr_entry53:	BRK
+knl_inthdr_entry54:	BRK
+knl_inthdr_entry55:	BRK
+knl_inthdr_entry56:	BRK
+knl_inthdr_entry57:	BRK
+knl_inthdr_entry58:	BRK
+knl_inthdr_entry59:	BRK
+knl_inthdr_entry60:	BRK
+knl_inthdr_entry61:	BRK
+knl_inthdr_entry62:	BRK
+knl_inthdr_entry63:	BRK
+knl_inthdr_entry64:	BRK
+knl_inthdr_entry65:	BRK
+knl_inthdr_entry66:	BRK
+knl_inthdr_entry67:	BRK
+knl_inthdr_entry68:	BRK
+knl_inthdr_entry69:	BRK
+knl_inthdr_entry70:	BRK
+knl_inthdr_entry71:	BRK
+knl_inthdr_entry72:	BRK
+knl_inthdr_entry73:	BRK
+knl_inthdr_entry74:	BRK
+knl_inthdr_entry75:	BRK
+knl_inthdr_entry76:	BRK
+knl_inthdr_entry77:	BRK
+knl_inthdr_entry78:	BRK
+knl_inthdr_entry79:	BRK
+knl_inthdr_entry80:	BRK
+knl_inthdr_entry81:	BRK
+knl_inthdr_entry82:	BRK
+knl_inthdr_entry83:	BRK
+knl_inthdr_entry84:	BRK
+knl_inthdr_entry85:	BRK
+knl_inthdr_entry86:	BRK
+knl_inthdr_entry87:	BRK
+knl_inthdr_entry88:	BRK
+knl_inthdr_entry89:	BRK
+knl_inthdr_entry90:	BRK
+knl_inthdr_entry91:	BRK
+knl_inthdr_entry92:	BRK
+knl_inthdr_entry93:	BRK
+knl_inthdr_entry94:	BRK
+knl_inthdr_entry95:	BRK
+knl_inthdr_entry96:	BRK
+knl_inthdr_entry97:	BRK
+knl_inthdr_entry98:	BRK
+knl_inthdr_entry99:	BRK
+knl_inthdr_entry100:	BRK
+knl_inthdr_entry101:	BRK
+knl_inthdr_entry102:	BRK
+knl_inthdr_entry103:	BRK
+knl_inthdr_entry104:	BRK
+knl_inthdr_entry105:	BRK
+knl_inthdr_entry106:	BRK
+knl_inthdr_entry107:	BRK
+knl_inthdr_entry108:	BRK
+knl_inthdr_entry109:	BRK
+knl_inthdr_entry110:	BRK
+knl_inthdr_entry111:	BRK
+knl_inthdr_entry112:	BRK
+knl_inthdr_entry113:	BRK
+knl_inthdr_entry114:	BRK
+knl_inthdr_entry115:	BRK
+knl_inthdr_entry116:	BRK
+knl_inthdr_entry117:	BRK
+knl_inthdr_entry118:	BRK
+knl_inthdr_entry119:	BRK
+knl_inthdr_entry120:	BRK
+knl_inthdr_entry121:	BRK
+knl_inthdr_entry122:	BRK
+knl_inthdr_entry123:	BRK
+knl_inthdr_entry124:	BRK
+knl_inthdr_entry125:	BRK
+knl_inthdr_entry126:	BRK
+knl_inthdr_entry127:	BRK
+knl_inthdr_entry128:	BRK
+knl_inthdr_entry129:	BRK
+knl_inthdr_entry130:	BRK
+knl_inthdr_entry131:	BRK
+knl_inthdr_entry132:	BRK
+knl_inthdr_entry133:	BRK
+knl_inthdr_entry134:	BRK
+knl_inthdr_entry135:	BRK
+knl_inthdr_entry136:	BRK
+knl_inthdr_entry137:	BRK
+knl_inthdr_entry138:	BRK
+knl_inthdr_entry139:	BRK
+knl_inthdr_entry140:	BRK
+knl_inthdr_entry141:	BRK
+knl_inthdr_entry142:	BRK
+knl_inthdr_entry143:	BRK
+knl_inthdr_entry144:	BRK
+knl_inthdr_entry145:	BRK
+knl_inthdr_entry146:	BRK
+knl_inthdr_entry147:	BRK
+knl_inthdr_entry148:	BRK
+knl_inthdr_entry149:	BRK
+knl_inthdr_entry150:	BRK
+knl_inthdr_entry151:	BRK
+knl_inthdr_entry152:	BRK
+knl_inthdr_entry153:	BRK
+knl_inthdr_entry154:	BRK
+knl_inthdr_entry155:	BRK
+knl_inthdr_entry156:	BRK
+knl_inthdr_entry157:	BRK
+knl_inthdr_entry158:	BRK
+knl_inthdr_entry159:	BRK
+knl_inthdr_entry160:	BRK
+knl_inthdr_entry161:	BRK
+knl_inthdr_entry162:	BRK
+knl_inthdr_entry163:	BRK
+knl_inthdr_entry164:	BRK
+knl_inthdr_entry165:	BRK
+knl_inthdr_entry166:	BRK
+knl_inthdr_entry167:	BRK
+knl_inthdr_entry168:	BRK
+knl_inthdr_entry169:	BRK
+knl_inthdr_entry170:	BRK
+knl_inthdr_entry171:	BRK
+knl_inthdr_entry172:	BRK
+knl_inthdr_entry173:	BRK
+knl_inthdr_entry174:	BRK
+knl_inthdr_entry175:	BRK
+knl_inthdr_entry176:	BRK
+knl_inthdr_entry177:	BRK
+knl_inthdr_entry178:	BRK
+knl_inthdr_entry179:	BRK
+knl_inthdr_entry180:	BRK
+knl_inthdr_entry181:	BRK
+knl_inthdr_entry182:	BRK
+knl_inthdr_entry183:	BRK
+knl_inthdr_entry184:	BRK
+knl_inthdr_entry185:	BRK
+knl_inthdr_entry186:	BRK
+knl_inthdr_entry187:	BRK
+knl_inthdr_entry188:	BRK
+knl_inthdr_entry189:	BRK
+knl_inthdr_entry190:	BRK
+knl_inthdr_entry191:	BRK
+knl_inthdr_entry192:	BRK
+knl_inthdr_entry193:	BRK
+knl_inthdr_entry194:	BRK
+knl_inthdr_entry195:	BRK
+knl_inthdr_entry196:	BRK
+knl_inthdr_entry197:	BRK
+knl_inthdr_entry198:	BRK
+knl_inthdr_entry199:	BRK
+knl_inthdr_entry200:	BRK
+knl_inthdr_entry201:	BRK
+knl_inthdr_entry202:	BRK
+knl_inthdr_entry203:	BRK
+knl_inthdr_entry204:	BRK
+knl_inthdr_entry205:	BRK
+knl_inthdr_entry206:	BRK
+knl_inthdr_entry207:	BRK
+knl_inthdr_entry208:	BRK
+knl_inthdr_entry209:	BRK
+knl_inthdr_entry210:	BRK
+knl_inthdr_entry211:	BRK
+knl_inthdr_entry212:	BRK
+knl_inthdr_entry213:	BRK
+knl_inthdr_entry214:	BRK
+knl_inthdr_entry215:	BRK
+knl_inthdr_entry216:	BRK
+knl_inthdr_entry217:	BRK
+knl_inthdr_entry218:	BRK
+knl_inthdr_entry219:	BRK
+knl_inthdr_entry220:	BRK
+knl_inthdr_entry221:	BRK
+knl_inthdr_entry222:	BRK
+knl_inthdr_entry223:	BRK
+knl_inthdr_entry224:	BRK
+knl_inthdr_entry225:	BRK
+knl_inthdr_entry226:	BRK
+knl_inthdr_entry227:	BRK
+knl_inthdr_entry228:	BRK
+knl_inthdr_entry229:	BRK
+knl_inthdr_entry230:	BRK
+knl_inthdr_entry231:	BRK
+knl_inthdr_entry232:	BRK
+knl_inthdr_entry233:	BRK
+knl_inthdr_entry234:	BRK
+knl_inthdr_entry235:	BRK
+knl_inthdr_entry236:	BRK
+knl_inthdr_entry237:	BRK
+knl_inthdr_entry238:	BRK
+knl_inthdr_entry239:	BRK
+knl_inthdr_entry240:	BRK
+knl_inthdr_entry241:	BRK
+knl_inthdr_entry242:	BRK
+knl_inthdr_entry243:	BRK
+knl_inthdr_entry244:	BRK
+knl_inthdr_entry245:	BRK
+knl_inthdr_entry246:	BRK
+knl_inthdr_entry247:	BRK
+knl_inthdr_entry248:	BRK
+knl_inthdr_entry249:	BRK
+knl_inthdr_entry250:	BRK
+knl_inthdr_entry251:	BRK
+knl_inthdr_entry252:	BRK
+knl_inthdr_entry253:	BRK
+knl_inthdr_entry254:	BRK
+knl_inthdr_entry255:	BRK
+
+.ENDIF ; CPU_R5F563N
+	.END

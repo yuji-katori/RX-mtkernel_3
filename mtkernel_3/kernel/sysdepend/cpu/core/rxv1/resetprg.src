@@ -1,0 +1,48 @@
+;/*
+; *----------------------------------------------------------------------
+; *    micro T-Kernel 3.00.00
+; *
+; *    Copyright (C) 2006-2019 by Ken Sakamura.
+; *    This software is distributed under the T-License 2.1.
+; *----------------------------------------------------------------------
+; *
+; *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
+; *
+; *----------------------------------------------------------------------
+; */
+
+.INCLUDE sys/machine.inc
+.IF CPU_CORE_RXV1 == 1
+; 
+;  resetprg.src : Reset Program
+;
+.INCLUDE config.inc
+.INCLUDE sys/sysdef.inc
+
+	.SECTION	C$VECT, DATA, ALIGN=4
+	.GLB		_HardwareSetup
+	.GLB		__INITSCT
+	.GLB		_Reset_Handler
+; ----------------------------------------------------------------------
+;	Entry Point at Reset Program
+; ----------------------------------------------------------------------
+	.SECTION	PResetPRG,CODE	; use in link option "start="
+
+	.GLB	_start			;
+_start:					;
+	.STACK	_start=0		; for Call Walker (Relesas system tool)
+
+.IF CFN_SYSTEMAREA_END == 0
+	MVTC	#INTERNAL_RAM_END, ISP	; RAM End Address --> ISP
+.ELSE
+	MVTC	#CFN_SYSTEMAREA_END, ISP; RAM End Address --> ISP
+.ENDIF
+	MOV.L	#TOPOF C$VECT, R1	; C$VECT Address --> INTB
+	MVTC	R1, INTB		;
+	BSR	_HardwareSetup		; Call Haredware Setup
+	BSR	__INITSCT		; Call __INITSCT
+	SETPSW	I			; Enable Interrupt
+	BRA	_Reset_Handler		; Goto É T-Kernel
+
+.ENDIF ; CPU_CORE_RXV1
+	.END

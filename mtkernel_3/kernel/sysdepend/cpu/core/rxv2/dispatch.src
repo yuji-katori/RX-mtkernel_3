@@ -1,0 +1,263 @@
+;/*
+; *----------------------------------------------------------------------
+; *    micro T-Kernel 3.00.00
+; *
+; *    Copyright (C) 2006-2019 by Ken Sakamura.
+; *    This software is distributed under the T-License 2.1.
+; *----------------------------------------------------------------------
+; *
+; *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
+; *
+; *----------------------------------------------------------------------
+; */
+.INCLUDE sys/machine.inc
+.IF CPU_CORE_RXV2 == 1
+;/*
+; *	dispatch.src (RXV2)
+; *	Dispatcher
+; */
+
+.INCLUDE sys/sysdef.inc
+.INCLUDE sys/profile.inc
+.INCLUDE sys/knldef.inc
+
+	.GLB	_knl_dispatch_disabled		; _knl_dispatch_disabled
+	.GLB	_knl_ctxtsk			; _knl_ctxtsk
+	.GLB	_knl_schedtsk			; _knl_schedtsk
+	.GLB	_knl_inthdr_tbl			; _knl_inthdr_tbl
+	.GLB	call_table			; call_table
+	.GLB	_knl_timer_handler		; _knl_timer_handler
+.IF TK_SUPPORT_LOWPOWER == TRUE
+	.GLB	_knl_lowpow_discnt		; _knl_lowpow_discnt
+	.GLB	_low_pow			; _low_pow
+.ENDIF
+
+; ------------------------------------------------------------------------
+;
+; Dispatcher
+;	dispatch_to_schedtsk:
+;		Throw away the current contexts and forcibly dispatch to
+;		'schedtsk.'
+;		Called directly by jump (jmp) but do not return.
+;		Called on the undefined stack state (undefined 'ssp').
+;		Called on the interrupt disable state.
+;	dispatch_entry:
+;		Normal dispatch processing.
+;	_ret_int_dispatch:
+;		Called when dispatch is required by 'tk_ret_int().'
+;
+;	Contexts to save
+;	Save registers except for SP to a stack. Save SP to TCB.
+;
+;		   High Address	+---------------+
+;				| PSW		| Saved by interrupt entry
+;				| PC		| routines until here.
+;				+---------------+
+;				| R15		|
+;				| R14		|
+;				| R13		|
+;				|  :		|
+;				| R3		|
+;				| R2		|
+;				| R1		|
+;				| FPSW		|-> If USE_FPU
+;				| ACC1		|-> If USE_DSP
+;	Saved to TCB  SP =>	| ACC0		|-> If USE_DSP
+;		    Low Address +---------------+
+
+; Temporal stack used when 'dispatch_to_schedtsk' is called
+
+	.SECTION	P, CODE
+	.GLB	_knl_dispatch_to_schedtsk	; _knl_dispatch_to_schedtsk
+	.GLB	_knl_dispatch_entry		; _knl_dispatch_entry
+_knl_dispatch_to_schedtsk:			; _knl_dispatch_to_schedtsk
+.IF CFN_SYSTEMAREA_END == 0
+	MVTC	#INTERNAL_RAM_END, ISP		; RAM End Address --> ISP
+.ELSE
+	MVTC	#CFN_SYSTEMAREA_END, ISP	; RAM End Address --> ISP
+.ENDIF
+	CLRPSW	U				; Set SP to ISP
+	MOV.L	#_knl_dispatch_disabled, R15	; _knl_dispatch_disabled --> R15
+	MOV.L	#1, [R15]			; Dispatch disable
+	MOV.L	#_knl_ctxtsk, R15		; _knl_ctxtsk --> R15
+	MOV.L	#0, [R15]			; Clear _knl_ctxtsk
+	MVTIPL	#0				; Interrupt Enable
+	BRA	dispatch_2
+_knl_dispatch_entry:				; _knl_dispatch_entry
+	MVFC	PSW, R15			; PSW --> R15
+	XCHG	[SP], R15			; PC (in Stack) <==> PSW
+	PUSH.L	R15				; Push PC
+	BRA	dispatch_1
+_ret_int_dispatch:
+	MOV.L	#_knl_dispatch_disabled, R15	; _knl_dispatch_disabled Address --> R15
+	MOV.L	#1, [R15]			; Dispatch Disable
+	MVFC	USP, R15			; USP --> R15
+	MOV.L	12[SP], R14			; Save PSW --> R14
+	MOV.L	R14, [-R15]			; Save PSW to Task Stack
+	MOV.L	8[SP], R14			; Save PC --> R14
+	MOV.L	R14, [-R15]			; Save PC to task stack
+	MVTC	R15, USP			; Save Address --> USP
+	POPM	R14-R15				; Restore R14-R15
+	ADD	#8, SP				; Restore ISP to Stack Top.
+	SETPSW	U				; Set SP to USP
+	MVTIPL	#0				; Interrupt Enable
+dispatch_1:
+	PUSHM	R1-R15				; Save R1-R15 to Task Stack 
+.IF USE_FPU == 1
+	MVFC	FPSW, R15			; Save FPSW --> R14
+	PUSH.L	R15				; Save FPSW to Task Stack
+.ENDIF
+.IF USE_DSP == 1
+	MVFACLO	#0, A1, R6			; Save ACC1(b31-b0 ) --> R6
+	MVFACHI	#0, A1, R5			; Save ACC1(b63-b16) --> R5
+	MVFACGU	#0, A1, R4			; Save ACC1(b71-b64) --> R4
+	MVFACLO	#0, A0, R3			; Save ACC0(b31-b0 ) --> R3
+	MVFACHI	#0, A0, R2			; Save ACC0(b63-b16) --> R2
+	MVFACGU	#0, A0, R1			; Save ACC0(b71-b64) --> R1
+	PUSHM	R1-R6				; Save ACC1,ACC0 to Task Stack
+.ENDIF
+	MOV.L	#_knl_ctxtsk, R15		; _knl_ctxtsk Address --> R15
+	MOV.L	[R15], R15			; TCB Address --> R15
+	MOV.L	SP, 8[R15]			; Save SSP to TCB
+	CLRPSW	U				; SP is ISP
+dispatch_2:
+	MOV.L	#_knl_schedtsk, R6		; _knl_schedtsk Address --> R6
+	MOV.L	#_knl_ctxtsk, R7		; _knl_ctxtsk Address --> R7
+.IF TK_SUPPORT_LOWPOWER == TRUE
+	MOV.L	#_knl_lowpow_discnt, R9		; _knl_lowpow_discnt Address --> R9
+.ENDIF
+dispatch_3:
+	MVTIPL	#MAX_INT_PRI			; Interrupt Disable
+	MOV.L	[R6], R8			; Schedule TCB Address --> R8
+	CMP	#0, R8				; Existe Schedule Task ?
+	BNE	dispatch_5			;
+	MOV.L	#0, [R7]			; Clear _knl_ctxtsk
+.IF TK_SUPPORT_LOWPOWER == TRUE
+	MOV.L	[R9], R15			; _knl_lowpow_discnt --> R15
+	CMP	#0, R15				; Disable Count ?
+	BNE	dispatch_4
+	BSR	_low_pow			; Call _low_pow
+	MVTIPL	#0				; Interrupt Enable
+dispatch_4:
+.ELSE
+	MVTIPL	#0				; Interrupt Enable
+	WAIT					; Stop CPU
+.ENDIF
+	BRA	dispatch_3			;
+dispatch_5:					;
+	SETPSW	U				; SP is USP
+	MOV.L	R8, [R7]			; ctxtsk = schedtsk
+	MOV.L	8[R8], SP			; Restore SSP from TCB
+	MOV.L	#_knl_dispatch_disabled, R15	; _knl_dispatch_disabled Address --> R15
+	MOV.L	#0, [R15]			; Dispatch Enable
+.IF USE_DSP == 1
+	POPM	R1-R6				; Restore ACC0,ACC1 from Task Stack
+	MVTACGU	R1, A0				; Restore ACC0(b71-b64)
+	MVTACHI	R2, A0				; Restore ACC0(b63-b32)
+	MVTACLO	R3, A0				; Restore ACC0(b31-b0 )
+	MVTACGU	R4, A1				; Restore ACC1(b71-b64)
+	MVTACHI	R5, A1				; Restore ACC1(b63-b32)
+	MVTACLO	R6, A1				; Restore ACC1(b31-b0 )
+.ENDIF
+.IF USE_FPU == 1
+	POP	R15				; Restore FPSW from Task Stack
+	MVTC	R15, FPSW			; Restore FPSW
+.ENDIF
+	POPM	R1-R15				; Restore R15-R1 from Task Stack
+	RTE
+
+;/*
+; * System-timer Interrupt handler
+; */
+	.RVECTOR  28, _knl_systim_inthdr	; CMT0 CMI0	--> Tick Timer
+	.GLB	_knl_systim_inthdr
+_knl_systim_inthdr:
+	SETPSW	I				; Enable Interrupt
+	PUSHM	R14-R15				; Save R14-R15
+	PUSHM	R1-R5				; Save R1-R5
+	BSR	_knl_timer_handler		; Call timer_handler()
+	POPM	R1-R5				; Restore R1-R5
+	MVTIPL	#MAX_INT_PRI			; Interrupt Disable
+	BRA	_tk_ret_int_impl
+
+;/* ------------------------------------------------------------------------ */
+;/*
+; * Interrupt entry routine on the state saved in the interrupt 
+; *	stack as shown below.
+; *	   High Address	+---------------+
+; *			| PSW		| <-- PSW of Before Interrupt
+; *			| PC		| <-- PC  of Before Interrupt
+; *			| PSW		| <-- PSW(Interrupt Mask Level)
+; *			| PC		| <-- PC (Vector Address Data)
+; *	    Low Address	+---------------+
+; *
+; */
+	.RVECTOR	0, _knl_hll_inthdr		; BRK
+_knl_hll_inthdr:
+	MVTC	#(MAX_INT_PRI<<24)+10000H, PSW		; Set Max Interrupt Level
+	XCHG	[SP], R14				; Vector Address Data <==> R14
+	XCHG	4[SP], R15				; Interrupt Mask Level <==> R15
+	PUSHM	R1-R5					; Save R1-R5
+	MOV.L	#call_table, R1				; call_table address --> R1
+	SUB	R1, R14, R1				; Vector Number(dintno) --> R1
+	BSET	#16, R15				; Set I (Interrupt Mask Level)
+;/* ------------------------------------------------------------------------ */
+;/*
+; * High level programming language routine for interrupt handler
+; *	Called by interrupt entry routine on the state saved in the interrupt 
+; *	stack as shown below.
+; *	   High Address	+---------------+
+; *			| PSW		|
+; *			| PC		|
+; *			| R15		|
+; *			| R14		|
+; *			| R5		|
+; *			| R4		|
+; *			| R3		|
+; *			| R2		|
+; *			| R1		|
+; *	    Low Address	+---------------+
+; *
+; *	R1  = dintno (vector table address)
+; *	R15 = PSW (after interrupt handling)
+; */
+	MVTC	R15, PSW			; Interrupt Enable
+	MOV.L	#_knl_inthdr_tbl, R2		; _knl_inthdr_tbl Address --> R2
+	MOV.L	[R1, R2], R2			; Interrupt Handler Address --> R2
+	JSR	R2				; Call knl_inthdr_tbl[n](dintno)
+	MVTIPL	#MAX_INT_PRI			; Interrupt disable
+	POPM	R1-R5				; Restore R1-R5
+;	BRA	_tk_ret_int_impl		;
+;/*
+; * _tk_ret_int()
+; *
+; * tk_ret_int() processing
+; *	When called, the interrupt stack is configured as shown below.
+; *	   High Address	+---------------+
+; *			| PSW		| Saved when interrupt occur
+; *			| PC		|
+; *			| R15		|
+; *			| R14		|
+; *	    Low Address	+---------------+
+; */
+	.GLB	_tk_ret_int_impl
+_tk_ret_int_impl:
+	MOV.L	12[SP], R15			; Before Interruupt PSW --> R15
+	SHLR	#24, R15			; Interrupt Level --> R15
+	BNE	nodispatch			;
+	MOV.L	#_knl_dispatch_disabled, R15	; Is it During Dispatch Disable ?
+	MOV.L	[R15], R14			; Dispatch Status --> R14
+	CMP	#0, R14				; Dispatch Status is Enable ?
+	BNE	nodispatch			;
+	MOV.L	#_knl_ctxtsk, R15		; _knl_ctxtsk Address --> R15
+	MOV.L	[R15], R15			; Now Running Task TCB --> R15
+	MOV.L	#_knl_schedtsk, R14		; _knl_schedtsk Address --> R14
+	MOV.L	[R14], R14			; New Running Task TCB --> R14
+	CMP	R15, R14			; Is Dispatch Required ?
+	BNE	_ret_int_dispatch		;
+nodispatch:					; Dispatch not required
+	POPM	R14-R15				; Restore R14, R15
+	RTE
+
+.ENDIF ; CPU_CORE_RXV2
+	.END

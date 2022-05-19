@@ -1,0 +1,28 @@
+;/*
+; *----------------------------------------------------------------------
+; *    micro T-Kernel 3.00.00
+; *
+; *    Copyright (C) 2006-2019 by Ken Sakamura.
+; *    This software is distributed under the T-License 2.1.
+; *----------------------------------------------------------------------
+; *
+; *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
+; *
+; *----------------------------------------------------------------------
+; */
+
+.INCLUDE sys/machine.inc
+.IF CPU_CORE_RXV2 == 1
+; 
+;  smysection.src : Dummy Section Definition
+;
+            .SECTION    C,ROMDATA,ALIGN=4
+            .SECTION    C_2,ROMDATA,ALIGN=2
+            .SECTION    C_1,ROMDATA
+            .SECTION    L,ROMDATA,ALIGN=4
+            .SECTION    W,ROMDATA,ALIGN=4
+            .SECTION    W_2,ROMDATA,ALIGN=2
+            .SECTION    W_1,ROMDATA
+
+.ENDIF ; CPU_CORE_RXV2
+            .END
