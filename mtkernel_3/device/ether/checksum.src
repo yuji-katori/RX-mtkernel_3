@@ -1,0 +1,6 @@
+.IF __LITTLE == 1
+	.INCLUDE cksum_rx_ccrx_little.src
+.ELSE
+	.INCLUDE cksum_rx_ccrx_big.src
+.ENDIF
+	.END
