@@ -28,6 +28,8 @@ void Initialize_Ether(void)
 {
 ID objid;
 union { T_CTSK t_ctsk; T_CCYC t_ccyc; } u;
+	if( ether_objid[0] )
+		return;
 	tk_dis_dsp( );					// Dispatch Disable
 #if	ETHER_CFG_MODE_SEL == 0				// MII
 	MPC.PWPR.BIT.B0WI = 0;				// Write Protect Disable
