@@ -1,4 +1,4 @@
-// uT-Kernel3.0 for RX tuned OS Definition File V3.00.00 //
+// uT-Kernel3.0 for RX tuned OS Definition File V3.00.01 //
 
 FILEVERSION {
     FileVersionData = "Partner OS Aware Debugging Plug-in V3.00";
@@ -415,7 +415,7 @@ OBJECT Mutex {
         };
             ACCESSAREA {
                 TopAddress       = "";
-                AccessOffset     = 8;
+                AccessOffset     = 12;
                 AccessType       = TYPE_DWORD;
             };
         DISPLAY {

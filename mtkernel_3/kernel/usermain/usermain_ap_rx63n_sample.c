@@ -1,13 +1,11 @@
 /*
  *----------------------------------------------------------------------
- *    micro T-Kernel 2.0 Software Package
+ *    micro T-Kernel 3.00.00
  *
- *    Copyright (C) 2006-2014 by Ken Sakamura.
- *    This software is distributed under the T-License 2.0.
+ *    Copyright (C) 2022 by Yuji Katori.
+ *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
- *
- *    Released by T-Engine Forum(http://www.t-engine.org/) at 2014/09/01.
- *
+ *    Modified by Yuji Katori at 2022/10/31.
  *----------------------------------------------------------------------
  */
 

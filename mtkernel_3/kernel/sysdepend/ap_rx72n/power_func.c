@@ -9,9 +9,11 @@
  *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
  *
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2022/10/31.
+ *----------------------------------------------------------------------
  */
 #include <tk/tkernel.h>
-#include <kernel.h>
+#include "kernel.h"
 
 #ifdef AP_RX72N
 
