@@ -1,3 +1,8 @@
+/*
+ *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2022/11/2.
+ *----------------------------------------------------------------------
+ */
 #include <sys/machine.h>
 #ifdef AP_RX72N
 
@@ -10,7 +15,6 @@ void HardwareSetup(void)
 
 // Used Main Clock(24MHz), Uesd PLL, System Clock 240MHz
 // ICLK:240MHz, PCLKA:120MHz, PCLKB:60MHz, PCLKC:60MHz, PCLKD:60MHz, FCLK:60MHz, BCLK:60MHz, UCLK:48MHz
-
 	SYSTEM.MOSCWTCR.BYTE = 0x5C;				// Main CLock Wait Time
 	SYSTEM.MOSCCR.BYTE = 0x00;				// Enable Main Clock
 	while( !SYSTEM.OSCOVFSR.BIT.MOOVF )  ;			// Wait Main Clock Stabilization
@@ -29,6 +33,24 @@ void HardwareSetup(void)
 	RTC.RCR3.BIT.RTCEN = 0;					// Disable Sub Clock
 	SYSTEM.SOSCCR.BYTE = 0x01;				// Disable Sub Clock
 	while ( SYSTEM.OSCOVFSR.BIT.SOOVF )  ;			// Wait Sub Clock Stoped
+
+	BSC.SDIR.WORD = 0x0120;					// Set Auto Refresh
+	BSC.SDICR.BIT.INIRQ = 1; 				// Initialize Request
+	while( BSC.SDSR.BYTE != 0x00 )  ;			// Wait Initialize End
+//	BSC.SDCCR.BYTE = 0x00;
+	BSC.SDMOD.WORD = 0x0230;				// Set Mode
+	BSC.SDTR.LONG = 0x00031303;				// Set Timing
+	BSC.SDADR.BYTE = 0x01;					// Set 9 bit Shift
+//	BSC.SDAMOD.BYTE = 0x00;
+//	BSC.SDCMOD.BYTE = 0x00;
+	BSC.SDRFCR.WORD = 0x4270;				// Set Refresh Count
+	BSC.SDRFEN.BIT.RFEN = 1;				// Set Auto Refresh
+	BSC.SDCCR.BIT.EXENB = 1;				// SDRAM Enable
+
+	MPC.PFAOE0.BYTE = 0xFF;					// Enable A8-A15
+	MPC.PFBCR0.BYTE |= 0x11;				// Enable A0-A7,D8-D15
+	MPC.PFBCR1.BYTE |= 0xD0;				// Enable SDRAM Pin
+	SYSTEM.SYSCR0.WORD = 0x5A03;				// Enable External Bus
 
 	SYSTEM.PRCR.WORD = 0xA500;				// Protect Enable
 }

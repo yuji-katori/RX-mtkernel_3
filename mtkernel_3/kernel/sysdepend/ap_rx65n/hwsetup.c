@@ -1,3 +1,8 @@
+/*
+ *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2022/11/2.
+ *----------------------------------------------------------------------
+ */
 #include <sys/machine.h>
 #ifdef AP_RX65N
 
@@ -33,7 +38,7 @@ void HardwareSetup(void)
 	BSC.SDIR.WORD = 0x0020;					// Set Auto Refresh
 	BSC.SDICR.BIT.INIRQ = 1; 				// Initialize Request
 	while( BSC.SDSR.BYTE != 0x00 )  ;			// Wait Initialize End
-//	BSC.SDCCR.BYTE = 0x00;		// BSC_BSIZE_16
+//	BSC.SDCCR.BYTE = 0x00;
 	BSC.SDMOD.WORD = 0x0230;				// Set Mode
 	BSC.SDTR.LONG = 0x00021203;				// Set Timing
 	BSC.SDADR.BYTE = 0x01;					// Set 9 bit Shift
