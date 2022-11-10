@@ -13,15 +13,27 @@
 #ifndef __DEV_RTC_H__
 #define __DEV_RTC_H__
 
+#include <sys/machine.h>
+
+#define RTC_PATH_(a)		#a
+#define RTC_PATH(a)		RTC_PATH_(a)
+#define RTC_SYSDEP()		RTC_PATH(../rtc/sysdepend/TARGET_DIR/dev_rtc.h)
+#include RTC_SYSDEP()
+
 #define	RTC_DEVNM	"CLOCK"
 
-/* 属性データ */
-/* CLOCKデータ番号 */
+/* CLOCK data numbers */
 typedef enum {
-	DN_CKDATETIME = (-100)
+	/* Common attributes */
+	DN_CKEVENT = TDN_EVENT,
+	/* Device-specific attributes */
+	DN_CKDATETIME = -100,
+	DN_CKAUTOPWON = -101,
+	/* Hardware-dependent functions */
+	DN_CKREGISTER = -200
 } ClockDataNo;
 
-/* 現在時刻の設定／取得 */
+/* Set/get current time */
 typedef struct {
 	W d_year;		/* offset from 1900 */
 	W d_month;		/* month(1 to 12) */
@@ -34,6 +46,18 @@ typedef struct {
 	W d_days;		/* day of year(not use) */
 } DATE_TIM;
 
-IMPORT	ER	rtcDrvEntry( void );
+/* Read/write in non-volatile registers */
+typedef struct {
+	W nreg; 		/* number of the registers */
+	struct ck_reg {
+		W regno;	/* register number */
+		UW data;	/* data for the register */
+	} c[1];
+} CK_REGS;
+
+typedef	T_DEVEVT_ID	ClockEvt;
+
+IMPORT	ER	rtcDrvEntry(void);
+IMPORT	ID	CLOCK_mbfid;
 
 #endif /* __DEV_RTC_H__ */

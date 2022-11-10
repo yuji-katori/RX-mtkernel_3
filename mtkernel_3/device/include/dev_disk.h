@@ -18,15 +18,11 @@
 #ifndef	__DEV_DISK_H__
 #define	__DEV_DISK_H__
 
+#include <dev_rd.h>
+
 typedef enum {
 	RAMDISK, SDCARD, USBSTRG, DEV_TYPE_CNT
 } DISK_KIND;
-
-/* Start : MCU dependent */
-#if defined(AP_RX63N) || defined(AP_RX65N) || defined(AP_RX72N)
-#define RAM_DISK_DEVNM		"rda"
-#endif
-/* End : MCU dependent */
 
 /* Disk attribute data number */
 typedef	enum {
@@ -153,7 +149,5 @@ typedef struct {
 	PartInfo	part[MAX_PARTITION];	/* Partition information*/
 	UH		signature;		/* Signature		*/
 } DiskBlock0;
-
-IMPORT	ER	rdDrvEntry( void );
 
 #endif /* __DEVICE_DISK_H__ */
