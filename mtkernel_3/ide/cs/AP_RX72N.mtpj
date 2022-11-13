@@ -1,9 +1,9 @@
 ﻿<CubeSuiteProject>
-  <ProductVersion>9.07.00.00</ProductVersion>
+  <ProductVersion>9.08.00.00</ProductVersion>
   <Class Guid="68f4a651-b9cd-473b-a595-b00447132ffa">
     <Instance Guid="00000000-0000-0000-0000-000000000000">
       <FormatVersion>2.0</FormatVersion>
-      <FileVersion>9.7</FileVersion>
+      <FileVersion>9.8</FileVersion>
       <ProjectGuid>4937e051-0fed-40a6-96ae-1c077603a26c</ProjectGuid>
       <ProjectItemGuid>7d6befe5-2a54-48ab-b52d-1884ad69714c</ProjectItemGuid>
       <FileCategoryGuid>7392a482-4286-47ed-9393-d26363452155</FileCategoryGuid>
@@ -1577,7 +1577,7 @@
       <COptionFloatOrder-DefaultValue>False</COptionFloatOrder-DefaultValue>
       <COptionBranchChaining-DefaultValue>None</COptionBranchChaining-DefaultValue>
       <IsLockedByUser>False</IsLockedByUser>
-      <TimeTagModified--0>-8585579096240913393</TimeTagModified--0>
+      <TimeTagModified--0>-8585332484345344991</TimeTagModified--0>
       <COptionLangC-0>C99</COptionLangC-0>
       <COptionListfile-0>False</COptionListfile-0>
       <COptionLogo-0>False</COptionLogo-0>
@@ -1645,7 +1645,6 @@
 -MAKEUD
 </COptionCommandLine-0>
       <COptionDefine-0>_AP_RX72N_
-CLANGSPEC
 </COptionDefine-0>
       <COptionInline-0>Auto</COptionInline-0>
       <COptionMisra2004RuleNumberRequiredAdd-0 />
@@ -1805,8 +1804,7 @@ CLANGSPEC
       <LinkOptionOutputFolder-DefaultValue>%BuildModeName%</LinkOptionOutputFolder-DefaultValue>
       <LinkOptionRecordS-DefaultValue>None</LinkOptionRecordS-DefaultValue>
       <LinkOptionShowReference-DefaultValue>False</LinkOptionShowReference-DefaultValue>
-      <LinkOptionSystemLibrary-DefaultValue />
-      <LinkOptionBinary-DefaultValue />
+      <LinkOptionUseSystemLibraries-DefaultValue>True</LinkOptionUseSystemLibraries-DefaultValue>
       <LinkOptionChangeMessageInformation-DefaultValue>None</LinkOptionChangeMessageInformation-DefaultValue>
       <LinkOptionContiguousSection-DefaultValue />
       <LinkOptionDividedConvertFile-DefaultValue>False</LinkOptionDividedConvertFile-DefaultValue>
@@ -1818,31 +1816,33 @@ D_1=R_1
 </LinkOptionRom-DefaultValue>
       <LinkOptionSameSize-DefaultValue>1E</LinkOptionSameSize-DefaultValue>
       <LinkOptionShowXreference-DefaultValue>False</LinkOptionShowXreference-DefaultValue>
+      <LinkOptionSystemLibrary-DefaultValue />
+      <LinkOptionBinary-DefaultValue />
       <LinkOptionChangeMessageInformationNumber-DefaultValue />
       <LinkOptionConvertFolder-DefaultValue>%BuildModeName%</LinkOptionConvertFolder-DefaultValue>
-      <LinkOptionDefine-DefaultValue />
       <LinkOptionMap-DefaultValue>False</LinkOptionMap-DefaultValue>
       <LinkOptionOptimizeShortFormat-DefaultValue>False</LinkOptionOptimizeShortFormat-DefaultValue>
       <LinkOptionShowTotalSize-DefaultValue>False</LinkOptionShowTotalSize-DefaultValue>
       <LinkOptionChangeMessageWarning-DefaultValue>None</LinkOptionChangeMessageWarning-DefaultValue>
       <LinkOptionConvertFileName-DefaultValue>%ProjectName%.mot</LinkOptionConvertFileName-DefaultValue>
-      <LinkOptionEntry-DefaultValue>False</LinkOptionEntry-DefaultValue>
+      <LinkOptionDefine-DefaultValue />
       <LinkOptionMessage-DefaultValue>NoMessage</LinkOptionMessage-DefaultValue>
       <LinkOptionOptimizeBranch-DefaultValue>False</LinkOptionOptimizeBranch-DefaultValue>
       <LinkOptionShowVector-DefaultValue>False</LinkOptionShowVector-DefaultValue>
       <LinkOptionChangeMessageWarningNumber-DefaultValue />
-      <LinkOptionEntryPoint-DefaultValue />
+      <LinkOptionEntry-DefaultValue>False</LinkOptionEntry-DefaultValue>
       <LinkOptionMsgUnused-DefaultValue>False</LinkOptionMsgUnused-DefaultValue>
       <LinkOptionMultiConvertFileName-DefaultValue />
       <LinkOptionShowRelocationAttribute-DefaultValue>False</LinkOptionShowRelocationAttribute-DefaultValue>
       <LinkOptionSymbolForbid-DefaultValue />
       <LinkOptionChangeMessageError-DefaultValue>None</LinkOptionChangeMessageError-DefaultValue>
+      <LinkOptionEntryPoint-DefaultValue />
       <LinkOptionNoMessageErrorNumber-DefaultValue />
-      <LinkOptionNoPrelink-DefaultValue>Auto</LinkOptionNoPrelink-DefaultValue>
       <LinkOptionSameCodeForbid-DefaultValue />
       <LinkOptionShowCFI-DefaultValue>False</LinkOptionShowCFI-DefaultValue>
       <LinkOptionSpace-DefaultValue>None</LinkOptionSpace-DefaultValue>
       <LinkOptionChangeMessageErrorNumber-DefaultValue />
+      <LinkOptionNoPrelink-DefaultValue>Auto</LinkOptionNoPrelink-DefaultValue>
       <LinkOptionPadding-DefaultValue>False</LinkOptionPadding-DefaultValue>
       <LinkOptionSectionForbid-DefaultValue />
       <LinkOptionSpaceValue-DefaultValue>FF</LinkOptionSpaceValue-DefaultValue>
@@ -1917,8 +1917,7 @@ D_1=R_1
       <LinkOptionOutputFolder-0>%BuildModeName%</LinkOptionOutputFolder-0>
       <LinkOptionRecordS-0>None</LinkOptionRecordS-0>
       <LinkOptionShowReference-0>False</LinkOptionShowReference-0>
-      <LinkOptionSystemLibrary-0 />
-      <LinkOptionBinary-0 />
+      <LinkOptionUseSystemLibraries-0>True</LinkOptionUseSystemLibraries-0>
       <LinkOptionChangeMessageInformation-0>None</LinkOptionChangeMessageInformation-0>
       <LinkOptionContiguousSection-0 />
       <LinkOptionDividedConvertFile-0>False</LinkOptionDividedConvertFile-0>
@@ -1930,20 +1929,21 @@ D_1=R_1
 </LinkOptionRom-0>
       <LinkOptionSameSize-0>1E</LinkOptionSameSize-0>
       <LinkOptionShowXreference-0>True</LinkOptionShowXreference-0>
+      <LinkOptionSystemLibrary-0 />
+      <LinkOptionBinary-0 />
       <LinkOptionChangeMessageInformationNumber-0 />
       <LinkOptionConvertFolder-0>%BuildModeName%</LinkOptionConvertFolder-0>
-      <LinkOptionDefine-0 />
       <LinkOptionMap-0>True</LinkOptionMap-0>
       <LinkOptionOptimizeShortFormat-0>False</LinkOptionOptimizeShortFormat-0>
       <LinkOptionShowTotalSize-0>True</LinkOptionShowTotalSize-0>
       <LinkOptionChangeMessageWarning-0>None</LinkOptionChangeMessageWarning-0>
       <LinkOptionConvertFileName-0>%ProjectName%.mot</LinkOptionConvertFileName-0>
-      <LinkOptionEntry-0>True</LinkOptionEntry-0>
+      <LinkOptionDefine-0 />
       <LinkOptionMessage-0>NoMessage</LinkOptionMessage-0>
       <LinkOptionOptimizeBranch-0>False</LinkOptionOptimizeBranch-0>
       <LinkOptionShowVector-0>False</LinkOptionShowVector-0>
       <LinkOptionChangeMessageWarningNumber-0 />
-      <LinkOptionEntryPoint-0>_start</LinkOptionEntryPoint-0>
+      <LinkOptionEntry-0>True</LinkOptionEntry-0>
       <LinkOptionMsgUnused-0>False</LinkOptionMsgUnused-0>
       <LinkOptionMultiConvertFileName-0 />
       <LinkOptionShowRelocationAttribute-0>False</LinkOptionShowRelocationAttribute-0>
@@ -1959,12 +1959,13 @@ _cfn_max_cycid
 _cfn_max_almid
 </LinkOptionSymbolForbid-0>
       <LinkOptionChangeMessageError-0>None</LinkOptionChangeMessageError-0>
+      <LinkOptionEntryPoint-0>_start</LinkOptionEntryPoint-0>
       <LinkOptionNoMessageErrorNumber-0 />
-      <LinkOptionNoPrelink-0>Auto</LinkOptionNoPrelink-0>
       <LinkOptionSameCodeForbid-0 />
       <LinkOptionShowCFI-0>False</LinkOptionShowCFI-0>
       <LinkOptionSpace-0>None</LinkOptionSpace-0>
       <LinkOptionChangeMessageErrorNumber-0 />
+      <LinkOptionNoPrelink-0>Auto</LinkOptionNoPrelink-0>
       <LinkOptionPadding-0>False</LinkOptionPadding-0>
       <LinkOptionSectionForbid-0 />
       <LinkOptionSpaceValue-0>FF</LinkOptionSpaceValue-0>
