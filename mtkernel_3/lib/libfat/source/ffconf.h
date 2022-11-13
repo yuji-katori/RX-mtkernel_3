@@ -2,20 +2,20 @@
 /  FatFs Functional Configurations
 /---------------------------------------------------------------------------*/
 
-#define FFCONF_DEF	86631	/* Revision ID */
+#define FFCONF_DEF		86631	/* Revision ID */
 
 /*---------------------------------------------------------------------------/
 / Function Configurations
 /---------------------------------------------------------------------------*/
 
-#define FF_FS_READONLY	0
+#define FF_FS_READONLY		0
 /* This option switches read-only configuration. (0:Read/Write or 1:Read-only)
 /  Read-only configuration removes writing API functions, f_write(), f_sync(),
 /  f_unlink(), f_mkdir(), f_chmod(), f_rename(), f_truncate(), f_getfree()
 /  and optional writing functions as well. */
 
 
-#define FF_FS_MINIMIZE	0
+#define FF_FS_MINIMIZE		0
 /* This option defines minimization level to remove some basic API functions.
 /
 /   0: Basic functions are fully enabled.
@@ -34,32 +34,32 @@
 /* This option switches f_mkfs() function. (0:Disable or 1:Enable) */
 
 
-#define FF_USE_FASTSEEK	0
+#define FF_USE_FASTSEEK		0
 /* This option switches fast seek function. (0:Disable or 1:Enable) */
 
 
-#define FF_USE_EXPAND	0
+#define FF_USE_EXPAND		0
 /* This option switches f_expand function. (0:Disable or 1:Enable) */
 
 
-#define FF_USE_CHMOD	0
+#define FF_USE_CHMOD		0
 /* This option switches attribute manipulation functions, f_chmod() and f_utime().
 /  (0:Disable or 1:Enable) Also FF_FS_READONLY needs to be 0 to enable this option. */
 
 
-#define FF_USE_LABEL	0
+#define FF_USE_LABEL		0
 /* This option switches volume label functions, f_getlabel() and f_setlabel().
 /  (0:Disable or 1:Enable) */
 
 
-#define FF_USE_FORWARD	0
+#define FF_USE_FORWARD		0
 /* This option switches f_forward() function. (0:Disable or 1:Enable) */
 
 
-#define FF_USE_STRFUNC	0
-#define FF_PRINT_LLI	0
-#define FF_PRINT_FLOAT	0
-#define FF_STRF_ENCODE	0
+#define FF_USE_STRFUNC		0
+#define FF_PRINT_LLI		0
+#define FF_PRINT_FLOAT		0
+#define FF_STRF_ENCODE		0
 /* FF_USE_STRFUNC switches string functions, f_gets(), f_putc(), f_puts() and
 /  f_printf().
 /
@@ -84,7 +84,7 @@
 / Locale and Namespace Configurations
 /---------------------------------------------------------------------------*/
 
-#define FF_CODE_PAGE	932
+#define FF_CODE_PAGE		932
 /* This option specifies the OEM code page to be used on the target system.
 /  Incorrect code page setting can cause a file open failure.
 /
@@ -133,7 +133,7 @@
 /  ff_memfree() exemplified in ffsystem.c, need to be added to the project. */
 
 
-#define FF_LFN_UNICODE	0
+#define FF_LFN_UNICODE		0
 /* This option switches the character encoding on the API when LFN is enabled.
 /
 /   0: ANSI/OEM in current CP (TCHAR = char)
@@ -238,9 +238,9 @@
 
 
 #define FF_FS_NORTC		0
-#define FF_NORTC_MON	1
-#define FF_NORTC_MDAY	1
-#define FF_NORTC_YEAR	2020
+#define FF_NORTC_MON		1
+#define FF_NORTC_MDAY		1
+#define FF_NORTC_YEAR		2020
 /* The option FF_FS_NORTC switches timestamp functiton. If the system does not have
 /  any RTC function or valid timestamp is not needed, set FF_FS_NORTC = 1 to disable
 /  the timestamp function. Every object modified by FatFs will have a fixed timestamp
@@ -251,7 +251,7 @@
 /  These options have no effect in read-only configuration (FF_FS_READONLY = 1). */
 
 
-#define FF_FS_NOFSINFO	0
+#define FF_FS_NOFSINFO		0
 /* If you need to know correct free space on the FAT32 volume, set bit 0 of this
 /  option, and f_getfree() function at first time after volume mount will force
 /  a full FAT scan. Bit 1 controls the use of last allocated cluster number.
@@ -275,10 +275,10 @@
 /      lock control is independent of re-entrancy. */
 
 
-/* #include <somertos.h>	// O/S definitions */
-#define FF_FS_REENTRANT	2		// 0:Disable, 1:Enable&Semaphore, 2:Enable&Mutex
-#define FF_FS_TIMEOUT	1000
-#define FF_SYNC_t	ID
+#include <tk/tkernel.h>
+#define FF_FS_REENTRANT		0		// 0:Disable, 1:Enable&Semaphore, 2:Enable&Mutex
+#define FF_FS_TIMEOUT		1000
+#define FF_SYNC_t		ID
 /* The option FF_FS_REENTRANT switches the re-entrancy (thread safe) of the FatFs
 /  module itself. Note that regardless of this option, file access to different
 /  volume is always re-entrant and volume control functions, f_mount(), f_mkfs()
@@ -295,7 +295,5 @@
 /  The FF_SYNC_t defines O/S dependent sync object type. e.g. HANDLE, ID, OS_EVENT*,
 /  SemaphoreHandle_t and etc. A header file for O/S definitions needs to be
 /  included somewhere in the scope of ff.h. */
-
-#include <tk/tkernel.h>
 
 /*--- End of configuration options ---*/

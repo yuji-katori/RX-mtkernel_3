@@ -123,9 +123,9 @@ int ff_req_grant (	/* 1:Got a grant to access the volume, 0:Could not get a gran
 )
 {
 #if FF_FS_REENTRANT == 1	// Semaphore
-	return tk_wai_sem(sobj,1,TMO_FEVR) == E_OK;
+	return tk_wai_sem(sobj,1,FF_FS_TIMEOUT) == E_OK;
 #else				// Mutex
-	return tk_loc_mtx(sobj,TMO_FEVR) == E_OK;
+	return tk_loc_mtx(sobj,FF_FS_TIMEOUT) == E_OK;
 #endif
 }
 
