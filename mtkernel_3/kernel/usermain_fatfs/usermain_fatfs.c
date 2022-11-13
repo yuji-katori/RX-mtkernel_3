@@ -15,7 +15,7 @@
 #include <dev_rtc.h>
 #include <ff.h>
 
-typedef enum { SHELL, RTC, OBJ_KIND_NUM } OBJ_KIND;
+typedef enum { SHELL, CLOCK, OBJ_KIND_NUM } OBJ_KIND;
 EXPORT ID ObjID[OBJ_KIND_NUM];
 EXPORT void shell_tsk(INT stacd, void *exinf);
 EXPORT DATE_TIM dt;
@@ -30,7 +30,7 @@ SZ  asize;
 		goto ERROR;
 	if( rtcDrvEntry( ) < E_OK )				// RTCドライバの登録処理(サービス関数)
 		goto ERROR;
-	if( ( ObjID[RTC] = tk_opn_dev( RTC_DEVNM, TD_UPDATE ) ) < E_OK )
+	if( ( ObjID[CLOCK] = tk_opn_dev( RTC_DEVNM, TD_UPDATE ) ) < E_OK )
 		goto ERROR;					// RTCドライバをオープンし、初期化
 	tm_putstring("Input now date and time.\n"
 		     "Year:Month:Day:Week:Hour:Minute:Second\n"
@@ -40,7 +40,7 @@ SZ  asize;
 	sscanf( buf, "%ld:%ld:%ld:%ld:%ld:%ld:%ld", &dt.d_year, &dt.d_month, &dt.d_day, &dt.d_wday, &dt.d_hour, &dt.d_min, &dt.d_sec );
 	tm_putstring("\n");
 	dt.d_year -= 1900;
-	if( tk_swri_dev( ObjID[RTC], DN_CKDATETIME, &dt, sizeof(dt), &asize ) < E_OK || asize != sizeof(dt) )
+	if( tk_swri_dev( ObjID[CLOCK], DN_CKDATETIME, &dt, sizeof(dt), &asize ) < E_OK || asize != sizeof(dt) )
 		goto ERROR;
 
 	t_ctsk.tskatr = TA_HLNG | TA_DSNAME;			// タスクの属性を設定
@@ -56,7 +56,7 @@ SZ  asize;
 	tk_chg_pri( TSK_SELF, TK_MAX_TSKPRI );			// 自タスクの優先度を最低に変更
 	
 	tk_del_tsk( ObjID[SHELL] );				// shellタスクを削除
-	tk_cls_dev( ObjID[RTC] , 0 );				// RTCドライバをクローズ
+	tk_cls_dev( ObjID[CLOCK] , 0 );				// RTCドライバをクローズ
 
 ERROR:
 	return 0;
