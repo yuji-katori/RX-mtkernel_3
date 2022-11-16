@@ -156,11 +156,6 @@
       <Type>Category</Type>
       <ParentItem>47bf514a-6f2b-4795-b5d6-79be522a11a8</ParentItem>
     </Instance>
-    <Instance Guid="4e147cf8-60ef-4ee9-a076-06162ff83f62">
-      <Name>driver</Name>
-      <Type>Category</Type>
-      <ParentItem>47bf514a-6f2b-4795-b5d6-79be522a11a8</ParentItem>
-    </Instance>
     <Instance Guid="f43759c5-4e0f-4c42-94a6-f87d5985e107">
       <Name>sysdepend</Name>
       <Type>Category</Type>
@@ -474,13 +469,6 @@
       <RelativePath>..\..\include\tm\tmonitor.h</RelativePath>
       <TreeImageGuid>03cad1e8-2eb3-4cde-a8a3-982423631122</TreeImageGuid>
       <ParentItem>f7746204-22a4-4028-ae16-bf8ab628afd5</ParentItem>
-    </Instance>
-    <Instance Guid="86d2eeef-099c-441c-9d6c-79d7e1105ae3">
-      <Name>sdrvif.h</Name>
-      <Type>File</Type>
-      <RelativePath>..\..\include\driver\sdrvif.h</RelativePath>
-      <TreeImageGuid>03cad1e8-2eb3-4cde-a8a3-982423631122</TreeImageGuid>
-      <ParentItem>4e147cf8-60ef-4ee9-a076-06162ff83f62</ParentItem>
     </Instance>
     <Instance Guid="23f26d62-1620-4762-83f2-f71b106c466d">
       <Name>sysdepend</Name>
@@ -1357,9 +1345,9 @@
       <BuildMode0>RABlAGYAYQB1AGwAdABCAHUAaQBsAGQA</BuildMode0>
       <BatchBuildFlag0>False</BatchBuildFlag0>
       <CurrentBuildMode>DefaultBuild</CurrentBuildMode>
-      <SourceItemGuid0>8df35e0f-d3c0-4896-90b3-146f070497d4</SourceItemGuid0>
+      <SourceItemGuid0>bd72e053-15df-4639-ae88-d36ea55c6bb5</SourceItemGuid0>
       <SourceItemType0>CSource</SourceItemType0>
-      <SourceItemGuid1>bd72e053-15df-4639-ae88-d36ea55c6bb5</SourceItemGuid1>
+      <SourceItemGuid1>8df35e0f-d3c0-4896-90b3-146f070497d4</SourceItemGuid1>
       <SourceItemType1>CSource</SourceItemType1>
       <SourceItemGuid2>833a68ed-83e6-4588-a4e2-9fa963554bef</SourceItemGuid2>
       <SourceItemType2>CSource</SourceItemType2>
@@ -3043,10 +3031,6 @@ _cfn_max_almid
       <ItemAddTime>638037250684124015</ItemAddTime>
       <ItemAddTimeCount>0</ItemAddTimeCount>
     </Instance>
-    <Instance Guid="86d2eeef-099c-441c-9d6c-79d7e1105ae3">
-      <ItemAddTime>638017758372480191</ItemAddTime>
-      <ItemAddTimeCount>0</ItemAddTimeCount>
-    </Instance>
     <Instance Guid="8df35e0f-d3c0-4896-90b3-146f070497d4">
       <ItemAddTime>638037252000059333</ItemAddTime>
       <ItemAddTimeCount>0</ItemAddTimeCount>
@@ -3068,11 +3052,11 @@ _cfn_max_almid
       <ItemAddTimeCount>0</ItemAddTimeCount>
     </Instance>
     <Instance Guid="a7be515f-f007-45ed-9059-4e1500c0f74d">
-      <TimeTagModified-SourceItem0--0>-8585335108854716475</TimeTagModified-SourceItem0--0>
+      <TimeTagModified-SourceItem0--0>-8585335109763109094</TimeTagModified-SourceItem0--0>
       <SourceItem0-IsLockedByUser>False</SourceItem0-IsLockedByUser>
       <SourceItem0-BuildingTarget-0>True</SourceItem0-BuildingTarget-0>
       <SourceItem0-IndividualCompileOption-0>False</SourceItem0-IndividualCompileOption-0>
-      <TimeTagModified-SourceItem1--0>-8585335109763109094</TimeTagModified-SourceItem1--0>
+      <TimeTagModified-SourceItem1--0>-8585335108854716475</TimeTagModified-SourceItem1--0>
       <SourceItem1-IsLockedByUser>False</SourceItem1-IsLockedByUser>
       <SourceItem1-BuildingTarget-0>True</SourceItem1-BuildingTarget-0>
       <SourceItem1-IndividualCompileOption-0>False</SourceItem1-IndividualCompileOption-0>

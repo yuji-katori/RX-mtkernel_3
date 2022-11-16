@@ -145,15 +145,15 @@ ERROR:
 static bsp_int_cb_t eint_callback;
 void groupal1_hdr(UINT intno)
 {
-	if( ICU.GRPAL1.BIT.IS4 )
+	if( IS( EDMAC0, EINT0 ) )
 		eint_callback( NULL );			// Call EDMAC0 EINT0 Interrupt Handler
-	else if( ICU.GRPAL1.BIT.IS8 )
+	else if( IS( GLCDC, VPOS ) )
 		;					// Call GLCDC VPOS  Interrupt Handler
-	else if( ICU.GRPAL1.BIT.IS9 )
+	else if( IS( GLCDC, GR1UF ) )
 		;					// Call GLCDC GR1UF Interrupt Handler
-	else if( ICU.GRPAL1.BIT.IS10 )
+	else if( IS( GLCDC, GR2UF ) )
 		;					// Call GLCDC GR2UF Interrupt Handler
-	else if( ICU.GRPAL1.BIT.IS11 )
+	else if( IS( DRW2D, DRWIRQ ) )
 		;					// Call DRW2D DRW_IRQ Interrupt Handler
 }
 

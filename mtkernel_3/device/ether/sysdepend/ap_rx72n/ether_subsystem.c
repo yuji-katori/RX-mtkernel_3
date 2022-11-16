@@ -132,19 +132,19 @@ ERROR:
 static bsp_int_cb_t eint_callback;
 void groupal1_hdr(UINT intno)
 {
-	if( ICU.GRPAL1.BIT.IS0 )
+	if( IS( EPTPC, MINT ) )
 		;					// Call EPTPC MINT Interrupt Handler
-	else if( ICU.GRPAL1.BIT.IS1 )
+	else if( IS( PTPEDMAC, PINT ) )
 		;					// Call PTPEDMAC PINT Interrupt Handler
-	else if( ICU.GRPAL1.BIT.IS4 )
+	else if( IS( EDMAC0, EINT0 ) )
 		eint_callback( NULL );			// Call EDMAC0 EINT0 Interrupt Handler
-	else if( ICU.GRPAL1.BIT.IS5 )
+	else if( IS( EDMAC1, EINT1 ) )
 		;					// Call EDMAC1 EINT1 Interrupt Handler
-	else if( ICU.GRPAL1.BIT.IS8 )
+	else if( IS( GLCDC, VPOS ) )
 		;					// Call GLCDC VPOS  Interrupt Handler
-	else if( ICU.GRPAL1.BIT.IS9 )
+	else if( IS( GLCDC, GR1UF ) )
 		;					// Call GLCDC GR1UF Interrupt Handler
-	else if( ICU.GRPAL1.BIT.IS10 )
+	else if( IS( GLCDC, GR2UF ) )
 		;					// Call GLCDC GR2UF Interrupt Handler
 }
 
