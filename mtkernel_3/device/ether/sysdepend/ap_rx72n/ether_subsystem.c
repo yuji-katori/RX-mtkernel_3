@@ -130,7 +130,7 @@ ERROR:
 
 /*
 static bsp_int_cb_t eint_callback;
-void groupal1_hdr(UINT intno)
+void GroupAL1Handler(UINT intno)
 {
 	if( IS( EPTPC, MINT ) )
 		;					// Call EPTPC MINT Interrupt Handler
@@ -157,9 +157,9 @@ T_DINT t_dint;
 	EnableInt( VECT( ICU, GROUPAL1 ), ETHER_CFG_INT_PRIORTY );
 	t_dint.intatr = TA_HLNG;			// Set Interrupt Handler Attribute
 #ifdef CLANGSPEC
-	t_dint.inthdr = groupal1_hdr;			// Set Handler Start Address
+	t_dint.inthdr = GroupAL1Handler;		// Set Handler Start Address
 #else
-	t_dint.inthdr = (FP)groupal1_hdr;		// Set Handler Start Address
+	t_dint.inthdr = (FP)GroupAL1Handler;		// Set Handler Start Address
 #endif
 	if( tk_def_int( VECT( ICU, GROUPAL1 ), &t_dint ) != E_OK )	// Define Interrupt Handler
 		goto ERROR;

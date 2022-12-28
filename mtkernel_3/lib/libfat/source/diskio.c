@@ -14,6 +14,7 @@
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
  *    Support RAMDISK 2022/10/25
+ *    Support SDCARD  2022/11/18
  *----------------------------------------------------------------------
 */
 #include <tk/tkernel.h>
@@ -37,8 +38,11 @@ DSTATUS disk_status (
 
 	if( pdrv < DEV_TYPE_CNT && phy_device[pdrv] > 0 )  {
 		ercd = tk_srea_dev(phy_device[pdrv], DN_DISKINFO, &dinfo, sizeof(DiskInfo), &asize);
-		if( ercd < E_OK )
+		if( ercd < E_OK )  {
+			tk_cls_dev( phy_device[pdrv], 0 );
+			phy_device[pdrv] = 0;
 			return STA_NODISK;
+		}
 		return dinfo.protect ? STA_PROTECT : 0 ;
 	}
 	return STA_NOINIT;
@@ -55,6 +59,7 @@ DSTATUS disk_initialize (
 {
 	ER ercd;
 	SZ asize;
+	DiskFormat format;
 
 	switch( pdrv )  {
 	case RAMDISK:
@@ -67,7 +72,20 @@ DSTATUS disk_initialize (
 			if( ercd < E_OK )
 				return STA_NOINIT;
 			phy_device[pdrv] = ercd;
-			tk_swri_dev( ercd, DN_DISKFORMAT, NULL, 0, &asize );
+			format = DiskFmt_MEM;
+			tk_swri_dev( ercd, DN_DISKFORMAT, &format, sizeof(format), &asize );
+		}
+		break;
+	case SDCARD:
+		if( phy_device[pdrv] <= 0 )  {
+#ifdef CLANGSPEC
+			ercd = tk_opn_dev(SD_CARD_DEVNM, TD_UPDATE | TD_EXCL);
+#else
+			ercd = tk_opn_dev((UB*)SD_CARD_DEVNM, TD_UPDATE | TD_EXCL);
+#endif	/* CLANGSPEC */
+			if( ercd < E_OK )
+				return STA_NOINIT;
+			phy_device[pdrv] = ercd;
 		}
 		break;
 	}

@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2022/11/17.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -15,7 +17,6 @@
 
 #include <string.h>
 #include <tk/tkernel.h>
-#include <dev_disk.h>
 #include <dev_rd.h>
 
 LOCAL ER rd_open(ID devid, UINT omode, void *exinf)
@@ -69,15 +70,10 @@ INT *p;
 			}
 			break;
 		default:
-			if( start >= 0 )
-				if( size )  {
-					if( start + size <= BLOCK_COUNT )  {
-						memcpy( buf, (void*)(TOP_ADDRESS + start * BLOCK_SIZE), size * BLOCK_SIZE );
-						return E_OK;
-					}
-				}
-				else
-					return BLOCK_COUNT;
+			if( start >= 0 && buf != NULL && start + size <= BLOCK_COUNT )  {
+				memcpy( buf, (void*)(TOP_ADDRESS + start * BLOCK_SIZE), size * BLOCK_SIZE );
+				return E_OK;
+			}
 		}
 	}
 	else  {
@@ -94,7 +90,7 @@ INT *p;
 			}
 			break;
 		default:
-			if( start >= 0 && start + size <= BLOCK_COUNT )  {
+			if( start >= 0 && buf != NULL && start + size <= BLOCK_COUNT )  {
 				memcpy( (void*)(TOP_ADDRESS + start * BLOCK_SIZE), buf, size * BLOCK_SIZE );
 				return E_OK;
 			}

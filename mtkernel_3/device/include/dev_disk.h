@@ -6,6 +6,7 @@
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
  *    Support RAMDISK 2022/10/25
+ *    Support SDCARD  2022/11/17
  *----------------------------------------------------------------------
  */
 
@@ -17,8 +18,6 @@
 
 #ifndef	__DEV_DISK_H__
 #define	__DEV_DISK_H__
-
-#include <dev_rd.h>
 
 typedef enum {
 	RAMDISK, SDCARD, USBSTRG, DEV_TYPE_CNT
@@ -149,5 +148,14 @@ typedef struct {
 	PartInfo	part[MAX_PARTITION];	/* Partition information*/
 	UH		signature;		/* Signature		*/
 } DiskBlock0;
+
+
+#define RAM_DISK_DEVNM	"rda"
+#define SD_CARD_DEVNM	"sda"
+#define USB_HMSC_DEVNM	"uda"
+
+IMPORT	ER	rdDrvEntry( void );
+IMPORT	ER	sdDrvEntry( void );
+IMPORT	ER	usbDrvEntry( void );
 
 #endif /* __DEVICE_DISK_H__ */

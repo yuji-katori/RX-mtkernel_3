@@ -26,8 +26,6 @@ T_CTSK t_ctsk;
 LOCAL VB buf[32];
 SZ  asize;
 
-	if( rdDrvEntry( ) < E_OK )				// RAMディスクドライバの登録(サービス関数)
-		goto ERROR;
 	if( rtcDrvEntry( ) < E_OK )				// RTCドライバの登録処理(サービス関数)
 		goto ERROR;
 	if( ( ObjID[CLOCK] = tk_opn_dev( RTC_DEVNM, TD_UPDATE ) ) < E_OK )
@@ -43,9 +41,19 @@ SZ  asize;
 	if( tk_swri_dev( ObjID[CLOCK], DN_CKDATETIME, &dt, sizeof(dt), &asize ) < E_OK || asize != sizeof(dt) )
 		goto ERROR;
 
+#if defined(AP_RX63N) || defined(AP_RX72N)
+	if( rdDrvEntry( ) < E_OK )				// RAMディスクドライバの登録(サービス関数)
+		goto ERROR;
+#endif
+#if defined(AP_RX65N) || defined(AP_RX72N)
+	if( sdDrvEntry( ) < E_OK )				// SDカードドライバの登録(サービス関数)
+		goto ERROR;
+#endif
+
+	tk_dly_tsk( 1000 );
 	t_ctsk.tskatr = TA_HLNG | TA_DSNAME;			// タスクの属性を設定
 	t_ctsk.stksz = 2048;					// タスクのスタックサイズを設定
-	t_ctsk.itskpri = 5;					// タスクの優先度を設定（任意）
+	t_ctsk.itskpri = 10;					// タスクの優先度を設定（任意）
 	t_ctsk.task =  shell_tsk;				// タスクの起動番地を設定
 	strcpy( t_ctsk.dsname, "shell" );			// タスクのデバッガサポート名を設定
 	if( (ObjID[SHELL] = tk_cre_tsk( &t_ctsk )) <= E_OK )	// shellタスクの生成
@@ -63,9 +71,10 @@ ERROR:
 }
 
 typedef void FUNC(INT);
-EXPORT FUNC dir, cd, rd, wt, mkdir, rmdir;
+EXPORT FUNC cpd, dir, cd, rd, wt, mkdir, rmdir;
 
-EXPORT VB path[32], buf[128], ldn[4];
+EXPORT VB path[32], buf[128], ldn[3] = "0:", ldnum[DEV_TYPE_CNT];
+EXPORT VB ldname[][4]= { RAM_DISK_DEVNM, SD_CARD_DEVNM, USB_HMSC_DEVNM };
 EXPORT BYTE work[FF_MAX_SS];
 EXPORT VB * const argv[] = { &buf[64], &buf[96] };
 EXPORT VB * const cmd[] = { "dir", "cd", "rd", "wt", "mkdir", "rmdir", "rm", "end" };
@@ -75,17 +84,35 @@ EXPORT INT len;
 
 EXPORT void shell_tsk(INT stacd, void *exinf)
 {
-INT argc, i;
+INT argc, i, j;
+T_LDEV t_ldev;
 
-	ldn[0] = '0' + RAMDISK;    ldn[1] = ':';
-	if( FR_OK != f_mkfs( ldn, 0, work, sizeof(work) ) )
+	for( i=0 ; tk_lst_dev( &t_ldev, i, 1 ) >= E_OK  ; i++ )
+		for( j=0 ; j<DEV_TYPE_CNT ; j++ )
+			if( strcmp( t_ldev.devnm, ldname[j] ) == 0 )  {
+				ldnum[j] = '0' + j;
+				if( ! j && FR_OK != f_mkfs( ldn, 0, work, sizeof(work) ) )
+					goto ERROR;
+				break;
+			}
+	for( i=0 ; i<DEV_TYPE_CNT ; i++ )
+		if( ldnum[i] )
+			break;
+	if( i == DEV_TYPE_CNT )
 		goto ERROR;
+	ldn[0] = ldnum[i];
+START:
 	if( FR_OK != f_mount( &fs, ldn, 1 ) )
 		goto ERROR;
-
+	strcpy( path, ldn );
 	while( 1 )  {
-		tm_printf( "%d:%s>", RAMDISK , path );
+		tm_printf( "%s>", path );
 		tm_getline( buf );
+		if( strlen( buf ) == 2 && buf[1] == ':' )  {
+			f_mount( 0, ldn, 0 );
+			ldn[0] = buf[0];
+			goto START;
+		}
 		argc = sscanf( buf, "%s%s%d", argv[0], argv[1], &len );
 		for( i=0 ; i<sizeof(cmd)/sizeof(cmd[0]) ; i++ )
 			if( ! strcmp( argv[0], cmd[i] ) )
@@ -127,20 +154,17 @@ INT i;
 	if( argc != 2 )
 		return;
 	if( ! strcmp( argv[1], ".." ) )  {
-		if( path[0] != '\0' )  {
-			for( i = strlen( path )-1 ; i && path[i] != '/' ; i-- )
+		if( path[2] != '\0' )  {
+			for( i = strlen( path )-1 ; i!=2 && path[i] != '/' ; i-- )
 				;
 			path[i] = '\0';
 		}
 	}
 	else  {
-		if( path[0] != '\0' )  {
-			strcpy( buf, path );
+		strcpy( buf, path );
+		if( path[2] != '\0' )
 			strcat( buf, "/" );
-			strcat( buf, argv[1] );
-		}
-		else
-			strcpy( buf, argv[1] );
+		strcat( buf, argv[1] );
 		if( FR_OK == f_opendir( &dp, buf ) )  {
 			strcpy( path, buf );
 			f_closedir( &dp );

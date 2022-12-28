@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2022/11/18.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -13,6 +15,7 @@
 #ifndef __DEV_RD_H__
 #define __DEV_RD_H__
 
+#include <dev_disk.h>
 #include <sys/machine.h>
 
 #define RD_PATH_(a)		#a

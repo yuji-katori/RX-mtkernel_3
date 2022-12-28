@@ -5,15 +5,21 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
- *    Modified by Yuji Katori at 2022/11/18.
- *----------------------------------------------------------------------
  */
 
 /*
- *	dev_rd.h
+ *	sd_config.h
  */
+#ifndef SD_CONFIG_H
+#define SD_CONFIG_H
 
-#define	TOP_ADDRESS	0x8000000
-#define	END_ADDRESS	0x9000000
-#define	BLOCK_SIZE	512
-#define	BLOCK_COUNT	(( END_ADDRESS - TOP_ADDRESS ) / 512)
+/* SD control task priority. */
+#define	SD_CFG_TASK_PRIORTY				(3)
+
+/* SD interrupt priority level. */
+#define	SD_CFG_INT_PRIORTY				(8)
+
+/* SD DMA channel. */
+#define	SD_CFG_DMA_CHANNEL				(4)
+
+#endif	/* SD_CONFIG_H */

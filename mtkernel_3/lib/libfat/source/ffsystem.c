@@ -2,13 +2,15 @@
 /* Sample Code of OS Dependent Functions for FatFs                        */
 /* (C)ChaN, 2018                                                          */
 /*------------------------------------------------------------------------*/
+/*    Modified by Yuji Katori at 2022/11/22.                              */	
+/*------------------------------------------------------------------------*/
 
 #include <string.h>
 #include "ff.h"
 
 
 #if FF_USE_LFN == 3	/* Dynamic memory allocation */
-
+#include "kernel.h"
 /*------------------------------------------------------------------------*/
 /* Allocate a memory block                                                */
 /*------------------------------------------------------------------------*/
@@ -17,7 +19,7 @@ void* ff_memalloc (	/* Returns pointer to the allocated memory block (null if no
 	UINT msize		/* Number of bytes to allocate */
 )
 {
-	return malloc(msize);	/* Allocate a new memory block with POSIX API */
+	return knl_Imalloc(msize);	/* Allocate a new memory block with POSIX API */
 }
 
 
@@ -29,7 +31,7 @@ void ff_memfree (
 	void* mblock	/* Pointer to the memory block to free (nothing to do if null) */
 )
 {
-	free(mblock);	/* Free the memory block with POSIX API */
+	knl_Ifree(mblock);	/* Free the memory block with POSIX API */
 }
 
 #endif

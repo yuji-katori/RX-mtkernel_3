@@ -9,6 +9,8 @@
 ; *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
 ; *
 ; *----------------------------------------------------------------------
+; *    Modified by Yuji Katori at 2022/12/23.
+; *----------------------------------------------------------------------
 ; */
 .INCLUDE sys/machine.inc
 .IF CPU_CORE_RXV3 == 1
@@ -259,7 +261,12 @@ _tk_ret_int_impl:
 	MOV.L	#_knl_schedtsk, R14		; _knl_schedtsk Address --> R14
 	MOV.L	[R14], R14			; New Running Task TCB --> R14
 	CMP	R15, R14			; Is Dispatch Required ?
+	BEQ	nodispatch			;
+	CMP	#0, R15				; Running Task is Exist ?
 	BNE	_ret_int_dispatch		;
+	MOV.L	R14, R8				; Schedtsk TCB Address --> R8
+	ADD	#8, SP				; Discard Satck from ISP
+	BRA	dispatch_5			;
 nodispatch:					; Dispatch not required
 	RSTR	R10				; Restore All Register
 	REVL	R10, R10			; Change Endian (Make PSW)
@@ -505,7 +512,12 @@ _tk_ret_int_impl:
 	MOV.L	#_knl_schedtsk, R14		; _knl_schedtsk Address --> R14
 	MOV.L	[R14], R14			; New Running Task TCB --> R14
 	CMP	R15, R14			; Is Dispatch Required ?
+	BEQ	nodispatch			;
+	CMP	#0, R15				; Running Task is Exist ?
 	BNE	_ret_int_dispatch		;
+	MOV.L	R14, R8				; Schedtsk TCB Address --> R8
+	ADD	#16, SP				; Discard Satck from ISP
+	BRA	dispatch_5			;
 nodispatch:					; Dispatch not required
 	POPM	R14-R15				; Restore R14, R15
 	RTE
