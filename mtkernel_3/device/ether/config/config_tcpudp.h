@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2022/12/31.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -14,10 +16,10 @@
 #define CONFIG_TCPUDP_H
 
 /* Ether task priority. */
-#define	ETHER_CFG_TASK_PRIORTY				(3)
+#define	ETHER_CFG_TASK_PRIORITY				(3)
 
 /* EINT interrupt priority level. */
-#define	ETHER_CFG_INT_PRIORTY				(8)
+#define	ETHER_CFG_INT_PRIORITY				(8)
 
 #define	CFG_SYSTEM_DHCP					(1)
 #define	CFG_FIXED_IP_ADDRESS_CH0			192,168,1,200

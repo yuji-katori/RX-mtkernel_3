@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2022/12/31.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -58,7 +60,7 @@ union { T_CTSK t_ctsk; T_CCYC t_ccyc; } u;
 
 	u.t_ctsk.tskatr = TA_HLNG | TA_DSNAME;		// Set Task Attribute
 	u.t_ctsk.stksz = 512;				// Set Task StackSize
-	u.t_ctsk.itskpri = ETHER_CFG_TASK_PRIORTY;	// Set Task Priority
+	u.t_ctsk.itskpri = ETHER_CFG_TASK_PRIORITY;	// Set Task Priority
 #ifdef CLANGSPEC
 	u.t_ctsk.task =  ether_tsk;			// Set Task Start Address
 	strcpy( u.t_ctsk.dsname, "ether" );		// Set Task debugger Suport Name
@@ -114,7 +116,7 @@ bsp_int_err_t R_BSP_InterruptWrite(bsp_int_src_t vector,  bsp_int_cb_t callback)
 T_DINT t_dint;
 	if( vector == BSP_INT_SRC_AL1_EDMAC1_EINT1 )	// If Ether1 then nothing.
 		return BSP_INT_SUCCESS;
-	EnableInt( VECT( ICU, GROUPAL1 ), ETHER_CFG_INT_PRIORTY );
+	EnableInt( VECT( ICU, GROUPAL1 ), ETHER_CFG_INT_PRIORITY );
 	t_dint.intatr = TA_HLNG;			// Set Interrupt Handler Attribute
 #ifdef CLANGSPEC
 	t_dint.inthdr = (INTFP)callback;		// Set Handler Start Address
@@ -154,7 +156,7 @@ T_DINT t_dint;
 	if( vector == BSP_INT_SRC_AL1_EDMAC1_EINT1 )	// If Ether1 then nothing.
 		return BSP_INT_SUCCESS;
 	eint_callback = callback;
-	EnableInt( VECT( ICU, GROUPAL1 ), ETHER_CFG_INT_PRIORTY );
+	EnableInt( VECT( ICU, GROUPAL1 ), ETHER_CFG_INT_PRIORITY );
 	t_dint.intatr = TA_HLNG;			// Set Interrupt Handler Attribute
 #ifdef CLANGSPEC
 	t_dint.inthdr = GroupAL1Handler;		// Set Handler Start Address

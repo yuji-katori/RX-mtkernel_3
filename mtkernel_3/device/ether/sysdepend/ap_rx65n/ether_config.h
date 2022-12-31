@@ -14,7 +14,7 @@
 #define ETHER_CONFIG_H
 
 /* PMGI interrupt priority level. */
-#define	ETHER_CFG_PMGI_INT_PRIORTY		ETHER_CFG_INT_PRIORTY
+#define	ETHER_CFG_PMGI_INT_PRIORITY		ETHER_CFG_INT_PRIORITY
 
 /* Please define the size of the sending and receiving buffer in the value where one frame can surely be stored 
    because the driver is single-frame/single-buffer processing.  */

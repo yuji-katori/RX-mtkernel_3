@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2022/12/31.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -65,7 +67,7 @@ union { T_CTSK t_ctsk; T_CCYC t_ccyc; } u;
 	u.t_ctsk.bufptr = ether_task_stack;		// Set Stack Top Address
 #endif /* USE_OBJECT_NAME */
 	u.t_ctsk.stksz = 512;				// Set Task StackSize
-	u.t_ctsk.itskpri = ETHER_CFG_TASK_PRIORTY;	// Set Task Priority
+	u.t_ctsk.itskpri = ETHER_CFG_TASK_PRIORITY;	// Set Task Priority
 #ifdef CLANGSPEC
 	u.t_ctsk.task =  ether_tsk;			// Set Task Start Address
 #if USE_OBJECT_NAME
@@ -130,7 +132,7 @@ void ether_set_phy_mode(UB connect)
 bsp_int_err_t R_BSP_InterruptWrite(bsp_int_src_t vector,  bsp_int_cb_t callback)
 {
 T_DINT t_dint;
-	IPR( ETHER, EINT ) = ETHER_CFG_INT_PRIORTY;	// Set Interrupt Level
+	IPR( ETHER, EINT ) = ETHER_CFG_INT_PRIORITY;	// Set Interrupt Level
 	t_dint.intatr = TA_HLNG;			// Set Interrupt Handler Attribute
 #ifdef CLANGSPEC
 	t_dint.inthdr = (INTFP)callback;		// Set Handler Start Address
