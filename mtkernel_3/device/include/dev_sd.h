@@ -62,7 +62,9 @@
 #define CMD_TIMEOUT		0x00000040
 #define SDHC_ERROR		0x0000003F
 #define TSK_WAIT_ALL		0x00000D00
-#define MINIMUM			0x00000800
+#define REJECT			0x00001000
+#define INSERT			0x00002000
+#define MINIMUM			0x00002000
 #define MAXIMUM			0x80000000
 
 IMPORT INT  SDC_GetStatus(void);
@@ -73,6 +75,6 @@ IMPORT ER   SDC_CardInsert(void);
 IMPORT ER   SDC_InitCard(void);
 IMPORT void SDC_CardReject(void);
 IMPORT ER   SDC_Init(ID flgid,T_DINT *p_dint);
-IMPORT ID   SDC_GetTaskPri(void);
+IMPORT PRI  SDC_GetTaskPri(void);
 
 #endif /* __DEV_SD_H__ */

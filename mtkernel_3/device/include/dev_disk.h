@@ -156,6 +156,8 @@ typedef struct {
 
 IMPORT	ER	rdDrvEntry( void );
 IMPORT	ER	sdDrvEntry( void );
+IMPORT	ER	sdWaitInsertEvent( TMO tmout );
+IMPORT	ER	sdWaitRejectEvent( TMO tmout );
 IMPORT	ER	usbDrvEntry( void );
 
 #endif /* __DEVICE_DISK_H__ */

@@ -171,10 +171,14 @@ T_DEVREQ *devreq;
 		}
 		if( flgptn & CARD_REJECT )  {					// SD Card Reject ?
 			tm_putstring("Reject SD Card.\n");
+			tk_clr_flg( ObjID[FLGID], ~INSERT );			// Clear Insert Flag
+			tk_set_flg( ObjID[FLGID], REJECT );			// Set   Reject Flag
 			SDC_CardReject( );					// Call SD Card Reject
 		}
 		if( flgptn & CARD_INSERT )  {					// SD Card Insert ?
 			tm_putstring("Insert SD Card.\n");
+			tk_clr_flg( ObjID[FLGID], ~REJECT );			// Clear Reject Flag
+			tk_set_flg( ObjID[FLGID], INSERT );			// Set   Insert Flag
 			if( SDC_CardInsert( ) >= E_OK )				// Call SD Card Insert
 				if( SDC_InitCard( ) < E_OK )			// Call SD Card Initialize
 					tm_putstring("Insert SD Card is Unknow Card\n");
@@ -195,7 +199,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	u.t_ctsk.tskatr |= TA_USERBUF;			// Set Task Attribute
 	u.t_ctsk.bufptr = sdc_task_stack;		// Set Stack Top Address
 #endif /* USE_OBJECT_NAME */
-	u.t_ctsk.stksz = 512;				// Set Task StackSize
+	u.t_ctsk.stksz = 320;				// Set Task StackSize
 	u.t_ctsk.itskpri = SDC_GetTaskPri( );		// Set Task Priority
 #ifdef CLANGSPEC
 	u.t_ctsk.task =  sdc_tsk;			// Set Task Start Address
@@ -217,6 +221,11 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	u.t_cflg.flgatr = TA_TPRI | TA_WMUL;		// Set EventFlag Attribute
 #if USE_OBJECT_NAME
 	u.t_cflg.flgatr |= TA_DSNAME;			// Set EventFlag Attribute
+#ifdef CLANGSPEC
+	strcpy( u.t_cflg.dsname, "sdc_f" );		// Set Debugger Suport Name
+#else
+	strcpy( (char*)u.t_cflg.dsname, "sdc_f" );	// Set Debugger Suport Name
+#endif /* CLANGSPEC */
 #endif /* USE_OBJECT_NAME */
 	u.t_cflg.iflgptn = 0;				// Set Initial Bit Pattern
 	if( (objid = tk_cre_flg( &u.t_cflg )) <= E_OK )	// Create SD EventFlag
@@ -249,4 +258,16 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 #endif	/* CLANGSPEC */
 ERROR:
 	while( 1 )  ;		
+}
+
+IMPORT ER sdWaitInsertEvent(TMO tmout)
+{
+UINT flgptn;
+	return tk_wai_flg(ObjID[FLGID], INSERT, TWF_ORW, &flgptn, tmout);
+}
+
+IMPORT ER sdWaitRejectEvent(TMO tmout)
+{
+UINT flgptn;
+	return tk_wai_flg(ObjID[FLGID], REJECT, TWF_ORW, &flgptn, tmout);
 }
