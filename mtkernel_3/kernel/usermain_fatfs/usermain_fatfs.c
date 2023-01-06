@@ -102,10 +102,12 @@ T_LDEV t_ldev;
 		goto ERROR;
 	ldn[0] = ldnum[i];
 START:
+#if defined(AP_RX65N) || defined(AP_RX72N)
 	if( ldn[0] == '1' && sdWaitInsertEvent( TMO_POL ) == E_TMOUT )  {
 		tm_putstring("Please insert SD card.\n");
 		sdWaitInsertEvent( TMO_FEVR );
 	}
+#endif
 	if( FR_OK != f_mount( &fs, ldn, 1 ) )
 		goto ERROR;
 	strcpy( path, ldn );
