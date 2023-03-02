@@ -29,7 +29,7 @@ __SYS_SYSDEPEND_MACHINE_H__	.EQU	(1)
 ;/* ----- AP-RX72N-0A (CPU: R5F572N**) definition ----- */
 ;#undef _AP_RX72N_
 
-AP_RX72N	.EQU	(1)			;/* Target system : AP-RX72N-0A RX72N */
+AP_RX72N	.EQU	(1)			;/* Target system : AP-RX72N-0A */
 CPU_R5F572N	.EQU	(1)			;/* Target CPU : RENESAS R5F572N */
 CPU_CORE_RXV3	.EQU	(1)			;/* Target CPU-Core : RXv3 */
 

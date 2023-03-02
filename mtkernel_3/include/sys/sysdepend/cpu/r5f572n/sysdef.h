@@ -14,7 +14,7 @@
 /*
  *	sysdef.h
  *
- *	System dependencies definition (R5F565N depended)
+ *	System dependencies definition (R5F572N depended)
  *	Included also from assembler program.
  */
 
