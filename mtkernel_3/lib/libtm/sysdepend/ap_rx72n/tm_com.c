@@ -9,6 +9,8 @@
  *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
  *
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2023/3/4.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -77,11 +79,11 @@ int i;
 	MPC.P86PFS.BIT.PSEL = 0x0A;
 	MPC.PWPR.BYTE = 0x80;
 
-	// GPIO setting P87 = TX10, P86 = RX10
+	// GPIO setting P87 = TXD10, P86 = RXD10
 	PORT8.PMR.BIT.B7 = 1;
 	PORT8.PMR.BIT.B6 = 1;
 
-	// Initialize SCI1
+	// Initialize SCI10
 	SCI10.SEMR.BIT.ABCSE = 1;
 	SCI10.BRR = PCLKA / (12.0F / 2 * BAUD_RATE) - 0.5F;
 	for( i=0 ; i<ICLK/4/BAUD_RATE  ; i++ )  ;

@@ -9,6 +9,8 @@
  *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
  *
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2023/3/4.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -77,7 +79,7 @@ int i;
 	MPC.P01PFS.BIT.PSEL = 0x0A;
 	MPC.PWPR.BYTE = 0x80;
 
-	// GPIO setting P00 = TX6, P01 = RX6
+	// GPIO setting P00 = TXD6, P01 = RXD6
 	PORT0.PMR.BIT.B0 = 1;
 	PORT0.PMR.BIT.B1 = 1;
 
