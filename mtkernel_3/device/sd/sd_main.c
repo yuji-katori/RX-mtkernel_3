@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2023/1/19.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -24,7 +26,7 @@ LOCAL UB rd, wt;
 LOCAL T_DEVREQ *req[CFN_MAX_REQDEV+1];
 LOCAL UINT now, next=MAXIMUM;
 #if !USE_IMALLOC
-LOCAL INT sdc_task_stack[512/sizeof(INT)];
+LOCAL INT sdc_task_stack[320/sizeof(INT)];
 #endif /* USE_IMALLOC */
 
 LOCAL ER sd_open(ID devid, UINT omode, void *exinf)

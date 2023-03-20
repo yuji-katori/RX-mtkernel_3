@@ -9,6 +9,8 @@
  *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
  *
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2023/3/20.
+ *----------------------------------------------------------------------
  */
 
 #include <tk/tkernel.h>
@@ -148,9 +150,9 @@ const UB IPRindex[]={
 	 43,	//  43:        SPTI
 	 44,	//  44: SDHI   SBFAI
 	 45,	//  45: MMCIF  MBFAI
-	 46,	//  46: SSI0   SSITXI0
+	 46,	//  46: SSIE0  SSITXI0
 	 47,	//  47:        SSIRXI0
-	 48,	//  48: SSI1   SSIRTI1
+	 48,	//  48: SSIE1  SSIRTI1
 	  4,	//  49: --
 	 50,	//  50: RIIC1  RXI1
 	 51,	//  51:        TXI1
@@ -226,7 +228,7 @@ const UB IPRindex[]={
 	121,	// 121:        DMAC1I
 	122,	// 122:        DMAC2I
 	123,	// 123:        DMAC3I
-	124,	// 124:        DMAC4I
+	124,	// 124:        DMAC47I
 	125,	// 125: OST    OSTDI
 	126,	// 126: EXDMAC EXDMAC0I
 	127,	// 127:        EXDMAC1I

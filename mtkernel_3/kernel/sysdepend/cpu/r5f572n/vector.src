@@ -9,6 +9,8 @@
 ; *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
 ; *
 ; *----------------------------------------------------------------------
+; *    Modified by Yuji Katori at 2023/3/20.
+; *----------------------------------------------------------------------
 ; */
 
 .INCLUDE sys/machine.inc
@@ -65,9 +67,9 @@
 	.RVECTOR  43, knl_inthdr_entry43	;        SPTI
 	.RVECTOR  44, knl_inthdr_entry44	; SDHI   SBFAI
 	.RVECTOR  45, knl_inthdr_entry45	; MMCIF  MBFAI
-	.RVECTOR  46, knl_inthdr_entry46	; SSI0   SSITXI0
+	.RVECTOR  46, knl_inthdr_entry46	; SSIE0  SSITXI0
 	.RVECTOR  47, knl_inthdr_entry47	;        SSIRXI0
-	.RVECTOR  48, knl_inthdr_entry48	; SSI1   SSIRTI1
+	.RVECTOR  48, knl_inthdr_entry48	; SSIE1  SSIRTI1
 ;	.RVECTOR  49, knl_inthdr_entry49	;
 	.RVECTOR  50, knl_inthdr_entry50	; RIIC1  RXI1
 	.RVECTOR  51, knl_inthdr_entry51	;        TXI1
@@ -143,7 +145,7 @@
 	.RVECTOR 121, knl_inthdr_entry121	;        DMAC1I
 	.RVECTOR 122, knl_inthdr_entry122	;        DMAC2I
 	.RVECTOR 123, knl_inthdr_entry123	;        DMAC3I
-	.RVECTOR 124, knl_inthdr_entry124	;        DMAC4I
+	.RVECTOR 124, knl_inthdr_entry124	;        DMAC47I
 	.RVECTOR 125, knl_inthdr_entry125	; OST    OSTDI
 	.RVECTOR 126, knl_inthdr_entry126	; EXDMAC EXDMAC0I
 	.RVECTOR 127, knl_inthdr_entry127	;        EXDMAC1I
