@@ -1,0 +1,85 @@
+;/*
+; *----------------------------------------------------------------------
+; *    micro T-Kernel 3.00.00
+; *
+; *    Copyright (C) 2006-2019 by Ken Sakamura.
+; *    This software is distributed under the T-License 2.1.
+; *----------------------------------------------------------------------
+; *
+; *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
+; *
+; *----------------------------------------------------------------------
+; */
+
+.INCLUDE sys/machine.inc
+.IF CPU_R5F5231 == 1
+;/*
+; *	fixed_vector.src (R5F5231)
+; *	Exception Vector Table
+; */
+	.GLB	_start
+
+	.SECTION	EXCEPTVECT, ROMDATA, ALIGN=4
+	.GLB	Except_Vectors
+Except_Vectors:				; Exception Vector table
+.IF __BIG == 1
+	.LWORD	0FFFFFFF8H		; Big Endian
+.ELSE
+	.LWORD	0FFFFFFFFH		; Little Endian
+.ENDIF
+	.LWORD	_Dummy			; Reserved
+	.LWORD	0FFFFFFFFH		; OFS0
+	.LWORD	0FFFFFFFFH		; OFS1
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	0FFFFFFFFH		; ID Code
+	.LWORD	0FFFFFFFFH		; ID Code
+	.LWORD	0FFFFFFFFH		; ID Code
+	.LWORD	0FFFFFFFFH		; ID Code
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_SuperVisorInstruction
+	.LWORD	_AccessViolation
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_UndefinedInstruction
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_FloatingPoint
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_Dummy			; Reserved
+	.LWORD	_NonMaskableInterrupt	; NMI
+	.LWORD	_start			; Entry point
+
+	;--- Dummy Functions for Fixed Vector ---
+	.SECTION	PIntPRG, CODE
+	.GLB	_SuperVisorInstruction
+	.GLB	_AccessViolation
+	.GLB	_UndefinedInstruction
+	.GLB	_FloatingPoint
+	.GLB	_NonMaskableInterrupt
+	.GLB	_Dummy
+
+_SuperVisorInstruction:
+	BRA	_SuperVisorInstruction
+_AccessViolation:
+	BRA	_AccessViolation
+_UndefinedInstruction:
+	BRA	_UndefinedInstruction
+_FloatingPoint:
+	BRA	_FloatingPoint
+_NonMaskableInterrupt:
+	BRA	_NonMaskableInterrupt
+_Dummy:
+	BRA	_Dummy
+
+.ENDIF ; CPU_R5F5231
+	.END
