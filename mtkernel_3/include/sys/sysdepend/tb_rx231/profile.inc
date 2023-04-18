@@ -1,0 +1,41 @@
+;/*
+; *----------------------------------------------------------------------
+; *    micro T-Kernel 3.00.00
+; *
+; *    Copyright (C) 2006-2019 by Ken Sakamura.
+; *    This software is distributed under the T-License 2.1.
+; *----------------------------------------------------------------------
+; *
+; *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
+; *
+; *----------------------------------------------------------------------
+; */
+
+;/*
+; *	profile.h
+; *
+; *	Service Profile (TB-RX231 depended)
+; */
+
+.IF __SYS_DEPEND_PROFILE_H__ != 1
+__SYS_DEPEND_PROFILE_H__	.EQU	(1)
+
+TRUE		.EQU		(1)		;/* True */
+FALSE		.EQU		(0)		;/* False */
+
+;/*
+; **** CPU-depeneded profile (R5F5231)
+; */
+;#include "../cpu/r5f5231/profile.h"
+
+;/*
+; **** Target-depeneded profile (TB-RX231)
+; */
+
+;/*
+; * Power management
+; */
+TK_SUPPORT_LOWPOWER	.EQU	FALSE		;/* Support of power management */
+
+
+.ENDIF ;/* __SYS_DEPEND_PROFILE_H__ */

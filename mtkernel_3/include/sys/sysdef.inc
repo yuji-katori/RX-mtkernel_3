@@ -39,5 +39,20 @@ __SYS_SYSDEF_H__	.EQU	(1)
 .IF _AP_RX72N_ == 1
 .INCLUDE sys/sysdepend/ap_rx72n/sysdef.inc
 .ENDIF
+.IF _TB_RX231_ == 1
+.INCLUDE sys/sysdepend/tb_rx231/sysdef.inc
+.ENDIF
+.IF _TB_RX23W_ == 1
+.INCLUDE sys/sysdepend/tb_rx23w/sysdef.inc
+.ENDIF
+.IF _TB_RX65N_ == 1
+.INCLUDE sys/sysdepend/tb_rx65N/sysdef.inc
+.ENDIF
+.IF _TB_RX660_ == 1
+.INCLUDE sys/sysdepend/tb_rx660/sysdef.inc
+.ENDIF
+.IF _TB_RX66N_ == 1
+.INCLUDE sys/sysdepend/tb_rx66n/sysdef.inc
+.ENDIF
 
 .ENDIF ; __SYS_SYSDEF_H__

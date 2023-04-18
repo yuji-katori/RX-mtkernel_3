@@ -34,6 +34,21 @@
 #ifdef _AP_RX72N_
 #include "sysdepend/ap_rx72n/machine.h"
 #endif
+#ifdef _TB_RX231_
+#include "sysdepend/tb_rx231/machine.h"
+#endif
+#ifdef _TB_RX23W_
+#include "sysdepend/tb_rx23w/machine.h"
+#endif
+#ifdef _TB_RX65N_
+#include "sysdepend/tb_rx65n/machine.h"
+#endif
+#ifdef _TB_RX660_
+#include "sysdepend/tb_rx660/machine.h"
+#endif
+#ifdef _TB_RX66N_
+#include "sysdepend/tb_rx66n/machine.h"
+#endif
 
 /* ===== C compiler dependencies definitions ============================= */
 

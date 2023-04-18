@@ -45,6 +45,21 @@ __SYS_PROFILE_H__	.EQU	(1)
 .IF _AP_RX72N_ == 1
 .INCLUDE sys/sysdepend/ap_rx72n/profile.inc
 .ENDIF
+.IF _TB_RX231_ == 1
+.INCLUDE sys/sysdepend/tb_rx231/profile.inc
+.ENDIF
+.IF _TB_RX23W_ == 1
+.INCLUDE sys/sysdepend/tb_rx23w/profile.inc
+.ENDIF
+.IF _TB_RX65N_ == 1
+.INCLUDE sys/sysdepend/tb_rx65n/profile.inc
+.ENDIF
+.IF _TB_RX660_ == 1
+.INCLUDE sys/sysdepend/tb_rx660/profile.inc
+.ENDIF
+.IF _TB_RX66N_ == 1
+.INCLUDE sys/sysdepend/tb_rx66n/profile.inc
+.ENDIF
 
 ;/* 
 ; **** Common profile
