@@ -4308,7 +4308,7 @@ _cfn_max_almid
       <DeviceName>R5F572NNDxBD</DeviceName>
       <DebuggerProperty-EssentialProperty-Clock-MainClock>Extal</DebuggerProperty-EssentialProperty-Clock-MainClock>
       <DebuggerProperty-EssentialProperty-Clock-MainClockFrequency>240000</DebuggerProperty-EssentialProperty-Clock-MainClockFrequency>
-      <DebuggerProperty-EssentialProperty-Clock-Operatingfrequency>1200000</DebuggerProperty-EssentialProperty-Clock-Operatingfrequency>
+      <DebuggerProperty-EssentialProperty-Clock-Operatingfrequency>2400000</DebuggerProperty-EssentialProperty-Clock-Operatingfrequency>
       <DebuggerProperty-EssentialProperty-Clock-AllowChangeClock>Yes</DebuggerProperty-EssentialProperty-Clock-AllowChangeClock>
       <DebuggerProperty-EssentialProperty-TargetConnect-TargetSupplyPower>Yes</DebuggerProperty-EssentialProperty-TargetConnect-TargetSupplyPower>
       <DebuggerProperty-EssentialProperty-TargetConnect-TargetSuppliedVoltage>Use3_3V</DebuggerProperty-EssentialProperty-TargetConnect-TargetSuppliedVoltage>
@@ -4709,7 +4709,7 @@ _cfn_max_almid
       <DebuggerProperty-OptionalProperty-Trace-OutputEventNo>No</DebuggerProperty-OptionalProperty-Trace-OutputEventNo>
       <DebuggerProperty-OptionalProperty-Trace-CountSourceDivisionRatio>DivisionBy_1</DebuggerProperty-OptionalProperty-Trace-CountSourceDivisionRatio>
       <DebuggerProperty-OptionalProperty-Timer-Use64bitCounter>No</DebuggerProperty-OptionalProperty-Timer-Use64bitCounter>
-      <DebuggerProperty-OptionalProperty-Timer-Operatingfrequency>1200000</DebuggerProperty-OptionalProperty-Timer-Operatingfrequency>
+      <DebuggerProperty-OptionalProperty-Timer-Operatingfrequency>2400000</DebuggerProperty-OptionalProperty-Timer-Operatingfrequency>
       <DebuggerProperty-OptionalProperty-Coverage-UseCoverage>No</DebuggerProperty-OptionalProperty-Coverage-UseCoverage>
       <DebuggerProperty-OptionalProperty-Coverage-CoverageOutput>ExternalCoverageCpuExecution</DebuggerProperty-OptionalProperty-Coverage-CoverageOutput>
       <DebuggerProperty-OptionalProperty-Coverage-CoverageAreaAddresses-Length>4</DebuggerProperty-OptionalProperty-Coverage-CoverageAreaAddresses-Length>
