@@ -3,23 +3,20 @@
  *    micro T-Kernel 3.00.00
  *
  *    Copyright (C) 2022 by Yuji Katori.
- *    This software is distributed under the T-License 2.1.
- *----------------------------------------------------------------------
- *    Modified by Yuji Katori at 2023/1/19.
- *    Modified by Yuji Katori at 2023/5/5.
+ *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
  */
 
 /*
- *	sd_main.c
+ *	usb_main.c
  *
- *	SD Card Driver
+ *	USB Disk Driver
  */
 
 #include <string.h>
 #include <tk/tkernel.h>
 #include <tm/tmonitor.h>
-#include <dev_sd.h>
+#include <dev_ud.h>
 
 typedef enum { TSKID, FLGID, OBJ_KIND_NUM } OBJ_KIND;
 LOCAL ID ObjID[OBJ_KIND_NUM];
@@ -27,20 +24,20 @@ LOCAL UB rd, wt;
 LOCAL T_DEVREQ *req[CFN_MAX_REQDEV+1];
 LOCAL UINT now, next=MAXIMUM;
 #if !USE_IMALLOC
-LOCAL INT sdc_task_stack[320/sizeof(INT)];
+LOCAL INT usb_task_stack[320/sizeof(INT)];
 #endif /* USE_IMALLOC */
 
-LOCAL ER sd_open(ID devid, UINT omode, void *exinf)
+LOCAL ER ud_open(ID devid, UINT omode, void *exinf)
 {
 	return E_OK;
 }
 
-LOCAL ER sd_close(ID devid, UINT option, void *exinf)
+LOCAL ER ud_close(ID devid, UINT option, void *exinf)
 {
 	return E_OK;
 }
 
-LOCAL ER sd_exec(T_DEVREQ *devreq, TMO tmout, void *exinf)
+LOCAL ER ud_exec(T_DEVREQ *devreq, TMO tmout, void *exinf)
 {
 ER ercd;
 	tk_dis_dsp( );								// Disable Dispatch
@@ -60,7 +57,7 @@ ER ercd;
 	return ercd;
 }
 
-LOCAL INT sd_wait(T_DEVREQ *devreq, INT nreq, TMO tmout, void *exinf)
+LOCAL INT ud_wait(T_DEVREQ *devreq, INT nreq, TMO tmout, void *exinf)
 {
 UINT flgptn;
 ER ercd;
@@ -69,7 +66,7 @@ ER ercd;
 	return ercd;								// Return
 }
 
-LOCAL ER sd_abort(ID tskid, T_DEVREQ *devreq, INT nreq, void *exinf)
+LOCAL ER ud_abort(ID tskid, T_DEVREQ *devreq, INT nreq, void *exinf)
 {
 	tk_dis_dsp( );								// Disable Dispatch
 	now &= ~((UINT)devreq->exinf);						// Clear Flag Pattern
@@ -80,12 +77,12 @@ LOCAL ER sd_abort(ID tskid, T_DEVREQ *devreq, INT nreq, void *exinf)
 	return E_OK;
 }
 
-LOCAL INT sd_event(INT evttyp, void *evtinf, void *exinf)
+LOCAL INT ud_event(INT evttyp, void *evtinf, void *exinf)
 {
 	return E_OK;
 }
 
-LOCAL ER SDC_Read(T_DEVREQ *devreq)
+LOCAL ER USB_Read(T_DEVREQ *devreq)
 {
 void *buf = devreq->buf;
 W   start = devreq->start;
@@ -100,35 +97,35 @@ SZ  size  = devreq->size;
 	case DN_DISKCHSINFO:
 		if( size == sizeof(DiskCHSInfo) && buf != NULL )  {
 			DiskCHSInfo *di = buf;
-			if( SDC_GetStatus( ) == SD_NO_CARD )
+			if( USB_GetStatus( ) == USB_NO_MEM )
 				return E_NOMDA;
 			di->cylinder = 1;
 			di->head     = 1;
-			di->sector   = SDC_GetBlockCount( );
+			di->sector   = USB_GetBlockCount( );
 			return E_OK;
 		}
 		break;
 	case DN_DISKINFO:
 		if( size == sizeof(DiskInfo) && buf != NULL )  {
 			DiskInfo *di = buf;
-			if( SDC_GetStatus( ) == SD_NO_CARD )
+			if( USB_GetStatus( ) == USB_NO_MEM )
 				return E_NOMDA;
 			di->format  = DiskFmt_STD;
-			di->protect = SDC_GetStatus( ) == SD_RO_CARD ? 1 : 0;
+			di->protect = 0;
 			di->removable = 0;
 			di->blocksize = BLOCK_SIZE;
-			di->blockcont = SDC_GetBlockCount( );
+			di->blockcont = USB_GetBlockCount( );
 			return E_OK;
 		}
 		break;
 	default:
 		if( start >= 0 && buf != NULL && size )
-			return SDC_ReadBlock(buf, start, size);
+			return USB_ReadBlock(buf, start, size);
 	}
 	return E_PAR;
 }
 
-LOCAL ER SDC_Write(T_DEVREQ *devreq)
+LOCAL ER USB_Write(T_DEVREQ *devreq)
 {
 void *buf = devreq->buf;
 W   start = devreq->start;
@@ -142,12 +139,12 @@ SZ  size  = devreq->size;
 		return E_NOSPT;
 	default:
 		if( start >= 0 && buf != NULL && size )
-			return SDC_WriteBlock(buf, start, size);
+			return USB_WriteBlock(buf, start, size);
 	}
 	return E_PAR;
 }
 
-LOCAL void sdc_tsk(INT stacd, void *exinf)
+LOCAL void usb_tsk(INT stacd, void *exinf)
 {
 UINT flgptn;
 T_DEVREQ *devreq;
@@ -164,32 +161,34 @@ T_DEVREQ *devreq;
 			if( devreq->abort )					// Abort request ?
 				devreq->error = E_ABORT;			// Set Error Code
 			else if( devreq->cmd == TDC_READ )			// Command is Read ?
-				devreq->error = SDC_Read( devreq );		// SD Card Read
+				devreq->error = USB_Read( devreq );		// USB Memory Read
 			else							// Write Command
-				devreq->error = SDC_Write( devreq );		// SD Card Write
+				devreq->error = USB_Write( devreq );		// USB Memory Write
 			tk_dis_dsp( );						// Disable Dispatch
 			now &= ~((UINT)devreq->exinf);				// Clear Flag Pattern
 			tk_set_flg( ObjID[FLGID], (UINT)devreq->exinf );	// Wakeup Request Task
 			tk_ena_dsp( );						// Enable Dispatch
 		}
-		if( flgptn & CARD_REJECT )  {					// SD Card Reject ?
-			tm_putstring("Reject SD Card.\n");
-			tk_clr_flg( ObjID[FLGID], ~INSERT );			// Clear Insert Flag
-			tk_set_flg( ObjID[FLGID], REJECT );			// Set   Reject Flag
-			SDC_CardReject( );					// Call SD Card Reject
+		if( flgptn & USBEVENT )  {					// USB Event ?
+			USB_Schedule( );					// USB Event Schedule
 		}
-		if( flgptn & CARD_INSERT )  {					// SD Card Insert ?
-			tm_putstring("Insert SD Card.\n");
-			tk_clr_flg( ObjID[FLGID], ~REJECT );			// Clear Reject Flag
-			tk_set_flg( ObjID[FLGID], INSERT );			// Set   Insert Flag
-			if( SDC_CardInsert( ) >= E_OK )				// Call SD Card Insert
-				if( SDC_InitCard( ) < E_OK )			// Call SD Card Initialize
-					tm_putstring("Insert SD Card is Unknow Card\n");
+		if( flgptn & USBDETACH )  {					// USB Detach ?
+			tm_putstring("Detach USB Memory.\n");
+			tk_clr_flg( ObjID[FLGID], ~ATTACH );			// Clear Attach Flag
+			tk_set_flg( ObjID[FLGID],  DETACH );			// Set   Detach Flag
+		}
+		if( flgptn & USBATTACH )  {					// USB Attach ?
+			tm_putstring("Attach USB Memory.\n");
+			USB_GetCapacity( );					// Get USB Capacity
+		}
+		if( flgptn & USBCAPACITY )  {					// USB Get Capacity ?
+			tk_clr_flg( ObjID[FLGID], ~DETACH );			// Clear Detach Flag
+			tk_set_flg( ObjID[FLGID],  ATTACH );			// Set   Attach Flag
 		}
 	}
 }
 
-EXPORT ER sdDrvEntry(void)
+EXPORT ER usbDrvEntry(void)
 {
 ID objid;
 union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
@@ -200,19 +199,19 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 #endif /* USE_OBJECT_NAME */
 #if !USE_IMALLOC
 	u.t_ctsk.tskatr |= TA_USERBUF;			// Set Task Attribute
-	u.t_ctsk.bufptr = sdc_task_stack;		// Set Stack Top Address
+	u.t_ctsk.bufptr = usb_task_stack;		// Set Stack Top Address
 #endif /* USE_OBJECT_NAME */
-	u.t_ctsk.stksz = 320;				// Set Task StackSize
-	u.t_ctsk.itskpri = SDC_GetTaskPri( );		// Set Task Priority
+	u.t_ctsk.stksz = 2048;				// Set Task StackSize
+	u.t_ctsk.itskpri = USB_GetTaskPri( );		// Set Task Priority
 #ifdef CLANGSPEC
-	u.t_ctsk.task =  sdc_tsk;			// Set Task Start Address
+	u.t_ctsk.task =  usb_tsk;			// Set Task Start Address
 #if USE_OBJECT_NAME
-	strcpy( u.t_ctsk.dsname, "sdc_t" );		// Set Task Debugger Suport Name
+	strcpy( u.t_ctsk.dsname, "usb_t" );		// Set Task Debugger Suport Name
 #endif /* USE_OBJECT_NAME */
 #else
-	u.t_ctsk.task =  (FP)sdc_tsk;			// Set Task Start Address
+	u.t_ctsk.task =  (FP)usb_tsk;			// Set Task Start Address
 #if USE_OBJECT_NAME
-	strcpy( (char*)u.t_ctsk.dsname, "sdc_t" );	// Set Task Debugger Suport Name
+	strcpy( (char*)u.t_ctsk.dsname, "usb_t" );	// Set Task Debugger Suport Name
 #endif /* USE_OBJECT_NAME */
 #endif /* CLANGSPEC */
 	if( (objid = tk_cre_tsk( &u.t_ctsk )) <= E_OK )	// Create SD Control Task
@@ -225,17 +224,17 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 #if USE_OBJECT_NAME
 	u.t_cflg.flgatr |= TA_DSNAME;			// Set EventFlag Attribute
 #ifdef CLANGSPEC
-	strcpy( u.t_cflg.dsname, "sdc_f" );		// Set Debugger Suport Name
+	strcpy( u.t_cflg.dsname, "usb_f" );		// Set Debugger Suport Name
 #else
-	strcpy( (char*)u.t_cflg.dsname, "sdc_f" );	// Set Debugger Suport Name
+	strcpy( (char*)u.t_cflg.dsname, "usb_f" );	// Set Debugger Suport Name
 #endif /* CLANGSPEC */
 #endif /* USE_OBJECT_NAME */
 	u.t_cflg.iflgptn = 0;				// Set Initial Bit Pattern
-	if( (objid = tk_cre_flg( &u.t_cflg )) <= E_OK )	// Create SD EventFlag
+	if( (objid = tk_cre_flg( &u.t_cflg )) <= E_OK )	// Create USB EventFlag
 		goto ERROR;
-	ObjID[FLGID] = objid;				// Set SD EventFlag ID
+	ObjID[FLGID] = objid;				// Set USB EventFlag ID
 
-	if( SDC_Init( objid, &u.t_dint ) < E_OK )	// Initialize SD Card Controller
+	if( USB_Init( objid, &u.t_dint ) < E_OK )	// Initialize USB Host
 		goto ERROR;
 
 	u.t_ddev.exinf = NULL;				// Set Extend Information
@@ -243,34 +242,34 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	u.t_ddev.nsub = 0;				// Set Sub Unit Number
 	u.t_ddev.blksz = BLOCK_SIZE;			// Set Block Size
 #ifdef CLANGSPEC
-	u.t_ddev.openfn  = sd_open;			// Set Open function Address
-	u.t_ddev.closefn = sd_close;			// Set Close function Address
-	u.t_ddev.execfn  = sd_exec;			// Set Execute function Address
-	u.t_ddev.waitfn  = sd_wait;			// Set Wait function Address
-	u.t_ddev.abortfn = sd_abort;			// Set Abort function Address
-	u.t_ddev.eventfn = sd_event;			// Set Event function Address
-	return tk_def_dev( SD_CARD_DEVNM, &u.t_ddev, NULL );
+	u.t_ddev.openfn  = ud_open;			// Set Open function Address
+	u.t_ddev.closefn = ud_close;			// Set Close function Address
+	u.t_ddev.execfn  = ud_exec;			// Set Execute function Address
+	u.t_ddev.waitfn  = ud_wait;			// Set Wait function Address
+	u.t_ddev.abortfn = ud_abort;			// Set Abort function Address
+	u.t_ddev.eventfn = ud_event;			// Set Event function Address
+	return tk_def_dev( USB_MSC_DEVNM, &u.t_ddev, NULL );
 #else
-	u.t_ddev.openfn  = (FP)sd_open;			// Set Open function Address
-	u.t_ddev.closefn = (FP)sd_close;		// Set Close function Address
-	u.t_ddev.execfn  = (FP)sd_exec;			// Set Execute function Address
-	u.t_ddev.waitfn  = (FP)sd_wait;			// Set Wait function Address
-	u.t_ddev.abortfn = (FP)sd_abort;		// Set Abort function Address
-	u.t_ddev.eventfn = (FP)sd_event;		// Set Event function Address
-	return tk_def_dev( (UB*)SD_CARD_DEVNM, &u.t_ddev, NULL );
+	u.t_ddev.openfn  = (FP)ud_open;			// Set Open function Address
+	u.t_ddev.closefn = (FP)ud_close;		// Set Close function Address
+	u.t_ddev.execfn  = (FP)ud_exec;			// Set Execute function Address
+	u.t_ddev.waitfn  = (FP)ud_wait;			// Set Wait function Address
+	u.t_ddev.abortfn = (FP)ud_abort;		// Set Abort function Address
+	u.t_ddev.eventfn = (FP)ud_event;		// Set Event function Address
+	return tk_def_dev( (UB*)USB_HMSC_DEVNM, &u.t_ddev, NULL );
 #endif	/* CLANGSPEC */
 ERROR:
 	while( 1 )  ;		
 }
 
-EXPORT ER sdWaitInsertEvent(TMO tmout)
+EXPORT ER usbWaitAttachEvent(TMO tmout)
 {
 UINT flgptn;
-	return tk_wai_flg(ObjID[FLGID], INSERT, TWF_ORW, &flgptn, tmout);
+	return tk_wai_flg(ObjID[FLGID], ATTACH, TWF_ORW, &flgptn, tmout);
 }
 
-EXPORT ER sdWaitRejectEvent(TMO tmout)
+EXPORT ER usbWaitDetachEvent(TMO tmout)
 {
 UINT flgptn;
-	return tk_wai_flg(ObjID[FLGID], REJECT, TWF_ORW, &flgptn, tmout);
+	return tk_wai_flg(ObjID[FLGID], DETACH, TWF_ORW, &flgptn, tmout);
 }

@@ -15,6 +15,7 @@
  *----------------------------------------------------------------------
  *    Support RAMDISK 2022/10/25
  *    Support SDCARD  2022/11/18
+ *    Support USBMSC  2023/05/21
  *----------------------------------------------------------------------
 */
 #include <tk/tkernel.h>
@@ -23,7 +24,7 @@
 #include "diskio.h"		/* Declarations of disk functions */
 
 LOCAL ID phy_device[DEV_TYPE_CNT];
-
+LOCAL VB *phy_devnm[] = { RAM_DISK_DEVNM, SD_CARD_DEVNM, USB_MSC_DEVNM };
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
 /*-----------------------------------------------------------------------*/
@@ -63,29 +64,21 @@ DSTATUS disk_initialize (
 
 	switch( pdrv )  {
 	case RAMDISK:
+	case SDCARD:
+	case USBMSC:
 		if( phy_device[pdrv] <= 0)  {
 #ifdef CLANGSPEC
-			ercd = tk_opn_dev(RAM_DISK_DEVNM, TD_UPDATE | TD_EXCL);
+			ercd = tk_opn_dev(phy_devnm[pdrv], TD_UPDATE | TD_EXCL);
 #else
-			ercd = tk_opn_dev((UB*)RAM_DISK_DEVNM, TD_UPDATE | TD_EXCL);
+			ercd = tk_opn_dev((UB*)phy_devnm[pdrv], TD_UPDATE | TD_EXCL);
 #endif	/* CLANGSPEC */
 			if( ercd < E_OK )
 				return STA_NOINIT;
 			phy_device[pdrv] = ercd;
-			format = DiskFmt_MEM;
-			tk_swri_dev( ercd, DN_DISKFORMAT, &format, sizeof(format), &asize );
-		}
-		break;
-	case SDCARD:
-		if( phy_device[pdrv] <= 0 )  {
-#ifdef CLANGSPEC
-			ercd = tk_opn_dev(SD_CARD_DEVNM, TD_UPDATE | TD_EXCL);
-#else
-			ercd = tk_opn_dev((UB*)SD_CARD_DEVNM, TD_UPDATE | TD_EXCL);
-#endif	/* CLANGSPEC */
-			if( ercd < E_OK )
-				return STA_NOINIT;
-			phy_device[pdrv] = ercd;
+			if( pdrv == RAMDISK )  {
+				format = DiskFmt_MEM;
+				tk_swri_dev( ercd, DN_DISKFORMAT, &format, sizeof(format), &asize );
+			}
 		}
 		break;
 	}

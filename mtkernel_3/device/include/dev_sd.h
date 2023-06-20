@@ -53,7 +53,7 @@
 #define MAX_TRIAL		100
 #define	BLOCK_SIZE		512
 
-// EventFlag Bit Pattern
+// EventFlag Bit Pattarn
 #define EXECCMD			0x00000100
 #define CARD_REJECT		0x00000400
 #define CARD_INSERT		0x00000800

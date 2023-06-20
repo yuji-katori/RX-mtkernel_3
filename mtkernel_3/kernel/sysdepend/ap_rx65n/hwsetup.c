@@ -1,6 +1,7 @@
 /*
  *----------------------------------------------------------------------
  *    Modified by Yuji Katori at 2022/11/2.
+ *    Modified by Yuji Katori at 2023/5/16.
  *----------------------------------------------------------------------
  */
 #include <sys/machine.h>
@@ -13,8 +14,8 @@ void HardwareSetup(void)
 {
 	SYSTEM.PRCR.WORD = 0xA503;				// Protect Disable
 
-// Used Main Clock(24MHz), Uesd PLL, System Clock 120MHz
-// ICLK:120MHz, PCLKA:120MHz, PCLKB:60MHz, PCLKC:60MHz, PCLKD:60MHz, FCLK:60MHz, BCLK:60MHz, UCLK:40MHz
+// Used Main Clock(24MHz), Uesd PLL, System Clock 240MHz
+// ICLK:120MHz, PCLKA:120MHz, PCLKB:60MHz, PCLKC:60MHz, PCLKD:60MHz, FCLK:60MHz, BCLK:60MHz, UCLK:48MHz
 	SYSTEM.MOFCR.BYTE = 0x00;				// 24MHz XTAL
 	SYSTEM.MOSCWTCR.BYTE = 0x5C;				// Main CLock Wait Time(from RSK Sample)
 	SYSTEM.MOSCCR.BYTE = 0x00;				// Enable Main Clock
@@ -22,12 +23,12 @@ void HardwareSetup(void)
 	
 	SYSTEM.ROMWT.BIT.ROMWT = 0x2;				// Set ROM wait time to 2 for 120MHz 
 
-	SYSTEM.PLLCR.WORD = 0x1301;				// PLL 24MHz/2*10=120MHz
+	SYSTEM.PLLCR.WORD = 0x1300;				// PLL 24MHz/1*10=240MHz
 	SYSTEM.PLLCR2.BYTE = 0x00;				// Enable PLL
 	while( !SYSTEM.OSCOVFSR.BIT.PLOVF )  ;			// Wait PLL Stabilization
 
-	SYSTEM.SCKCR.LONG = 0x10010111;				// ICLK=PCLKA:120MHz,FCLK=BCLK=PCLKB=PCLKC=PCLKD=60MHz
-	SYSTEM.SCKCR2.WORD = 0x0021;				// UCLK:40MHz
+	SYSTEM.SCKCR.LONG = 0x21021222;				// ICLK=PCLKA:120MHz,FCLK=BCLK=PCLKB=PCLKC=PCLKD=60MHz
+	SYSTEM.SCKCR2.WORD = 0x0041;				// UCLK:48MHz
 	SYSTEM.SCKCR3.WORD = 0x0400;				// Select PLL
 
 	SYSTEM.LOCOCR.BYTE = 0x01;				// Disable LOCO
