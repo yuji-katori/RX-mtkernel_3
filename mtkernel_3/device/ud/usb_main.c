@@ -17,6 +17,7 @@
 #include <tk/tkernel.h>
 #include <tm/tmonitor.h>
 #include <dev_ud.h>
+#include "platform.h"
 
 typedef enum { TSKID, FLGID, OBJ_KIND_NUM } OBJ_KIND;
 LOCAL ID ObjID[OBJ_KIND_NUM];
@@ -24,7 +25,7 @@ LOCAL UB rd, wt;
 LOCAL T_DEVREQ *req[CFN_MAX_REQDEV+1];
 LOCAL UINT now, next=MAXIMUM;
 #if !USE_IMALLOC
-LOCAL INT usb_task_stack[320/sizeof(INT)];
+LOCAL INT usb_task_stack[400/sizeof(INT)];
 #endif /* USE_IMALLOC */
 
 LOCAL ER ud_open(ID devid, UINT omode, void *exinf)
@@ -120,7 +121,7 @@ SZ  size  = devreq->size;
 		break;
 	default:
 		if( start >= 0 && buf != NULL && size )
-			return USB_ReadBlock(buf, start, size);
+			return USB_ReadBlock( buf, start, size );
 	}
 	return E_PAR;
 }
@@ -139,7 +140,7 @@ SZ  size  = devreq->size;
 		return E_NOSPT;
 	default:
 		if( start >= 0 && buf != NULL && size )
-			return USB_WriteBlock(buf, start, size);
+			return USB_WriteBlock( buf, start, size );
 	}
 	return E_PAR;
 }
@@ -170,20 +171,25 @@ T_DEVREQ *devreq;
 			tk_ena_dsp( );						// Enable Dispatch
 		}
 		if( flgptn & USBEVENT )  {					// USB Event ?
-			USB_Schedule( );					// USB Event Schedule
+			USB_Task( );						// USB Task
 		}
-		if( flgptn & USBDETACH )  {					// USB Detach ?
-			tm_putstring("Detach USB Memory.\n");
-			tk_clr_flg( ObjID[FLGID], ~ATTACH );			// Clear Attach Flag
-			tk_set_flg( ObjID[FLGID],  DETACH );			// Set   Detach Flag
+		if( flgptn & DMACOMPLETE )  {					// USB Event ?
+			usb_cstd_dma_driver( );					// USB DMA driver
 		}
 		if( flgptn & USBATTACH )  {					// USB Attach ?
 			tm_putstring("Attach USB Memory.\n");
-			USB_GetCapacity( );					// Get USB Capacity
-		}
-		if( flgptn & USBCAPACITY )  {					// USB Get Capacity ?
+			USB_Attach( );						// USB Memory Attach
 			tk_clr_flg( ObjID[FLGID], ~DETACH );			// Clear Detach Flag
 			tk_set_flg( ObjID[FLGID],  ATTACH );			// Set   Attach Flag
+		}
+		if( flgptn & USBDETACH )  {					// USB Detach ?
+			tm_putstring("Detach USB Memory.\n");
+			USB_Detach( );						// USB Memory Detach
+			tk_clr_flg( ObjID[FLGID], ~ATTACH );			// Clear Attach Flag
+			tk_set_flg( ObjID[FLGID],  DETACH );			// Set   Detach Flag
+		}
+		if( flgptn & NOTSUPPORT )  {					// USB No Support ?
+			USB_NoSupport( );					// USB No Support
 		}
 	}
 }
@@ -201,7 +207,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	u.t_ctsk.tskatr |= TA_USERBUF;			// Set Task Attribute
 	u.t_ctsk.bufptr = usb_task_stack;		// Set Stack Top Address
 #endif /* USE_OBJECT_NAME */
-	u.t_ctsk.stksz = 2048;				// Set Task StackSize
+	u.t_ctsk.stksz = 400;				// Set Task StackSize
 	u.t_ctsk.itskpri = USB_GetTaskPri( );		// Set Task Priority
 #ifdef CLANGSPEC
 	u.t_ctsk.task =  usb_tsk;			// Set Task Start Address
@@ -260,6 +266,31 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 #endif	/* CLANGSPEC */
 ERROR:
 	while( 1 )  ;		
+}
+
+EXPORT ER USB_WaitRWEndEvent(void)
+{
+UINT flgptn;
+	tk_set_flg(ObjID[FLGID], USBEVENT);					// Set USB Interrupt Event
+	while( 1 )  {
+		tk_wai_flg( ObjID[FLGID], RW_WAIT_ALL, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
+		if( flgptn & USBEVENT )  {					// USB Event ?
+			USB_Task( );						// USB Task
+		}
+		if( flgptn & DMACOMPLETE )  {					// USB Event ?
+			usb_cstd_dma_driver( );					// USB DMA driver
+		}
+		if( flgptn & USBDETACH )  {					// USB Detach ?
+			tk_set_flg(ObjID[FLGID], USBDETACH);			// Set USB Detach Event
+			return E_IO;
+		}
+		if( flgptn & STRGRWEND )  {					// USB Detach ?
+			return E_OK;
+		}
+		if( flgptn & STRGRWEEND )  {					// USB Detach ?
+			return E_IO;
+		}
+	}
 }
 
 EXPORT ER usbWaitAttachEvent(TMO tmout)

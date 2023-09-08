@@ -7,6 +7,7 @@
  *----------------------------------------------------------------------
  *    Support RAMDISK 2022/10/25
  *    Support SDCARD  2022/11/17
+ *    Support USBMSC  2022/05/21
  *----------------------------------------------------------------------
  */
 
@@ -20,7 +21,7 @@
 #define	__DEV_DISK_H__
 
 typedef enum {
-	RAMDISK, SDCARD, USBSTRG, DEV_TYPE_CNT
+	RAMDISK, SDCARD, USBMSC, DEV_TYPE_CNT
 } DISK_KIND;
 
 /* Disk attribute data number */
@@ -152,12 +153,14 @@ typedef struct {
 
 #define RAM_DISK_DEVNM	"rda"
 #define SD_CARD_DEVNM	"sda"
-#define USB_HMSC_DEVNM	"uda"
+#define USB_MSC_DEVNM	"uda"
 
 IMPORT	ER	rdDrvEntry( void );
 IMPORT	ER	sdDrvEntry( void );
 IMPORT	ER	sdWaitInsertEvent( TMO tmout );
 IMPORT	ER	sdWaitRejectEvent( TMO tmout );
 IMPORT	ER	usbDrvEntry( void );
+IMPORT	ER	usbWaitAttachEvent( TMO tmout );
+IMPORT	ER	usbWaitDetachEvent( TMO tmout );
 
 #endif /* __DEVICE_DISK_H__ */

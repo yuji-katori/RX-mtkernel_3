@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2023/9/8.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -290,8 +292,8 @@ EXPORT void GroupBL1Handler(UINT dintno)
 {
 	if( IS( SDHI, CDETI ) )					// Occur SDHI CDETI Interrupt ?
 		SD_Detect_hdr( );				// Call  SDHI CDETI Interrupt
-	if( IS( SDHI, CACI ) )					// Occur SDHI CDETI Interrupt ?
-		SD_Int_hdr( );					// Call  SDHI CDETI Interrupt
+	if( IS( SDHI, CACI ) )					// Occur SDHI CACI Interrupt ?
+		SD_Int_hdr( );					// Call  SDHI CACI Interrupt
 }
 
 EXPORT ER SDC_Init(ID objid, T_DINT *p_dint)
@@ -341,7 +343,7 @@ EXPORT ER SDC_Init(ID objid, T_DINT *p_dint)
 #endif
 	tk_def_int( VECT( ICU, GROUPBL1 ), p_dint );		// Define Interrupt Handler
 
-	EnableInt( VECT(ICU, GROUPBL1), SD_CFG_INT_PRIORTY );	// Enable BL1 Group Interrupt
+	EnableInt( VECT(ICU, GROUPBL1), SD_CFG_INT_PRIORITY );	// Enable BL1 Group Interrupt
 	SDHI.SDIMSK1.LONG &= 0xFFFFFFFA;			// Enable RSPEND,ACEND Interrupt
 	SDHI.SDIMSK2.LONG &= 0xFFFFFF80;			// Enable Error Interrupt
 	EN( SDHI, CACI ) = 1;					// Enable SDHI CACI Group Interrupt
@@ -354,5 +356,5 @@ EXPORT ER SDC_Init(ID objid, T_DINT *p_dint)
 
 EXPORT ID SDC_GetTaskPri(void)
 {
-	return SD_CFG_TASK_PRIORTY;				// Return Task Priority
+	return SD_CFG_TASK_PRIORITY;				// Return Task Priority
 }

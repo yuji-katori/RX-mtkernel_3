@@ -3,7 +3,7 @@
  *    micro T-Kernel 3.00.00
  *
  *    Copyright (C) 2022 by Yuji Katori.
- *    This software is distributed under the T-License 2.1.
+ *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
  */
 
@@ -18,6 +18,7 @@
 typedef enum { SHELL, CLOCK, OBJ_KIND_NUM } OBJ_KIND;
 EXPORT ID ObjID[OBJ_KIND_NUM];
 EXPORT void shell_tsk(INT stacd, void *exinf);
+EXPORT void getline(VB *buf);
 EXPORT DATE_TIM dt;
 
 EXPORT INT usermain( void )
@@ -45,12 +46,17 @@ SZ  asize;
 	if( rdDrvEntry( ) < E_OK )				// RAMディスクドライバの登録(サービス関数)
 		goto ERROR;
 #endif
+
 #if defined(AP_RX65N) || defined(AP_RX72N)
 	if( sdDrvEntry( ) < E_OK )				// SDカードドライバの登録(サービス関数)
 		goto ERROR;
 #endif
 
-	tk_dly_tsk( 1000 );
+#if defined(AP_RX63N) || defined(AP_RX65N) || defined(AP_RX72N)
+	if( usbDrvEntry( ) < E_OK )				// USBドライバの登録(サービス関数)
+		goto ERROR;
+#endif
+
 	t_ctsk.tskatr = TA_HLNG | TA_DSNAME;			// タスクの属性を設定
 	t_ctsk.stksz = 2048;					// タスクのスタックサイズを設定
 	t_ctsk.itskpri = 10;					// タスクの優先度を設定（任意）
@@ -74,7 +80,7 @@ typedef void FUNC(INT);
 EXPORT FUNC cpd, dir, cd, rd, wt, mkdir, rmdir;
 
 EXPORT VB path[32], buf[128], ldn[3] = "0:", ldnum[DEV_TYPE_CNT];
-EXPORT VB ldname[][4]= { RAM_DISK_DEVNM, SD_CARD_DEVNM, USB_HMSC_DEVNM };
+EXPORT VB ldname[][4]= { RAM_DISK_DEVNM, SD_CARD_DEVNM, USB_MSC_DEVNM };
 EXPORT BYTE work[FF_MAX_SS];
 EXPORT VB * const argv[] = { &buf[64], &buf[96] };
 EXPORT VB * const cmd[] = { "dir", "cd", "rd", "wt", "mkdir", "rmdir", "rm", "end" };
@@ -102,10 +108,18 @@ T_LDEV t_ldev;
 		goto ERROR;
 	ldn[0] = ldnum[i];
 START:
+
 #if defined(AP_RX65N) || defined(AP_RX72N)
 	if( ldn[0] == '1' && sdWaitInsertEvent( TMO_POL ) == E_TMOUT )  {
 		tm_putstring("Please insert SD card.\n");
 		sdWaitInsertEvent( TMO_FEVR );
+	}
+#endif
+
+#if defined(AP_RX63N) || defined(AP_RX65N) || defined(AP_RX72N)
+	if( ldn[0] == '2' && usbWaitAttachEvent( TMO_POL ) == E_TMOUT )  {
+		tm_putstring("Please attach USB memory.\n");
+		usbWaitAttachEvent( TMO_FEVR );
 	}
 #endif
 	if( FR_OK != f_mount( &fs, ldn, 1 ) )
@@ -113,7 +127,7 @@ START:
 	strcpy( path, ldn );
 	while( 1 )  {
 		tm_printf( "%s>", path );
-		tm_getline( buf );
+		getline( buf );
 		if( strlen( buf ) == 2 && buf[1] == ':' )  {
 			f_mount( 0, ldn, 0 );
 			ldn[0] = buf[0];
@@ -254,4 +268,22 @@ void rmdir(INT argc)
 	strcat( buf, "/" );
 	strcat( buf, argv[1] );
 	f_unlink( buf );
+}
+
+void getline(VB *buf)
+{
+IMPORT void tm_rcv_dat(VB* buf, INT size);
+IMPORT void tm_snd_dat(const VB* buf, INT size);
+	while( 1 )  {
+		tm_rcv_dat( buf, 1 );
+		tm_snd_dat( buf, 1 );
+		if( *buf == '\r' )  {
+			*buf = '\n';
+			tm_snd_dat( buf, 1 );
+			*buf = '\0';
+			return;
+		}
+		else
+			buf++;
+	}
 }

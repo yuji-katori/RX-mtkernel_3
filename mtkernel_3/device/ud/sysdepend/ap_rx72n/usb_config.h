@@ -13,7 +13,7 @@
 #ifndef USB_CONFIG_H
 #define USB_CONFIG_H
 
-#define BSP_MCU_RX65N
+#define BSP_MCU_RX72N
 
 /* USB control task priority. */
 #define	USB_CFG_TASK_PRIORITY				(3)

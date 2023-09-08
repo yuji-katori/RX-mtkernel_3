@@ -31,16 +31,12 @@ EXPORT void RegisterProtectDisable(void)
 
 EXPORT void InterruptRequestEnable(UINT intno)
 {
-	if( intno >= 128 )
-		(&ICU.SLIBXR128.BYTE)[intno-128] = 62;		// Set Interrupt Factor
 	ICU.IER[intno>>3].BYTE |= 1<<(intno&7);			// Enable Interrupt
 }
 
 EXPORT void InterruptRequestDisable(UINT intno)
 {
 	ICU.IER[intno>>3].BYTE &= ~(1<<(intno&7));		// Disable Interrupt
-	if( intno >= 128 )
-		(&ICU.SLIBXR128.BYTE)[intno-128] = 0;		// Clear Interrupt Factor
 }
 
 EXPORT BOOL R_USB_VBUS(void)
@@ -63,30 +59,20 @@ EXPORT void R_DMACA_Close(void)
 	(&ICU.DMRSR0)[USB_CFG_DMA_CHANNEL<<2] = 0x00;		// Clear DMRSRn
 }
 
-EXPORT void R_DMACA_Int_Enable(void)
+void R_DMACA_Int_Enable(void)
 {
 UB vecnum;
 
-#if USB_CFG_DMA_CHANNEL < 4
 	vecnum = VECT( DMAC, DMAC0I ) + USB_CFG_DMA_CHANNEL;	// DMAC0 ` DMAC3 Vector Number
 	ICU.IPR[vecnum].BYTE = USB_CFG_INT_PRIORITY;		// Set Interrpt Priority Level
-#else
-	vecnum = VECT( DMAC, DMAC74I );				// DMAC4 ` DMAC7 Vector Number
-	if( IPR( DMAC, DMAC74I ) < USB_CFG_INT_PRIORITY )	// Interrupt Level Check
-		IPR( DMAC, DMAC74I ) = USB_CFG_INT_PRIORITY;	// Set Interrupt Priority Level
-#endif
 	ICU.IER[vecnum>>3].BYTE |= 1<<(vecnum&7);		// Enable Interrupt
 }
 
-EXPORT void R_DMACA_Int_Disable(void)
+void R_DMACA_Int_Disable(void)
 {
 UB vecnum;
 
-#if USB_CFG_DMA_CHANNEL < 4
 	vecnum = IPR( DMAC, DMAC0I ) + USB_CFG_DMA_CHANNEL;	// DMAC0 ` DMAC3 Vector Number
-#else
-	vecnum = IPR( DMAC, DMAC74I );				// DMAC4 ` DMAC7 Vector Number
-#endif
 	ICU.IPR[vecnum].BYTE = 0;				// Clear Interrpt Priority Level
 	ICU.IER[vecnum>>3].BYTE &= ~(1<<(vecnum&7));		// Disable Interrupt
 }
