@@ -14,10 +14,10 @@
 #define SD_CONFIG_H
 
 /* SD control task priority. */
-#define	SD_CFG_TASK_PRIORTY				(3)
+#define	SD_CFG_TASK_PRIORITY				(3)
 
 /* SD interrupt priority level. */
-#define	SD_CFG_INT_PRIORTY				(8)
+#define	SD_CFG_INT_PRIORITY				(8)
 
 /* SD DMA channel. */
 #define	SD_CFG_DMA_CHANNEL				(4)
