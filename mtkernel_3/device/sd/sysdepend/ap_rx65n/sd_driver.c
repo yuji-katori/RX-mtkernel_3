@@ -6,6 +6,7 @@
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
  *    Modified by Yuji Katori at 2023/9/8.
+ *    Modified by Yuji Katori at 2023/9/11.
  *----------------------------------------------------------------------
  */
 
@@ -334,6 +335,9 @@ EXPORT ER SDC_Init(ID objid, T_DINT *p_dint)
 	DTCE( SDHI, SBFAI ) = 1;				// Set DTC Enable Bit
 	IEN( SDHI, SBFAI ) = 1;					// Set Interrupt Enable Bit
 	DMAC.DMAST.BIT.DMST = 1;				// DMA Master Enable
+#ifdef __BIG
+	SDHI.SDSWAP.LONG = 0x000000C0;				// Set Byte Swap Mode
+#endif
 
 	p_dint->intatr = TA_HLNG;				// Set Handler Attribute
 #ifdef CLANGSPEC
