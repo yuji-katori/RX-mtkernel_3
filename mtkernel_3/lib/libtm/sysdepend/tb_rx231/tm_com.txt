@@ -9,13 +9,11 @@
  *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
  *
  *----------------------------------------------------------------------
- *    Modified by Yuji Katori at 2023/9/15.
- *----------------------------------------------------------------------
  */
 
 /*
  *    tm_com.c
- *    T-Monitor Communication low-level device driver (TB-RX66N)
+ *    T-Monitor Communication low-level device driver (TB-RX231)
  */
 
 #include <tk/typedef.h>
@@ -84,8 +82,7 @@ int i;
 	PORTC.PMR.BIT.B2 = 1;
 
 	// Initialize SCI5
-	SCI5.SEMR.BIT.ABCSE = 1;
-	SCI5.BRR = PCLKB / (12.0F / 2 * BAUD_RATE) - 0.5F;
+	SCI5.BRR = PCLKB / (64.0F / 2 * BAUD_RATE) - 0.5F;
 	for( i=0 ; i<ICLK/4/BAUD_RATE  ; i++ )  ;
 	SCI5.SCR.BYTE |= 0xF0;
 #endif /* USE_COM */
