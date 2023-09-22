@@ -5,6 +5,8 @@
  *    Copyright (C) 2023 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2023/9/20.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -23,8 +25,5 @@
 
 /* USB DMA channel. */
 #define	USB_CFG_DMA_CHANNEL				(3)
-
-/* USB power source. 0:Low Active, 1:High Active */
-#define	USB_CFG_VBUS_ACTIVE				(0)
 
 #endif	/* USB_CONFIG_H */

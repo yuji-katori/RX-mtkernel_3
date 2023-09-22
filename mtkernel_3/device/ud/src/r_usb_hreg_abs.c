@@ -5,6 +5,8 @@
  *    Copyright (C) 2023 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2023/9/21.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -388,7 +390,7 @@ uint16_t buffer;
 	else  {
 		buffer = USB0.SYSSTS0.WORD;		// Wait for About 60ns
 		g_usb_hstd_ignore_cnt[USB_PIPE1]++;
-		USB_PRINTF2("### IGNORE Pipe %d is %d times \n", pipe, g_usb_hstd_ignore_cnt[USB_PIPE1]);
+		USB_PRINTF2("### IGNORE Pipe %d is %d times \n", USB_PIPE1, g_usb_hstd_ignore_cnt[USB_PIPE1]);
 		if( USB_PIPEERROR == g_usb_hstd_ignore_cnt[USB_PIPE1] )  {
 			// Data Device Ignore X 3 call back
 			// End of data transfer

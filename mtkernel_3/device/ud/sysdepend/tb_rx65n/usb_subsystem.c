@@ -5,8 +5,6 @@
  *    Copyright (C) 2023 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
- *    Modified by Yuji Katori at 2023/9/20.
- *----------------------------------------------------------------------
  */
 
 /*
@@ -47,7 +45,7 @@ EXPORT void InterruptRequestDisable(UINT intno)
 
 EXPORT BOOL R_USB_VBUS(void)
 {
-	return 1;
+	return 0;
 }
 
 EXPORT void R_DMACA_Open(void)

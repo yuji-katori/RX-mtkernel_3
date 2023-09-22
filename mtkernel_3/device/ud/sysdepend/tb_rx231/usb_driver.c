@@ -5,8 +5,6 @@
  *    Copyright (C) 2023 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
- *    Modified by Yuji Katori at 2023/9/20.
- *----------------------------------------------------------------------
  */
 
 /*
@@ -94,32 +92,6 @@ EXPORT void USB_NoSupport(void)
 	tm_putstring("USB Memory is Unknow Type\n");
 }
 
-#if USB_CFG_DMA_CHANNEL >= 4
-LOCAL void DMAC74I_Handler(UINT intno)
-{
-	if( DMAC.DMIST.BYTE & 0x10 )  {		// Channel 4 Interrupt ?
-#if USB_CFG_DMA_CHANNEL == 4
-		DMA_End_hdr( intno );
-#endif
-	}
-	if( DMAC.DMIST.BYTE & 0x20 )  {		// Channel 5 Interrupt ?
-#if USB_CFG_DMA_CHANNEL == 5
-		DMA_End_hdr( intno );
-#endif
-	}
-	if( DMAC.DMIST.BYTE & 0x40 )  {		// Channel 6 Interrupt ?
-#if USB_CFG_DMA_CHANNEL == 6
-		DMA_End_hdr( intno );
-#endif
-	}
-	if( DMAC.DMIST.BYTE & 0x80 )  {		// Channel 7 Interrupt ?
-#if USB_CFG_DMA_CHANNEL == 7
-		DMA_End_hdr( intno );
-#endif
-	}
-}
-#endif
-
 EXPORT ER USB_Init(ID objid, T_DINT *p_dint)
 {
 	tk_dis_dsp( );						// Dispatch Disable
@@ -129,34 +101,20 @@ EXPORT ER USB_Init(ID objid, T_DINT *p_dint)
 	}
 	tk_ena_dsp( );						// Dispatch Enable
 
-	PORTC.PDR.BIT.B3 = 1;					// USB Host Setting
-	PORTC.PODR.BIT.B3 = 1;					// Enable USB Select
-	PORTC.PDR.BIT.B1 = 1;					// VBUS Setting
-	PORTC.PODR.BIT.B1 = 1;					// Enable VBUS Select
-
 	p_dint->intatr = TA_HLNG;				// Set Handler Attribute
 #ifdef CLANGSPEC
 	p_dint->inthdr = USB_Int_hdr;				// Set Handler Address
 #else
 	p_dint->inthdr = (FP)USB_Int_hdr;			// Set Handler Address
 #endif
-	tk_def_int( USB_CFG_VECTOR_NUMBER, p_dint );		// Define Interrupt Handler
-#if USB_CFG_DMA_CHANNEL < 4
+	tk_def_int( VECT( USB0, USBI0 ), p_dint );		// Define Interrupt Handler
 #ifdef CLANGSPEC
 	p_dint->inthdr = DMA_End_hdr;				// Set Handler Address
 #else
 	p_dint->inthdr = (FP)DMA_End_hdr;			// Set Handler Address
 #endif
 	tk_def_int( VECT( DMAC, DMAC0I ) + USB_CFG_DMA_CHANNEL, p_dint );
-#else								// Define Interrupt Handler
-#ifdef CLANGSPEC
-	p_dint->inthdr = DMAC74I_Handler;			// Set Handler Address
-#else
-	p_dint->inthdr = (FP)DMAC74I_Handler;			// Set Handler Address
-#endif
-	tk_def_int( VECT( DMAC, DMAC74I ), p_dint );		// Define Interrupt Handler
-#endif
-
+								// Define Interrupt Handler
 	flgid = objid;						// Set Interface EventFlag ID
 	R_USB_Open( );						// Open USB
 	return E_OK;						// Return

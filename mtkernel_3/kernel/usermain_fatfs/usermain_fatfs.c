@@ -24,11 +24,14 @@ EXPORT DATE_TIM dt;
 EXPORT INT usermain( void )
 {
 T_CTSK t_ctsk;
+#if defined(AP_RX63N) || defined(AP_RX65N) || defined(AP_RX72N)
 LOCAL VB buf[32];
 SZ  asize;
+#endif
 
 	if( rtcDrvEntry( ) < E_OK )				// RTCドライバの登録処理(サービス関数)
 		goto ERROR;
+#if defined(AP_RX63N) || defined(AP_RX65N) || defined(AP_RX72N)
 	if( ( ObjID[CLOCK] = tk_opn_dev( RTC_DEVNM, TD_UPDATE ) ) < E_OK )
 		goto ERROR;					// RTCドライバをオープンし、初期化
 	tm_putstring("Input now date and time.\n"
@@ -41,18 +44,21 @@ SZ  asize;
 	dt.d_year -= 1900;
 	if( tk_swri_dev( ObjID[CLOCK], DN_CKDATETIME, &dt, sizeof(dt), &asize ) < E_OK || asize != sizeof(dt) )
 		goto ERROR;
+#endif
 
-#if defined(AP_RX63N) || defined(AP_RX72N)
+#if defined(AP_RX63N) ||                      defined(AP_RX72N)
 	if( rdDrvEntry( ) < E_OK )				// RAMディスクドライバの登録(サービス関数)
 		goto ERROR;
 #endif
 
-#if defined(AP_RX65N) || defined(AP_RX72N)
+#if                      defined(AP_RX65N) || defined(AP_RX72N)	\
+ || defined(TB_RX65N) || defined(TB_RX66N) || defined(TB_RX231)
 	if( sdDrvEntry( ) < E_OK )				// SDカードドライバの登録(サービス関数)
 		goto ERROR;
 #endif
 
-#if defined(AP_RX63N) || defined(AP_RX65N) || defined(AP_RX72N)
+#if defined(AP_RX63N) || defined(AP_RX65N) || defined(AP_RX72N)	\
+ || defined(TB_RX65N) || defined(TB_RX66N)
 	if( usbDrvEntry( ) < E_OK )				// USBドライバの登録(サービス関数)
 		goto ERROR;
 #endif
@@ -109,14 +115,16 @@ T_LDEV t_ldev;
 	ldn[0] = ldnum[i];
 START:
 
-#if defined(AP_RX65N) || defined(AP_RX72N)
+#if                      defined(AP_RX65N) || defined(AP_RX72N)	\
+ || defined(TB_RX65N) || defined(TB_RX66N) || defined(TB_RX231)
 	if( ldn[0] == '1' && sdWaitInsertEvent( TMO_POL ) == E_TMOUT )  {
 		tm_putstring("Please insert SD card.\n");
 		sdWaitInsertEvent( TMO_FEVR );
 	}
 #endif
 
-#if defined(AP_RX63N) || defined(AP_RX65N) || defined(AP_RX72N)
+#if defined(AP_RX63N) || defined(AP_RX65N) || defined(AP_RX72N)	\
+ || defined(TB_RX65N) || defined(TB_RX66N)
 	if( ldn[0] == '2' && usbWaitAttachEvent( TMO_POL ) == E_TMOUT )  {
 		tm_putstring("Please attach USB memory.\n");
 		usbWaitAttachEvent( TMO_FEVR );

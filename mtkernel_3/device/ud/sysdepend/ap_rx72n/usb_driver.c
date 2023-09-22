@@ -5,6 +5,8 @@
  *    Copyright (C) 2023 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2023/9/20.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -136,23 +138,23 @@ EXPORT ER USB_Init(ID objid, T_DINT *p_dint)
 
 	p_dint->intatr = TA_HLNG;				// Set Handler Attribute
 #ifdef CLANGSPEC
-	p_dint->inthdr = (INTFP)USB_Int_hdr;			// Set Handler Address
+	p_dint->inthdr = USB_Int_hdr;				// Set Handler Address
 #else
 	p_dint->inthdr = (FP)USB_Int_hdr;			// Set Handler Address
 #endif
 	tk_def_int( USB_CFG_VECTOR_NUMBER, p_dint );		// Define Interrupt Handler
 #if USB_CFG_DMA_CHANNEL < 4
 #ifdef CLANGSPEC
-	p_dint->inthdr = DMA_End_hdr;		// Set Handler Address
+	p_dint->inthdr = DMA_End_hdr;				// Set Handler Address
 #else
-	p_dint->inthdr = (FP)DMA_End_hdr;		// Set Handler Address
+	p_dint->inthdr = (FP)DMA_End_hdr;			// Set Handler Address
 #endif
 	tk_def_int( VECT( DMAC, DMAC0I ) + USB_CFG_DMA_CHANNEL, p_dint );
 #else								// Define Interrupt Handler
 #ifdef CLANGSPEC
-	p_dint->inthdr = DMAC74I_Handler;		// Set Handler Address
+	p_dint->inthdr = DMAC74I_Handler;			// Set Handler Address
 #else
-	p_dint->inthdr = (FP)DMAC74I_Handler;		// Set Handler Address
+	p_dint->inthdr = (FP)DMAC74I_Handler;			// Set Handler Address
 #endif
 	tk_def_int( VECT( DMAC, DMAC74I ), p_dint );		// Define Interrupt Handler
 #endif

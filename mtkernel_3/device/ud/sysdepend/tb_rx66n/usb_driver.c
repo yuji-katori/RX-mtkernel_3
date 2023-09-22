@@ -5,8 +5,6 @@
  *    Copyright (C) 2023 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
- *    Modified by Yuji Katori at 2023/9/20.
- *----------------------------------------------------------------------
  */
 
 /*
@@ -129,11 +127,6 @@ EXPORT ER USB_Init(ID objid, T_DINT *p_dint)
 	}
 	tk_ena_dsp( );						// Dispatch Enable
 
-	PORTC.PDR.BIT.B3 = 1;					// USB Host Setting
-	PORTC.PODR.BIT.B3 = 1;					// Enable USB Select
-	PORTC.PDR.BIT.B1 = 1;					// VBUS Setting
-	PORTC.PODR.BIT.B1 = 1;					// Enable VBUS Select
-
 	p_dint->intatr = TA_HLNG;				// Set Handler Attribute
 #ifdef CLANGSPEC
 	p_dint->inthdr = USB_Int_hdr;				// Set Handler Address
@@ -156,7 +149,7 @@ EXPORT ER USB_Init(ID objid, T_DINT *p_dint)
 #endif
 	tk_def_int( VECT( DMAC, DMAC74I ), p_dint );		// Define Interrupt Handler
 #endif
-
+								// Define Interrupt Handler
 	flgid = objid;						// Set Interface EventFlag ID
 	R_USB_Open( );						// Open USB
 	return E_OK;						// Return
