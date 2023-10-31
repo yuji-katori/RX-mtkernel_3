@@ -46,19 +46,19 @@ SZ  asize;
 		goto ERROR;
 #endif
 
-#if defined(AP_RX63N) ||                      defined(AP_RX72N)
+#if defined(AP_RX63N) || defined(AP_RX72N) || defined(EK_RX72N)
 	if( rdDrvEntry( ) < E_OK )				// RAMディスクドライバの登録(サービス関数)
 		goto ERROR;
 #endif
 
-#if                      defined(AP_RX65N) || defined(AP_RX72N)	\
+#if defined(AP_RX65N) || defined(AP_RX72N) || defined(EK_RX72N)	\
  || defined(TB_RX65N) || defined(TB_RX66N) || defined(TB_RX231)
 	if( sdDrvEntry( ) < E_OK )				// SDカードドライバの登録(サービス関数)
 		goto ERROR;
 #endif
 
 #if defined(AP_RX63N) || defined(AP_RX65N) || defined(AP_RX72N)	\
- || defined(TB_RX65N) || defined(TB_RX66N)
+ || defined(TB_RX65N) || defined(TB_RX66N) || defined(EK_RX72N)
 	if( usbDrvEntry( ) < E_OK )				// USBドライバの登録(サービス関数)
 		goto ERROR;
 #endif
@@ -115,7 +115,7 @@ T_LDEV t_ldev;
 	ldn[0] = ldnum[i];
 START:
 
-#if                      defined(AP_RX65N) || defined(AP_RX72N)	\
+#if defined(AP_RX65N) || defined(AP_RX72N) || defined(EK_RX72N)	\
  || defined(TB_RX65N) || defined(TB_RX66N) || defined(TB_RX231)
 	if( ldn[0] == '1' && sdWaitInsertEvent( TMO_POL ) == E_TMOUT )  {
 		tm_putstring("Please insert SD card.\n");
@@ -124,7 +124,7 @@ START:
 #endif
 
 #if defined(AP_RX63N) || defined(AP_RX65N) || defined(AP_RX72N)	\
- || defined(TB_RX65N) || defined(TB_RX66N)
+ || defined(TB_RX65N) || defined(TB_RX66N) || defined(EK_RX72N)
 	if( ldn[0] == '2' && usbWaitAttachEvent( TMO_POL ) == E_TMOUT )  {
 		tm_putstring("Please attach USB memory.\n");
 		usbWaitAttachEvent( TMO_FEVR );
