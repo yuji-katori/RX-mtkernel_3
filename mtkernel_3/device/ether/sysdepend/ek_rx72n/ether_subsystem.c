@@ -2,11 +2,8 @@
  *----------------------------------------------------------------------
  *    micro T-Kernel 3.00.00
  *
- *    Copyright (C) 2022 by Yuji Katori.
- *    This software is distributed under the T-License 2.1.
- *----------------------------------------------------------------------
- *    Modified by Yuji Katori at 2022/12/31.
- *    Modified by Yuji Katori at 2023/10/23.
+ *    Copyright (C) 2023 by Yuji Katori.
+ *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
  */
 
@@ -34,28 +31,36 @@ union { T_CTSK t_ctsk; T_CCYC t_ccyc; } u;
 #if	ETHER_CFG_MODE_SEL == 0				// MII
 	MPC.PWPR.BIT.B0WI = 0;				// Write Protect Disable
 	MPC.PWPR.BIT.PFSWE = 1;
-//	
+	MPC.P56PFS.BYTE = 0x2A;				// P56 is CLKOUT25M
+	MPC.P71PFS.BYTE = 0x28;				// P71 is PMGI0_MDIO
+	MPC.P72PFS.BYTE = 0x28;				// P72 is PMGI0_MDC
+	MPC.P74PFS.BYTE = 0x11;				// P74 is ET0_ERXD1
+	MPC.P75PFS.BYTE = 0x11;				// P75 is ET0_ERXD0
+	MPC.P76PFS.BYTE = 0x11;				// P76 is ET0_RX_CLK
+	MPC.P77PFS.BYTE = 0x11;				// P77 is ET0_RX_ER
+	MPC.P80PFS.BYTE = 0x11;				// P80 is ET0_TX_EN
+	MPC.P81PFS.BYTE = 0x11;				// P81 is ET0_ETXD0
+	MPC.P82PFS.BYTE = 0x11;				// P82 is ET0_ETXD1
+	MPC.P83PFS.BYTE = 0x11;				// P83 is ET0_CRS
+	MPC.PC0PFS.BYTE = 0x11;				// PC0 is ET0_ERXD3
+	MPC.PC1PFS.BYTE = 0x11;				// PC1 is ET0_ERXD2
+	MPC.PC2PFS.BYTE = 0x11;				// PC2 is ET0_RX_DV
+	MPC.PC3PFS.BYTE = 0x11;				// PC3 is ET0_EX_ER
+	MPC.PC4PFS.BYTE = 0x11;				// PC4 is ET0_TX_CLK
+	MPC.PC5PFS.BYTE = 0x11;				// PC5 is ET0_ETXD2
+	MPC.PC6PFS.BYTE = 0x11;				// PC6 is ET0_ETXD3
+	MPC.PC7PFS.BYTE = 0x11;				// PC7 is ET0_COL
 	MPC.PWPR.BYTE = 0x80;				// Write Protect Enable
-//	
+	PORT5.PMR.BYTE |= 0x40;				// P56 is Peripheral Pin
+	PORT7.PMR.BYTE |= 0xF6;				// P71,P72,P74-P77 is Peripheral Pin
+	PORT8.PMR.BYTE |= 0x0F;				// P80-P83 is Peripheral Pin
+	PORTC.PMR.BYTE |= 0xFF;				// PC0-PC7 is Peripheral Pin
 #elif	ETHER_CFG_MODE_SEL == 1				// RMII
 	MPC.PWPR.BIT.B0WI = 0;				// Write Protect Disable
 	MPC.PWPR.BIT.PFSWE = 1;
-	MPC.P34PFS.BYTE = 0x11;				// P34 is ET0_LINKSTA
-	MPC.P72PFS.BYTE = 0x11;				// P72 is ET0_MDC
-	MPC.P71PFS.BYTE = 0x11;				// P71 is ET0_MDIO
-	MPC.PL6PFS.BYTE = 0x12;				// PL6 is RMII0_TXD_EN
-	MPC.PL5PFS.BYTE = 0x12;				// PL5 is RMII0_TXD1
-	MPC.PL4PFS.BYTE = 0x12;				// PL4 is RMII0_TXD0
-	MPC.PL3PFS.BYTE = 0x12;				// PL3 is REF50CK0
-	MPC.PL2PFS.BYTE = 0x12;				// PL2 is RMII0_RX_ER
-	MPC.PL1PFS.BYTE = 0x12;				// PL1 is RMII0_RXD1
-	MPC.PL0PFS.BYTE = 0x12;				// PL0 is RMII0_RXD0
-	MPC.PM7PFS.BYTE = 0x12;				// PM7 is RMII0_CRS_DV
+//	
 	MPC.PWPR.BYTE = 0x80;				// Write Protect Enable
-	PORT3.PMR.BYTE |= 0x10;				// P34 is Peripheral Pin
-	PORT7.PMR.BYTE |= 0x06;				// P72-P71 is Peripheral Pin
-	PORTL.PMR.BYTE |= 0x7F;				// PL6-PL0 is Peripheral Pin
-	PORTM.PMR.BYTE |= 0x80;				// PM7 is Peripheral Pin
+//	
 #endif
 	tk_ena_dsp( );					// Dispatch Enable
 
@@ -93,6 +98,34 @@ ERROR:
 	while( 1 )  ;		
 }
 
+void InterruptRequestDisable(UINT intno)
+{
+	IEN( PERIA, INTA208 ) = 0;			// PMGI Interrupt Disable
+	ICU.SLIAR208.BYTE = 0;				// Clear Interrupt Factor
+}
+
+void InterruptRequestEnable(UINT intno)
+{
+	ICU.SLIAR208.BYTE = 98;				// Set Interrupt Factor
+	IEN( PERIA, INTA208 ) = 1;			// PMGI Interrupt Enable
+}
+
+bool R_BSP_SoftwareLock(BSP_CFG_USER_LOCKING_TYPE *plock)
+{
+int32_t is_locked = true;
+	__xchg( &is_locked, (int32_t*)&plock->lock );
+	if( false == is_locked )
+		return true;
+	else
+		return false;
+}
+
+bool R_BSP_SoftwareUnlock(BSP_CFG_USER_LOCKING_TYPE * plock)
+{
+	plock->lock = false;
+	return true;
+}
+
 void ether_disable_icu(UW channel)
 {
 	ICU.GENAL1.BIT.EN4 = 0;				// Ether Interrupt Disable
@@ -123,6 +156,13 @@ T_DINT t_dint;
 	t_dint.inthdr = (FP)callback;			// Set Handler Start Address
 #endif
 	if( tk_def_int( VECT( ICU, GROUPAL1 ), &t_dint ) != E_OK )	// Define Interrupt Handler
+		goto ERROR;
+#ifdef CLANGSPEC
+	t_dint.inthdr = (INTFP)ether_pmgi0i;		// Set Handler Start Address
+#else
+	t_dint.inthdr = (FP)ether_pmgi0i;		// Set Handler Start Address
+#endif
+	if( tk_def_int( VECT( PERIA, INTA208 ), &t_dint ) != E_OK )	// Define Interrupt Handler
 		goto ERROR;
 	return BSP_INT_SUCCESS;
 ERROR:
@@ -161,6 +201,13 @@ T_DINT t_dint;
 	t_dint.inthdr = (FP)GroupAL1Handler;		// Set Handler Start Address
 #endif
 	if( tk_def_int( VECT( ICU, GROUPAL1 ), &t_dint ) != E_OK )	// Define Interrupt Handler
+		goto ERROR;
+#ifdef CLANGSPEC
+	t_dint.inthdr = (INTFP)ether_pmgi0i_isr;	// Set Handler Start Address
+#else
+	t_dint.inthdr = (FP)ether_pmgi0i_isr;		// Set Handler Start Address
+#endif
+	if( tk_def_int( VECT( PERIA, INTA208 ), &t_dint ) != E_OK )	// Define Interrupt Handler
 		goto ERROR;
 	return BSP_INT_SUCCESS;
 ERROR:

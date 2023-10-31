@@ -49,6 +49,9 @@ __SYS_MACHINE_H__	.EQU	(1)
 .IF _TB_RX66N_
 .INCLUDE sys/sysdepend/tb_rx66n/machine.inc
 .ENDIF
+.IF _EK_RX72N_
+.INCLUDE sys/sysdepend/ek_rx72n/machine.inc
+.ENDIF
 
 ;/* ===== C compiler dependencies definitions ============================= */
 

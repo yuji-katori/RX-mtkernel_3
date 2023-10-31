@@ -32,6 +32,7 @@
  *         : 30.07.2019 1.17     Added WAIT LOOP.
  *         : 22.11.2019 1.20     Added macro ETHER_CFG_NON_BLOCKING to choose whether to use PMGI.
  *                               Added pmgi_initial, pmgi_access, pmgi_read_reg, pmgi_close function for NON-BLOCKING.
+ *    Modified by Yuji Katori at 2023/10/23.
  ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -791,7 +792,7 @@ int16_t pmgi_initial(uint16_t pmgi_channel)
     if (PMGI_CHANNEL_0 == pmgi_channel)
     {
         R_BSP_InterruptRequestEnable(VECT(PMGI0, PMGI0I));
-        IPR(PMGI0, PMGI0I) = ETHER_CFG_PMGI_INT_PRIORTY;
+        IPR(PMGI0, PMGI0I) = ETHER_CFG_PMGI_INT_PRIORITY;
     }
 #endif
 #if (PMGI_CHANNEL_MAX == 2)
@@ -799,7 +800,7 @@ int16_t pmgi_initial(uint16_t pmgi_channel)
     if (PMGI_CHANNEL_1 == pmgi_channel)
     {
         R_BSP_InterruptRequestEnable(VECT(PMGI1, PMGI1I));
-        IPR(PMGI1, PMGI1I) = ETHER_CFG_PMGI_INT_PRIORTY;
+        IPR(PMGI1, PMGI1I) = ETHER_CFG_PMGI_INT_PRIORITY;
     }
 #endif
 #endif

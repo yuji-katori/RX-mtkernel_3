@@ -6,6 +6,7 @@
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
  *    Modified by Yuji Katori at 2022/12/31.
+ *    Modified by Yuji Katori at 2023/10/23.
  *----------------------------------------------------------------------
  */
 
@@ -45,7 +46,7 @@
 #define	ETHER_CFG_CH0_PHY_ACCESS		(0)
 
 /* Define the access timing of MII/RMII register */
-#define	ETHER_CFG_PHY_MII_WAIT			(8)
+#define	ETHER_CFG_PHY_MII_WAIT			(2)
 
 /* Define the waiting time for reset completion of PHY-LSI */
 #define	ETHER_CFG_PHY_DELAY_RESET		(0x00020000L)

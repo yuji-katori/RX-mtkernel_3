@@ -32,22 +32,22 @@
 
 /* Maximum number of kernel objects */
 #define CFN_MAX_TSKID		16	/* Task */
-#define CFN_MAX_SEMID		4	/* Semaphore */
-#define CFN_MAX_FLGID		4	/* Event flag */
-#define CFN_MAX_MBXID		4	/* Mailbox */
-#define CFN_MAX_MTXID		4	/* Mutex */
-#define CFN_MAX_MBFID		4	/* Message buffer */
-#define CFN_MAX_MPFID		4	/* Fixed size memory pool */
-#define CFN_MAX_MPLID		4	/* Memory pool */
-#define CFN_MAX_CYCID		4	/* Cyclic handler */
-#define CFN_MAX_ALMID		4	/* Alarm handler */
-#define CFN_MAX_SSYID		4	/* Subsystem */
+#define CFN_MAX_SEMID		8	/* Semaphore */
+#define CFN_MAX_FLGID		8	/* Event flag */
+#define CFN_MAX_MBXID		8	/* Mailbox */
+#define CFN_MAX_MTXID		8	/* Mutex */
+#define CFN_MAX_MBFID		8	/* Message buffer */
+#define CFN_MAX_MPFID		8	/* Fixed size memory pool */
+#define CFN_MAX_MPLID		8	/* Memory pool */
+#define CFN_MAX_CYCID		8	/* Cyclic handler */
+#define CFN_MAX_ALMID		8	/* Alarm handler */
+#define CFN_MAX_SSYID		8	/* Subsystem */
 #define CFN_MAX_SSYPRI		1	/* Subsystem Priority */
 
 /* Device configuration */
-#define CFN_MAX_REGDEV		(4)	/* Max registered device */
-#define CFN_MAX_OPNDEV		(4)	/* Max open device */
-#define CFN_MAX_REQDEV		(4)	/* Max request device */
+#define CFN_MAX_REGDEV		(8)	/* Max registered device */
+#define CFN_MAX_OPNDEV		(8)	/* Max open device */
+#define CFN_MAX_REQDEV		(8)	/* Max request device */
 #define CFN_DEVT_MBFSZ0		(-1)	/* message buffer size for event notification */
 #define CFN_DEVT_MBFSZ1		(-1)	/* message max size for event notification */
 

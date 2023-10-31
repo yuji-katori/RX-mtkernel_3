@@ -6,6 +6,7 @@
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
  *    Modified by Yuji Katori at 2022/12/31.
+ *    Modified by Yuji Katori at 2023/10/23.
  *----------------------------------------------------------------------
  */
 
@@ -22,7 +23,7 @@
    because the driver is single-frame/single-buffer processing.  */
 #define	ETHER_CFG_BUFSIZE			(1536)		/* Must be 32-byte aligned */
 
-#define	BSP_MCU_RX72N
+#define	BSP_MCU_RX66N						/* Real Kind is RX72N, Dummy Kind is RX66N */
 #define	CFG_SYSTEM_CHANNEL_NUMBER		(1)
 #define	CFG_SYSTEM_CALLBACK_FUNCTION_NAME	(system_callback)
 
@@ -47,7 +48,7 @@
 #define	ETHER_CFG_CH1_PHY_ACCESS		(1)
 
 /* Define the access timing of MII/RMII register */
-#define	ETHER_CFG_PHY_MII_WAIT			(8)
+#define	ETHER_CFG_PHY_MII_WAIT			(3)
 
 /* Define the waiting time for reset completion of PHY-LSI */
 #define	ETHER_CFG_PHY_DELAY_RESET		(0x00020000L)
@@ -56,7 +57,7 @@
 #define	ETHER_CFG_LINK_PRESENT			(0)
 
 /*  Use LINKSTA signal for detect link status changes */
-#define	ETHER_CFG_USE_LINKSTA			(0)
+#define	ETHER_CFG_USE_LINKSTA			(1)
 
 /* Definition of whether or not to use KSZ8041NL of the Micrel Inc. */
 #define	ETHER_CFG_USE_PHY_KSZ8041NL		(0)

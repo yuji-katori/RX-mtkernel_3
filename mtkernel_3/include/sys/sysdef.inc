@@ -54,5 +54,8 @@ __SYS_SYSDEF_H__	.EQU	(1)
 .IF _TB_RX66N_ == 1
 .INCLUDE sys/sysdepend/tb_rx66n/sysdef.inc
 .ENDIF
+.IF _EK_RX72N_ == 1
+.INCLUDE sys/sysdepend/ek_rx72n/sysdef.inc
+.ENDIF
 
 .ENDIF ; __SYS_SYSDEF_H__

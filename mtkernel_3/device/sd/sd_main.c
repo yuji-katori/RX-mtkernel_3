@@ -7,6 +7,7 @@
  *----------------------------------------------------------------------
  *    Modified by Yuji Katori at 2023/1/19.
  *    Modified by Yuji Katori at 2023/5/5.
+ *    Modified by Yuji Katori at 2023/10/15.
  *----------------------------------------------------------------------
  */
 
@@ -21,14 +22,29 @@
 #include <tm/tmonitor.h>
 #include <dev_sd.h>
 
-typedef enum { TSKID, FLGID, OBJ_KIND_NUM } OBJ_KIND;
+typedef enum { FLGID, OBJ_KIND_NUM } OBJ_KIND;
 LOCAL ID ObjID[OBJ_KIND_NUM];
+LOCAL W lock;
 LOCAL UB rd, wt;
 LOCAL T_DEVREQ *req[CFN_MAX_REQDEV+1];
 LOCAL UINT now, next=MAXIMUM;
 #if !USE_IMALLOC
 LOCAL INT sdc_task_stack[320/sizeof(INT)];
 #endif /* USE_IMALLOC */
+
+LOCAL void sd_lock(INT mode)
+{
+W work;
+	if( mode == TRUE )  {						// Lock Process
+		work = TRUE;						// Set Lock Value
+		while( __xchg( &lock, &work ), work == TRUE )		// Wait Unlock
+			tk_dly_tsk( 1 );				// Wait 1ms
+	}
+	else  {								// Unlock Process
+		work = FALSE;						// Set Unlock Value
+		__xchg(	&lock, &work );					// Unlock
+	}
+}
 
 LOCAL ER sd_open(ID devid, UINT omode, void *exinf)
 {
@@ -43,7 +59,7 @@ LOCAL ER sd_close(ID devid, UINT option, void *exinf)
 LOCAL ER sd_exec(T_DEVREQ *devreq, TMO tmout, void *exinf)
 {
 ER ercd;
-	tk_dis_dsp( );								// Disable Dispatch
+	sd_lock( TRUE );							// Lock
 	if( now & next )							// Check Request Count
 		ercd = E_LIMIT;							// Over Request Count
 	else  {
@@ -56,7 +72,7 @@ ER ercd;
 		tk_set_flg( ObjID[FLGID], EXECCMD );				// Wakeup sdc_tsk
 		ercd = E_OK;							// Normal return
 	}
-	tk_ena_dsp( );								// Enable Dispatch
+	sd_lock( FALSE );							// UnLock
 	return ercd;
 }
 
@@ -71,12 +87,12 @@ ER ercd;
 
 LOCAL ER sd_abort(ID tskid, T_DEVREQ *devreq, INT nreq, void *exinf)
 {
-	tk_dis_dsp( );								// Disable Dispatch
+	sd_lock( TRUE );							// Lock
 	now &= ~((UINT)devreq->exinf);						// Clear Flag Pattern
 	tk_set_flg( ObjID[FLGID], (UINT)devreq->exinf );			// Wakeup Request Task
 	devreq->exinf = NULL;							// Clear Flag Pattern
 	devreq->error = E_ABORT;						// Set Error Code
-	tk_ena_dsp( );								// Enable Dispatch
+	sd_lock( FALSE );							// UnLock
 	return E_OK;
 }
 
@@ -154,23 +170,23 @@ T_DEVREQ *devreq;
 	while( 1 )  {
 		tk_wai_flg( ObjID[FLGID], TSK_WAIT_ALL, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
 		if( flgptn & EXECCMD )  {					// Execute Commond ?
-			tk_dis_dsp( );						// Disable Dispatch
+			sd_lock( TRUE );					// Lock
 			devreq = req[rd];					// Read Device Request
 			if( ++rd == CFN_MAX_REQDEV+1 )				// Read Pointer is Max ?
 				rd = 0;						// Clear Read Pointer
 			if( wt != rd )						// Nothing Device Request ?
 				tk_set_flg( ObjID[FLGID], EXECCMD );		// Set Execute Command Bit
-			tk_ena_dsp( );						// Enable Dispatch
+			sd_lock( FALSE );					// UnLock
 			if( devreq->abort )					// Abort request ?
 				devreq->error = E_ABORT;			// Set Error Code
 			else if( devreq->cmd == TDC_READ )			// Command is Read ?
 				devreq->error = SDC_Read( devreq );		// SD Card Read
 			else							// Write Command
 				devreq->error = SDC_Write( devreq );		// SD Card Write
-			tk_dis_dsp( );						// Disable Dispatch
+			sd_lock( TRUE );					// Lock
 			now &= ~((UINT)devreq->exinf);				// Clear Flag Pattern
 			tk_set_flg( ObjID[FLGID], (UINT)devreq->exinf );	// Wakeup Request Task
-			tk_ena_dsp( );						// Enable Dispatch
+			sd_lock( FALSE );					// UnLock
 		}
 		if( flgptn & CARD_REJECT )  {					// SD Card Reject ?
 			tm_putstring("Reject SD Card.\n");
@@ -219,7 +235,6 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 		goto ERROR;
 	if( tk_sta_tsk( objid, 0 ) < E_OK )		// Start SD Control Task
 		goto ERROR;
-	ObjID[TSKID] = objid;				// Set SD Control Task ID
 
 	u.t_cflg.flgatr = TA_TPRI | TA_WMUL;		// Set EventFlag Attribute
 #if USE_OBJECT_NAME

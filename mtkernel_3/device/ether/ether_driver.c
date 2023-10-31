@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2023/10/23.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -25,8 +27,8 @@ Macro definitions
 ******************************************************************************/
 #define	ETHER_BUFSIZE_MIN		(60)
 
-#define	MAX_TCPCEP_CNT			(8)
-#define	MAX_UDPCEP_CNT			(8)
+#define	MAX_TCPCEP_CNT			(CFG_TCP_CEPID_NUM)
+#define	MAX_UDPCEP_CNT			(CFG_UDP_CEPID_NUM)
 
 #define	IP_TYPE_TCP			(0)
 #define	IP_TYPE_UDP			(1)
@@ -46,8 +48,8 @@ Private global variables and functions
 LOCAL UH tcpudp_time_cnt;
 LOCAL T4_STATISTICS t4_stat[CFG_SYSTEM_CHANNEL_NUMBER];
 
-LOCAL UW tcp_tsk_tbl[MAX_TCPCEP_CNT];
-LOCAL UW udp_tsk_tbl[MAX_UDPCEP_CNT];
+LOCAL ID tcp_tsk_tbl[MAX_TCPCEP_CNT];
+LOCAL ID udp_tsk_tbl[MAX_UDPCEP_CNT];
 
 LOCAL ER sleep_task(ID cepid, BOOL ip_type);
 LOCAL ER wakeup_task(ID cepid, BOOL ip_type);
@@ -62,6 +64,10 @@ ether_param_t param;
 	R_ETHER_Initial( );
 	Initialize_Ether( );
 	callback_ether_regist( );
+#if ETHER_CFG_NON_BLOCKING == 1
+	param.ether_callback.pcb_pmgi_hnd = pmgi_callback;
+	R_ETHER_Control( CONTROL_SET_PMGI_CALLBACK, param );
+#endif	/* ETHER_CFG_NON_BLOCKING == 1 */
 
 	param.channel = ETHER_CHANNEL_0;
 	R_ETHER_Control( CONTROL_POWER_ON, param );
@@ -447,4 +453,8 @@ EXPORT void tcpudp_act_cyc(UB cycact)
 ER system_callback(UB channel, UW eventid, void *param)
 {
 	return E_OK;
+}
+
+void pmgi_callback(void *param)
+{
 }

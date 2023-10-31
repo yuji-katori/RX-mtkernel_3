@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2023/10/23.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -31,13 +33,16 @@
 #define	BSP_CFG_RTOS_USED		(2)
 #define	APPLICATION_T4_BLOCKING_TYPE	(0)
 
-#define	R_BSP_HardwareLock(x)		true
-#define	R_BSP_HardwareUnlock(x)		true
+#define	R_BSP_HardwareLock(x)		(true)
+#define	R_BSP_HardwareUnlock(x)		(true)
 #define	R_BSP_RegisterProtectDisable(x)	(SYSTEM.PRCR.WORD = 0xA502)
 #define	R_BSP_RegisterProtectEnable(x)	(SYSTEM.PRCR.WORD = 0xA500)
 #define	R_BSP_InterruptsEnable(x)
+#define	R_BSP_InterruptRequestEnable(x)		InterruptRequestEnable(x)
+#define	R_BSP_InterruptRequestDisable(x)	InterruptRequestDisable(x)
 
-#define	BSP_CFG_USER_LOCKING_TYPE	uint16_t
+#define	BSP_CFG_USER_LOCKING_TYPE	bsp_lock_t
+typedef struct { int lock; } bsp_lock_t;
 
 typedef void (*bsp_int_cb_t)(void *);
 
@@ -71,6 +76,7 @@ typedef unsigned char	UB;
 typedef unsigned short	UH;
 typedef unsigned long	UW;
 typedef signed int	INT;
+typedef unsigned int	UINT;
 typedef void *		VP;
 typedef INT		ID;
 typedef UW		ATR;
@@ -93,8 +99,17 @@ typedef W		TMO;
 #define	_R_BSP_ATTRIB_SECTION_CHANGE_B1(section_tag)		__R_BSP_ATTRIB_SECTION_CHANGE_V(B, B##section_tag)
 #define	R_BSP_ATTRIB_SECTION_CHANGE(type, section_tag, ...)	_R_BSP_ATTRIB_SECTION_CHANGE_##type##__VA_ARGS__(section_tag)
 #define	R_BSP_ATTRIB_SECTION_CHANGE_END				R_BSP_PRAGMA(section)
+#define	R_BSP_PRAGMA_STATIC_INTERRUPT(x,y)
+#define	R_BSP_ATTRIB_STATIC_INTERRUPT
+#define	ether_pmgi0i_isr					ether_pmgi0i
 
 bsp_int_err_t R_BSP_InterruptWrite(bsp_int_src_t vector,  bsp_int_cb_t callback);
+bool R_BSP_SoftwareLock(BSP_CFG_USER_LOCKING_TYPE *plock);
+bool R_BSP_SoftwareUnlock(BSP_CFG_USER_LOCKING_TYPE * plock);
+void InterruptRequestEnable(UINT intno);
+void InterruptRequestDisable(UINT intno);
+void ether_pmgi0i(void);
+void pmgi_callback(void *param);
 void ether_tsk(INT stacd, void *exinf);
 void ether_cychdr(void *pdata);
 void Initialize_Ether(void);

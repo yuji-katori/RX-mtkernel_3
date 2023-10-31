@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2023/10/23.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -14,13 +16,13 @@
 #define ETHER_CONFIG_H
 
 /* PMGI interrupt priority level. */
-#define	ETHER_CFG_PMGI_INT_PRIORITY		ETHER_CFG_INT_PRIORITY
+#define	ETHER_CFG_PMGI_INT_PRIORTY		ETHER_CFG_INT_PRIORITY
 
 /* Please define the size of the sending and receiving buffer in the value where one frame can surely be stored 
    because the driver is single-frame/single-buffer processing.  */
 #define	ETHER_CFG_BUFSIZE			(1536)		/* Must be 32-byte aligned */
 
-#define	BSP_MCU_RX65N
+#define	BSP_MCU_RX66N
 #define	CFG_SYSTEM_CHANNEL_NUMBER		(1)
 #define	CFG_SYSTEM_CALLBACK_FUNCTION_NAME	(system_callback)
 
@@ -43,7 +45,7 @@
 #define	ETHER_CFG_CH0_PHY_ACCESS		(0)
 
 /* Define the access timing of MII/RMII register */
-#define	ETHER_CFG_PHY_MII_WAIT			(8)
+#define	ETHER_CFG_PHY_MII_WAIT			(3)
 
 /* Define the waiting time for reset completion of PHY-LSI */
 #define	ETHER_CFG_PHY_DELAY_RESET		(0x00020000L)

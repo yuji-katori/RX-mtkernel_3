@@ -49,6 +49,9 @@
 #ifdef _TB_RX66N_
 #include "sysdepend/tb_rx66n/machine.h"
 #endif
+#ifdef _EK_RX72N_
+#include "sysdepend/ek_rx72n/machine.h"
+#endif
 
 /* ===== C compiler dependencies definitions ============================= */
 
