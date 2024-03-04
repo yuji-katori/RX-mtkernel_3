@@ -9,6 +9,8 @@
  *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
  *
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2024/2/28.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -114,7 +116,7 @@
 #define INDEX_MTX(id)	((id)-(MIN_MTXID))
 #define ID_MTX(index)	((index)+(MIN_MTXID))
 #else
-#define NUM_MTXID	(0)
+#define MAX_MTXID	(0)
 #endif
 
 /* Message buffer configuration */

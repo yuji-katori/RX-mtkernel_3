@@ -12,18 +12,72 @@
 #include <tk/tkernel.h>
 #include <tm/tmonitor.h>
 #include <dev_disk.h>
-#include <dev_rtc.h>
 #include <ff.h>
+#if FF_FS_NORTC == 1
+#include <dev_rtc.h>
 
 typedef enum { SHELL, CLOCK, OBJ_KIND_NUM } OBJ_KIND;
+EXPORT DATE_TIM dt;
+#elif FF_FS_NORTC == 2
+EXPORT INT y, m, d, h, n, s;
+void DATETIMtoTRON(void)
+{
+D  ll_tim, x;
+INT i, z;
+SYSTIM tim;
+	ll_tim = 1000LL * ( s + 60 * ( n + 60L * ( h + ( d - 1 ) * 24 ) ) );
+	if( y >= 2000 )  {				// 2000年以降か？
+		ll_tim += 946684800000;			// 30年分のカウント値を加算
+		i = 2000;				// 2000年を開始年とする
+	}
+	else
+		i = 1970;				// 1970念を開始年とする
+	for(  ;  ; i++ )  {
+		if( i % 4 )				// 4で割り切れないか？
+			// 11 --> 31day, 10 --> 30day, 01 --> 29day, 00 --> 28day
+			// Dec Nov Oct Sep Aug Jul Jun May Apr Mar Feb Jan (Dec not used)
+			// 11  10  11  10  11  11  10  11  10  11  00  11
+			x = 31536000000, z = 0xEEFBB3;	// うるう年ではない
+		else if( i % 100 )			// 100で割り切れないか？
+			// 11  10  11  10  11  11  10  11  10  11  01  11
+			x = 31622400000, z = 0xEEFBB7;	// うるう年
+		else if( i % 400 )			// 400で割り切れないか？
+			// 11  10  11  10  11  11  10  11  10  11  00  11
+			x = 31536000000, z = 0xEEFBB3;	// うるう年ではない
+		else					// 400で割り切る
+			// 11  10  11  10  11  11  10  11  10  11  01  11
+			x = 31622400000, z = 0xEEFBB7;	// うるう年
+		if( i == y )				// 今年か？
+			break;
+		ll_tim += x;				// １年分の秒数を加算
+	}
+	for( i=1 ; i!=m ; i++, z>>=2 )  {
+		if( z & 2 )				// 31日か30日か？
+			if( z & 1 )			// 31日か？
+				x = 2678400000;		// 31日
+			else
+				x = 2592000000;		// 30日
+		else
+			if( z & 1 )			// 29日か28日か？
+				x = 2505600000;		// 29日
+			else
+				x = 2419200000;		// 28日
+		ll_tim += x;				// １ケ月分の秒数を加算
+	}
+	tim.hi = ll_tim >> 32;				// 上位32ビットを設定
+	tim.lo = ll_tim;				// 下位32ビットを設定
+	tk_set_utc( &tim );				// システム時刻を設定
+}
+typedef enum { SHELL, OBJ_KIND_NUM } OBJ_KIND;
+#endif
 EXPORT ID ObjID[OBJ_KIND_NUM];
 EXPORT void shell_tsk(INT stacd, void *exinf);
 EXPORT void getline(VB *buf);
-EXPORT DATE_TIM dt;
 
 EXPORT INT usermain( void )
 {
 T_CTSK t_ctsk;
+#if FF_FS_NORTC == 1
 #if defined(AP_RX63N) || defined(AP_RX65N) || defined(AP_RX72N)
 LOCAL VB buf[32];
 SZ  asize;
@@ -44,6 +98,16 @@ SZ  asize;
 	dt.d_year -= 1900;
 	if( tk_swri_dev( ObjID[CLOCK], DN_CKDATETIME, &dt, sizeof(dt), &asize ) < E_OK || asize != sizeof(dt) )
 		goto ERROR;
+#endif
+#elif  FF_FS_NORTC == 2
+LOCAL VB buf[32];
+	tm_putstring("Input now date and time.\n"
+		     "Year:Month:Day:Hour:Minute:Second\n"
+		     "Ex. 2000:1:1:12:34:56\n\n");
+	tm_getline( buf );
+	sscanf( buf, "%ld:%ld:%ld:%ld:%ld:%ld", &y, &m, &d, &h, &n, &s );
+	tm_putstring("\n");
+	DATETIMtoTRON( );					// 年月日時分秒をUTC時刻に変換
 #endif
 
 #if defined(AP_RX63N) || defined(AP_RX72N) || defined(EK_RX72N)
@@ -76,7 +140,9 @@ SZ  asize;
 	tk_chg_pri( TSK_SELF, TK_MAX_TSKPRI );			// 自タスクの優先度を最低に変更
 	
 	tk_del_tsk( ObjID[SHELL] );				// shellタスクを削除
+#if FF_FS_NORTC == 1
 	tk_cls_dev( ObjID[CLOCK] , 0 );				// RTCドライバをクローズ
+#endif
 
 ERROR:
 	return 0;

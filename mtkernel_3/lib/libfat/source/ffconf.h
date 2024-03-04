@@ -166,7 +166,7 @@
 / Drive/Volume Configurations
 /---------------------------------------------------------------------------*/
 
-#define FF_VOLUMES		2
+#define FF_VOLUMES		3
 /* Number of volumes (logical drives) to be used. (1-10) */
 
 
@@ -237,17 +237,18 @@
 /  Note that enabling exFAT discards ANSI C (C89) compatibility. */
 
 
-#define FF_FS_NORTC		0
+#define FF_FS_NORTC		1
 #define FF_NORTC_MON		1
 #define FF_NORTC_MDAY		1
 #define FF_NORTC_YEAR		2020
 /* The option FF_FS_NORTC switches timestamp functiton. If the system does not have
-/  any RTC function or valid timestamp is not needed, set FF_FS_NORTC = 1 to disable
+/  any RTC function or valid timestamp is not needed, set FF_FS_NORTC = 0 to disable
 /  the timestamp function. Every object modified by FatFs will have a fixed timestamp
 /  defined by FF_NORTC_MON, FF_NORTC_MDAY and FF_NORTC_YEAR in local time.
-/  To enable timestamp function (FF_FS_NORTC = 0), get_fattime() function need to be
+/  To enable timestamp function (FF_FS_NORTC != 0), get_fattime() function need to be
 /  added to the project to read current time form real-time clock. FF_NORTC_MON,
 /  FF_NORTC_MDAY and FF_NORTC_YEAR have no effect.
+/  If FF_FS_NORTC = 1, RTC is used, and if FF_FS_NORTC = 2, TRON system time is used.
 /  These options have no effect in read-only configuration (FF_FS_READONLY = 1). */
 
 

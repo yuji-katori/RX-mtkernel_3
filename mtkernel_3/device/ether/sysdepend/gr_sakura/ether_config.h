@@ -7,6 +7,7 @@
  *----------------------------------------------------------------------
  *    Modified by Yuji Katori at 2022/12/31.
  *    Modified by Yuji Katori at 2023/10/23.
+ *    Modified by Yuji Katori at 2023/12/28.
  *----------------------------------------------------------------------
  */
 
@@ -36,10 +37,10 @@
 #define	ETHER_CFG_CH0_PHY_ADDRESS		(0)		/* Please define the PHY-LSI address in the range of 0-31. */
 
 /* The number of Rx descriptors. */
-#define	ETHER_CFG_EMAC_RX_DESCRIPTORS		(1)
+#define	ETHER_CFG_EMAC_RX_DESCRIPTORS		(CFG_TCP_CEPID_NUM+CFG_UDP_CEPID_NUM)
 
 /* The number of Tx descriptors. */
-#define	ETHER_CFG_EMAC_TX_DESCRIPTORS		(1)
+#define	ETHER_CFG_EMAC_TX_DESCRIPTORS		(CFG_TCP_CEPID_NUM+CFG_UDP_CEPID_NUM)
 
 /* The register bus of PHY0/1 for ETHER0/1 select
  0 = The access of the register of PHY uses ETHER0. */
