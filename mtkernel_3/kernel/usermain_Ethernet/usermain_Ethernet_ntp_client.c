@@ -51,7 +51,7 @@ ID cepid = stacd;
 D t1, t2, t3, t4;
 	dstaddr.ipaddr = NTPSERVER;					// サーバのIPアドレスを設定
 	dstaddr.portno = 123;						// サーバのポート番号を設定
-	// 自局のポート番号はCFG_UDP_CEPID*_PORT_NUMBERで123を指定
+	// 自局のポート番号はCFG_UDP_CEPID#_PORT_NUMBERで123を指定
 	t1 = 4294967296000 * UTCBASE;					// UTCのベース時刻を設定
 	tim.hi = t1 >> 32;  tim.lo = t1;				// システム時刻用の変数を初期化
 	tk_set_utc( &tim );						// UTC時刻を初期化
@@ -76,7 +76,7 @@ D t1, t2, t3, t4;
 		t1 = ( ( t2 - t1 ) + ( t3 - t4 ) ) / 2;			// オフセットを算出
 		tk_get_utc( &tim );					// UTC時刻を参照
 		t1 += t4 = ( ( t4 = tim.hi ) << 32 ) + tim.lo;		// 同期UTC時刻を算出
-		t1 += t4 = ( t4 / 1000 >> 32 << 32 ) * 1000;			// 2036年問題を補正
+		t1 += t4 = ( t4 / 1000 >> 32 << 32 ) * 1000;		// 2036年問題を補正
 		tim.hi = t1 >> 32;  tim.lo = t1;			// 同期UTC時刻を設定
 		tk_set_utc( &tim );					// 同期UTC時刻を設定
 		UTCtoDATETIM( tim.hi, tim.lo );				// UTC時刻を表示
