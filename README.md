@@ -33,4 +33,5 @@
 ■ 現在、以下のデバイスドライバをサポートしています。
 
 　- IICドライバ（内蔵RIIC利用、RX63N、RX231、RX23W、RX65N、RX660、RX66N、RX72N）
+
 　- 簡易IICドライバ（内蔵SCI利用、RX63N、RX231、RX23W、RX65N、RX660、RX66N、RX72N）
