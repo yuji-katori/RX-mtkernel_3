@@ -1,9 +1,9 @@
 ﻿<CubeSuiteProject>
-  <ProductVersion>9.09.00.00</ProductVersion>
+  <ProductVersion>9.11.00.00</ProductVersion>
   <Class Guid="68f4a651-b9cd-473b-a595-b00447132ffa">
     <Instance Guid="00000000-0000-0000-0000-000000000000">
       <FormatVersion>2.0</FormatVersion>
-      <FileVersion>9.9</FileVersion>
+      <FileVersion>9.11</FileVersion>
       <ProjectGuid>a743174f-94e3-4cb8-a506-f172a8fab0a8</ProjectGuid>
       <ProjectItemGuid>0722bd90-df7c-4c6c-9757-507dc9ce41e3</ProjectItemGuid>
       <FileCategoryGuid>f9d03418-e0bb-4506-af44-ccaa548014b2</FileCategoryGuid>
@@ -56,6 +56,11 @@
       <TreeImageGuid>03cad1e8-2eb3-4cde-a8a3-982423631122</TreeImageGuid>
       <ParentItem>8c1826d5-d13f-425e-a563-0092130b4af8</ParentItem>
     </Instance>
+    <Instance Guid="532e5261-320c-4251-82ff-c966dbe6eb2d">
+      <Name>common</Name>
+      <Type>Category</Type>
+      <ParentItem>d3448aa7-c910-4fd4-8558-4c6ad78b9e9f</ParentItem>
+    </Instance>
     <Instance Guid="75812836-973a-4f7f-b0cf-500c11250832">
       <Name>include</Name>
       <Type>Category</Type>
@@ -65,6 +70,34 @@
       <Name>siic</Name>
       <Type>Category</Type>
       <ParentItem>d3448aa7-c910-4fd4-8558-4c6ad78b9e9f</ParentItem>
+    </Instance>
+    <Instance Guid="3e4b4588-a9a0-4f86-a441-5adc43436b31">
+      <Name>drv_lock.c</Name>
+      <Type>File</Type>
+      <RelativePath>..\..\device\common\drv_lock.c</RelativePath>
+      <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
+      <ParentItem>532e5261-320c-4251-82ff-c966dbe6eb2d</ParentItem>
+    </Instance>
+    <Instance Guid="570c7aeb-0400-43f6-b627-2b753b51c7e0">
+      <Name>groupal0.c</Name>
+      <Type>File</Type>
+      <RelativePath>..\..\device\common\groupal0.c</RelativePath>
+      <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
+      <ParentItem>532e5261-320c-4251-82ff-c966dbe6eb2d</ParentItem>
+    </Instance>
+    <Instance Guid="3dc28467-c834-47ef-b261-2d4d3d4a0d91">
+      <Name>groupbl0.c</Name>
+      <Type>File</Type>
+      <RelativePath>..\..\device\common\groupbl0.c</RelativePath>
+      <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
+      <ParentItem>532e5261-320c-4251-82ff-c966dbe6eb2d</ParentItem>
+    </Instance>
+    <Instance Guid="e8838e41-ec3c-4474-8980-0f5a81321fa2">
+      <Name>groupbl1.c</Name>
+      <Type>File</Type>
+      <RelativePath>..\..\device\common\groupbl1.c</RelativePath>
+      <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
+      <ParentItem>532e5261-320c-4251-82ff-c966dbe6eb2d</ParentItem>
     </Instance>
     <Instance Guid="b5355060-dde9-4f1d-8bc2-f74382bd6605">
       <Name>dev_siic.h</Name>
@@ -1102,6 +1135,13 @@
       <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
       <ParentItem>89a19f9a-3ab6-4365-b74c-6e5fccfaf634</ParentItem>
     </Instance>
+    <Instance Guid="dc3ce7c4-ea8b-4326-adad-a7deb3714333">
+      <Name>usermain_i2c.c</Name>
+      <Type>File</Type>
+      <RelativePath>..\..\kernel\usermain_device_driver\usermain_i2c.c</RelativePath>
+      <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
+      <ParentItem>89a19f9a-3ab6-4365-b74c-6e5fccfaf634</ParentItem>
+    </Instance>
     <Instance Guid="5c76f72a-839b-4273-b478-183b9785a524">
       <Name>libtk</Name>
       <Type>Category</Type>
@@ -1246,7 +1286,7 @@
   </Class>
   <Class Guid="3a79707d-5977-45f7-ac11-19c35e333132">
     <Instance Guid="3a79707d-5977-45f7-ac11-19c35e333132">
-      <DataFormatVersion>1.6</DataFormatVersion>
+      <DataFormatVersion>1.7</DataFormatVersion>
       <BuildModeCount>1</BuildModeCount>
       <BuildMode0>RABlAGYAYQB1AGwAdABCAHUAaQBsAGQA</BuildMode0>
       <BatchBuildFlag0>False</BatchBuildFlag0>
@@ -1359,7 +1399,17 @@
       <SourceItemType52>CSource</SourceItemType52>
       <SourceItemGuid53>725e9502-e27f-4b38-89fc-85a4bd14017f</SourceItemGuid53>
       <SourceItemType53>CSource</SourceItemType53>
-      <SourceItemCount>54</SourceItemCount>
+      <SourceItemGuid54>3e4b4588-a9a0-4f86-a441-5adc43436b31</SourceItemGuid54>
+      <SourceItemType54>CSource</SourceItemType54>
+      <SourceItemGuid55>570c7aeb-0400-43f6-b627-2b753b51c7e0</SourceItemGuid55>
+      <SourceItemType55>CSource</SourceItemType55>
+      <SourceItemGuid56>3dc28467-c834-47ef-b261-2d4d3d4a0d91</SourceItemGuid56>
+      <SourceItemType56>CSource</SourceItemType56>
+      <SourceItemGuid57>e8838e41-ec3c-4474-8980-0f5a81321fa2</SourceItemGuid57>
+      <SourceItemType57>CSource</SourceItemType57>
+      <SourceItemGuid58>dc3ce7c4-ea8b-4326-adad-a7deb3714333</SourceItemGuid58>
+      <SourceItemType58>CSource</SourceItemType58>
+      <SourceItemCount>59</SourceItemCount>
       <LastDeviceChangedCounter>0</LastDeviceChangedCounter>
     </Instance>
     <Instance Guid="9e208646-ccba-4100-a676-29b1efe6545f">
@@ -1445,7 +1495,7 @@
       <GeneralOptionSaveAcc-DefaultValue>False</GeneralOptionSaveAcc-DefaultValue>
       <GeneralOptionNoSaveTfu-DefaultValue>True</GeneralOptionNoSaveTfu-DefaultValue>
       <IsLockedByUser>False</IsLockedByUser>
-      <TimeTagModified--0>-8585236913651274555</TimeTagModified--0>
+      <TimeTagModified--0>-8584907445170456235</TimeTagModified--0>
       <BuildMode-0>DefaultBuild</BuildMode-0>
       <Memo-0 />
       <OutputMessageFormat-0>%TargetFiles%</OutputMessageFormat-0>
@@ -1505,7 +1555,7 @@
       <GeneralOptionPatch-0>None</GeneralOptionPatch-0>
       <GeneralOptionSaveAcc-0>False</GeneralOptionSaveAcc-0>
       <GeneralOptionNoSaveTfu-0>True</GeneralOptionNoSaveTfu-0>
-      <LastCompilerVersion-0>V3.05.00</LastCompilerVersion-0>
+      <LastCompilerVersion-0>V3.06.00</LastCompilerVersion-0>
     </Instance>
     <Instance Guid="95a63257-4aa7-40c0-a74a-7991543b099b">
       <COptionLangC-DefaultValue>C</COptionLangC-DefaultValue>
@@ -1882,28 +1932,30 @@ D_1=R_1
       <LinkOptionDefine-DefaultValue />
       <LinkOptionMessage-DefaultValue>NoMessage</LinkOptionMessage-DefaultValue>
       <LinkOptionOptimizeBranch-DefaultValue>False</LinkOptionOptimizeBranch-DefaultValue>
-      <LinkOptionShowVector-DefaultValue>False</LinkOptionShowVector-DefaultValue>
+      <LinkOptionShowStruct-DefaultValue>False</LinkOptionShowStruct-DefaultValue>
+      <LinkOptionAllowOptimizeEntryBlock-DefaultValue>False</LinkOptionAllowOptimizeEntryBlock-DefaultValue>
       <LinkOptionChangeMessageWarningNumber-DefaultValue />
       <LinkOptionEntry-DefaultValue>False</LinkOptionEntry-DefaultValue>
       <LinkOptionMsgUnused-DefaultValue>False</LinkOptionMsgUnused-DefaultValue>
       <LinkOptionMultiConvertFileName-DefaultValue />
-      <LinkOptionShowRelocationAttribute-DefaultValue>False</LinkOptionShowRelocationAttribute-DefaultValue>
-      <LinkOptionSymbolForbid-DefaultValue />
+      <LinkOptionShowVector-DefaultValue>False</LinkOptionShowVector-DefaultValue>
       <LinkOptionChangeMessageError-DefaultValue>None</LinkOptionChangeMessageError-DefaultValue>
       <LinkOptionEntryPoint-DefaultValue />
       <LinkOptionNoMessageErrorNumber-DefaultValue />
-      <LinkOptionSameCodeForbid-DefaultValue />
-      <LinkOptionShowCFI-DefaultValue>False</LinkOptionShowCFI-DefaultValue>
+      <LinkOptionShowRelocationAttribute-DefaultValue>False</LinkOptionShowRelocationAttribute-DefaultValue>
       <LinkOptionSpace-DefaultValue>None</LinkOptionSpace-DefaultValue>
+      <LinkOptionSymbolForbid-DefaultValue />
       <LinkOptionChangeMessageErrorNumber-DefaultValue />
       <LinkOptionNoPrelink-DefaultValue>Auto</LinkOptionNoPrelink-DefaultValue>
       <LinkOptionPadding-DefaultValue>False</LinkOptionPadding-DefaultValue>
-      <LinkOptionSectionForbid-DefaultValue />
+      <LinkOptionSameCodeForbid-DefaultValue />
+      <LinkOptionShowCFI-DefaultValue>False</LinkOptionShowCFI-DefaultValue>
       <LinkOptionSpaceValue-DefaultValue>FF</LinkOptionSpaceValue-DefaultValue>
-      <LinkOptionAbsoluteForbid-DefaultValue />
       <LinkOptionByteCount-DefaultValue>False</LinkOptionByteCount-DefaultValue>
       <LinkOptionHide-DefaultValue>False</LinkOptionHide-DefaultValue>
+      <LinkOptionSectionForbid-DefaultValue />
       <LinkOptionVectN-DefaultValue />
+      <LinkOptionAbsoluteForbid-DefaultValue />
       <LinkOptionByteCountValue-DefaultValue>FF</LinkOptionByteCountValue-DefaultValue>
       <LinkOptionTotalSize-DefaultValue>False</LinkOptionTotalSize-DefaultValue>
       <LinkOptionVect-DefaultValue />
@@ -1947,7 +1999,7 @@ D_1=R_1
 </LinkOptionCommandLine-DefaultValue>
       <LinkOptionSplitVect-DefaultValue>False</LinkOptionSplitVect-DefaultValue>
       <IsLockedByUser>False</IsLockedByUser>
-      <TimeTagModified--0>-8585028786818635916</TimeTagModified--0>
+      <TimeTagModified--0>-8584880951654758947</TimeTagModified--0>
       <LinkOptionCpu-0>False</LinkOptionCpu-0>
       <LinkOptionForm-0>Absolute</LinkOptionForm-0>
       <LinkOptionFormConvert-0>Stype</LinkOptionFormConvert-0>
@@ -1995,12 +2047,18 @@ D_1=R_1
       <LinkOptionDefine-0 />
       <LinkOptionMessage-0>NoMessage</LinkOptionMessage-0>
       <LinkOptionOptimizeBranch-0>False</LinkOptionOptimizeBranch-0>
-      <LinkOptionShowVector-0>False</LinkOptionShowVector-0>
+      <LinkOptionShowStruct-0>False</LinkOptionShowStruct-0>
+      <LinkOptionAllowOptimizeEntryBlock-0>False</LinkOptionAllowOptimizeEntryBlock-0>
       <LinkOptionChangeMessageWarningNumber-0 />
       <LinkOptionEntry-0>True</LinkOptionEntry-0>
       <LinkOptionMsgUnused-0>False</LinkOptionMsgUnused-0>
       <LinkOptionMultiConvertFileName-0 />
+      <LinkOptionShowVector-0>False</LinkOptionShowVector-0>
+      <LinkOptionChangeMessageError-0>None</LinkOptionChangeMessageError-0>
+      <LinkOptionEntryPoint-0>_start</LinkOptionEntryPoint-0>
+      <LinkOptionNoMessageErrorNumber-0 />
       <LinkOptionShowRelocationAttribute-0>False</LinkOptionShowRelocationAttribute-0>
+      <LinkOptionSpace-0>None</LinkOptionSpace-0>
       <LinkOptionSymbolForbid-0>_cfn_max_tskid
 _cfn_max_semid
 _cfn_max_flgid
@@ -2012,21 +2070,17 @@ _cfn_max_mpfid
 _cfn_max_cycid
 _cfn_max_almid
 </LinkOptionSymbolForbid-0>
-      <LinkOptionChangeMessageError-0>None</LinkOptionChangeMessageError-0>
-      <LinkOptionEntryPoint-0>_start</LinkOptionEntryPoint-0>
-      <LinkOptionNoMessageErrorNumber-0 />
-      <LinkOptionSameCodeForbid-0 />
-      <LinkOptionShowCFI-0>False</LinkOptionShowCFI-0>
-      <LinkOptionSpace-0>None</LinkOptionSpace-0>
       <LinkOptionChangeMessageErrorNumber-0 />
       <LinkOptionNoPrelink-0>Auto</LinkOptionNoPrelink-0>
       <LinkOptionPadding-0>False</LinkOptionPadding-0>
-      <LinkOptionSectionForbid-0 />
+      <LinkOptionSameCodeForbid-0 />
+      <LinkOptionShowCFI-0>False</LinkOptionShowCFI-0>
       <LinkOptionSpaceValue-0>FF</LinkOptionSpaceValue-0>
-      <LinkOptionAbsoluteForbid-0 />
       <LinkOptionByteCount-0>False</LinkOptionByteCount-0>
       <LinkOptionHide-0>False</LinkOptionHide-0>
+      <LinkOptionSectionForbid-0 />
       <LinkOptionVectN-0 />
+      <LinkOptionAbsoluteForbid-0 />
       <LinkOptionByteCountValue-0>FF</LinkOptionByteCountValue-0>
       <LinkOptionTotalSize-0>False</LinkOptionTotalSize-0>
       <LinkOptionVect-0 />
@@ -2104,6 +2158,7 @@ _cfn_max_almid
       <HexOptionCrcType-DefaultValue>Ccitt</HexOptionCrcType-DefaultValue>
       <HexOptionCrcInitialValue-DefaultValue />
       <HexOptionCrcEndian-DefaultValue>None</HexOptionCrcEndian-DefaultValue>
+      <HexOptionCrcOperations-DefaultValue />
       <HexOptionVerboseCrc-DefaultValue>False</HexOptionVerboseCrc-DefaultValue>
       <HexOptionEndRecord-DefaultValue>None</HexOptionEndRecord-DefaultValue>
       <LinkOptionS9-DefaultValue>False</LinkOptionS9-DefaultValue>
@@ -2143,6 +2198,7 @@ _cfn_max_almid
       <HexOptionCrcType-0>Ccitt</HexOptionCrcType-0>
       <HexOptionCrcInitialValue-0 />
       <HexOptionCrcEndian-0>None</HexOptionCrcEndian-0>
+      <HexOptionCrcOperations-0 />
       <HexOptionVerboseCrc-0>False</HexOptionVerboseCrc-0>
       <HexOptionEndRecord-0>None</HexOptionEndRecord-0>
       <LinkOptionS9-0>False</LinkOptionS9-0>
@@ -2294,7 +2350,7 @@ _cfn_max_almid
       <LbgOptionFloatOrder-DefaultValue>False</LbgOptionFloatOrder-DefaultValue>
       <LbgOptionBranchChaining-DefaultValue>None</LbgOptionBranchChaining-DefaultValue>
       <IsLockedByUser>False</IsLockedByUser>
-      <TimeTagModified--0>-8585028786818635916</TimeTagModified--0>
+      <TimeTagModified--0>-8584880951654758947</TimeTagModified--0>
       <LbgOptionLanguage-0>C99</LbgOptionLanguage-0>
       <LbgOptionLibraryMode-0>MakeOptionChanged</LbgOptionLibraryMode-0>
       <LbgOptionLogo-0>False</LbgOptionLogo-0>
@@ -2931,6 +2987,26 @@ _cfn_max_almid
       <ItemAddTime>638325721122955696</ItemAddTime>
       <ItemAddTimeCount>0</ItemAddTimeCount>
     </Instance>
+    <Instance Guid="3e4b4588-a9a0-4f86-a441-5adc43436b31">
+      <ItemAddTime>638491384078125011</ItemAddTime>
+      <ItemAddTimeCount>0</ItemAddTimeCount>
+    </Instance>
+    <Instance Guid="570c7aeb-0400-43f6-b627-2b753b51c7e0">
+      <ItemAddTime>638491384078125011</ItemAddTime>
+      <ItemAddTimeCount>1</ItemAddTimeCount>
+    </Instance>
+    <Instance Guid="3dc28467-c834-47ef-b261-2d4d3d4a0d91">
+      <ItemAddTime>638491384078125011</ItemAddTime>
+      <ItemAddTimeCount>2</ItemAddTimeCount>
+    </Instance>
+    <Instance Guid="e8838e41-ec3c-4474-8980-0f5a81321fa2">
+      <ItemAddTime>638491384078125011</ItemAddTime>
+      <ItemAddTimeCount>3</ItemAddTimeCount>
+    </Instance>
+    <Instance Guid="dc3ce7c4-ea8b-4326-adad-a7deb3714333">
+      <ItemAddTime>638491409144679766</ItemAddTime>
+      <ItemAddTimeCount>0</ItemAddTimeCount>
+    </Instance>
     <Instance Guid="a7be515f-f007-45ed-9059-4e1500c0f74d">
       <TimeTagModified-SourceItem0--0>-8585046162506761955</TimeTagModified-SourceItem0--0>
       <SourceItem0-IsLockedByUser>False</SourceItem0-IsLockedByUser>
@@ -3088,15 +3164,15 @@ _cfn_max_almid
       <SourceItem43-IsLockedByUser>False</SourceItem43-IsLockedByUser>
       <SourceItem43-BuildingTarget-0>True</SourceItem43-BuildingTarget-0>
       <SourceItem43-IndividualCompileOption-0>False</SourceItem43-IndividualCompileOption-0>
-      <TimeTagModified-SourceItem44--0>-8585028786818645896</TimeTagModified-SourceItem44--0>
+      <TimeTagModified-SourceItem44--0>-8584895395340287682</TimeTagModified-SourceItem44--0>
       <SourceItem44-IsLockedByUser>False</SourceItem44-IsLockedByUser>
-      <SourceItem44-BuildingTarget-0>True</SourceItem44-BuildingTarget-0>
+      <SourceItem44-BuildingTarget-0>False</SourceItem44-BuildingTarget-0>
       <SourceItem44-IndividualCompileOption-0>False</SourceItem44-IndividualCompileOption-0>
       <TimeTagModified-SourceItem45--0>-8585699980441377676</TimeTagModified-SourceItem45--0>
       <SourceItem45-IsLockedByUser>False</SourceItem45-IsLockedByUser>
       <SourceItem45-BuildingTarget-0>False</SourceItem45-BuildingTarget-0>
       <SourceItem45-IndividualCompileOption-0>False</SourceItem45-IndividualCompileOption-0>
-      <TimeTagModified-SourceItem46--0>-8585028786871611494</TimeTagModified-SourceItem46--0>
+      <TimeTagModified-SourceItem46--0>-8584880951654758947</TimeTagModified-SourceItem46--0>
       <SourceItem46-IsLockedByUser>False</SourceItem46-IsLockedByUser>
       <SourceItem46-BuildingTarget-0>False</SourceItem46-BuildingTarget-0>
       <SourceItem46-IndividualCompileOption-0>False</SourceItem46-IndividualCompileOption-0>
@@ -3128,6 +3204,26 @@ _cfn_max_almid
       <SourceItem53-IsLockedByUser>False</SourceItem53-IsLockedByUser>
       <SourceItem53-BuildingTarget-0>True</SourceItem53-BuildingTarget-0>
       <SourceItem53-IndividualCompileOption-0>False</SourceItem53-IndividualCompileOption-0>
+      <TimeTagModified-SourceItem54--0>-8584880976776650797</TimeTagModified-SourceItem54--0>
+      <SourceItem54-IsLockedByUser>False</SourceItem54-IsLockedByUser>
+      <SourceItem54-BuildingTarget-0>True</SourceItem54-BuildingTarget-0>
+      <SourceItem54-IndividualCompileOption-0>False</SourceItem54-IndividualCompileOption-0>
+      <TimeTagModified-SourceItem55--0>-8584880976776650797</TimeTagModified-SourceItem55--0>
+      <SourceItem55-IsLockedByUser>False</SourceItem55-IsLockedByUser>
+      <SourceItem55-BuildingTarget-0>True</SourceItem55-BuildingTarget-0>
+      <SourceItem55-IndividualCompileOption-0>False</SourceItem55-IndividualCompileOption-0>
+      <TimeTagModified-SourceItem56--0>-8584880976776650797</TimeTagModified-SourceItem56--0>
+      <SourceItem56-IsLockedByUser>False</SourceItem56-IsLockedByUser>
+      <SourceItem56-BuildingTarget-0>True</SourceItem56-BuildingTarget-0>
+      <SourceItem56-IndividualCompileOption-0>False</SourceItem56-IndividualCompileOption-0>
+      <TimeTagModified-SourceItem57--0>-8584880976776650797</TimeTagModified-SourceItem57--0>
+      <SourceItem57-IsLockedByUser>False</SourceItem57-IsLockedByUser>
+      <SourceItem57-BuildingTarget-0>True</SourceItem57-BuildingTarget-0>
+      <SourceItem57-IndividualCompileOption-0>False</SourceItem57-IndividualCompileOption-0>
+      <TimeTagModified-SourceItem58--0>-8584880951710096042</TimeTagModified-SourceItem58--0>
+      <SourceItem58-IsLockedByUser>False</SourceItem58-IsLockedByUser>
+      <SourceItem58-BuildingTarget-0>True</SourceItem58-BuildingTarget-0>
+      <SourceItem58-IndividualCompileOption-0>False</SourceItem58-IndividualCompileOption-0>
     </Instance>
     <Instance Guid="c20a78d9-8038-46fe-9b87-bc2fa2aa9bdc">
       <TimeTagModified-SourceItem4--0>-8585687260120791699</TimeTagModified-SourceItem4--0>
