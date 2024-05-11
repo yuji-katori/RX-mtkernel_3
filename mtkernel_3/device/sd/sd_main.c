@@ -5,9 +5,10 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
- *    Modified by Yuji Katori at 2023/1/19.
- *    Modified by Yuji Katori at 2023/5/5.
+ *    Modified by Yuji Katori at 2023/01/19.
+ *    Modified by Yuji Katori at 2023/05/05.
  *    Modified by Yuji Katori at 2023/10/15.
+ *    Modified by Yuji Katori at 2024/04/25.
  *----------------------------------------------------------------------
  */
 
@@ -32,20 +33,6 @@ LOCAL UINT now, next=MAXIMUM;
 LOCAL INT sdc_task_stack[320/sizeof(INT)];
 #endif /* USE_IMALLOC */
 
-LOCAL void sd_lock(INT mode)
-{
-W work;
-	if( mode == TRUE )  {						// Lock Process
-		work = TRUE;						// Set Lock Value
-		while( __xchg( &lock, &work ), work == TRUE )		// Wait Unlock
-			tk_dly_tsk( 1 );				// Wait 1ms
-	}
-	else  {								// Unlock Process
-		work = FALSE;						// Set Unlock Value
-		__xchg(	&lock, &work );					// Unlock
-	}
-}
-
 LOCAL ER sd_open(ID devid, UINT omode, void *exinf)
 {
 	return E_OK;
@@ -59,7 +46,7 @@ LOCAL ER sd_close(ID devid, UINT option, void *exinf)
 LOCAL ER sd_exec(T_DEVREQ *devreq, TMO tmout, void *exinf)
 {
 ER ercd;
-	sd_lock( TRUE );							// Lock
+	drv_lock( TRUE, &lock );						// Lock
 	if( now & next )							// Check Request Count
 		ercd = E_LIMIT;							// Over Request Count
 	else  {
@@ -72,7 +59,7 @@ ER ercd;
 		tk_set_flg( ObjID[FLGID], EXECCMD );				// Wakeup sdc_tsk
 		ercd = E_OK;							// Normal return
 	}
-	sd_lock( FALSE );							// UnLock
+	drv_lock( FALSE, &lock );						// UnLock
 	return ercd;
 }
 
@@ -87,12 +74,12 @@ ER ercd;
 
 LOCAL ER sd_abort(ID tskid, T_DEVREQ *devreq, INT nreq, void *exinf)
 {
-	sd_lock( TRUE );							// Lock
+	drv_lock( TRUE, &lock );						// Lock
 	now &= ~((UINT)devreq->exinf);						// Clear Flag Pattern
 	tk_set_flg( ObjID[FLGID], (UINT)devreq->exinf );			// Wakeup Request Task
 	devreq->exinf = NULL;							// Clear Flag Pattern
 	devreq->error = E_ABORT;						// Set Error Code
-	sd_lock( FALSE );							// UnLock
+	drv_lock( FALSE, &lock );						// UnLock
 	return E_OK;
 }
 
@@ -170,23 +157,23 @@ T_DEVREQ *devreq;
 	while( 1 )  {
 		tk_wai_flg( ObjID[FLGID], TSK_WAIT_ALL, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
 		if( flgptn & EXECCMD )  {					// Execute Commond ?
-			sd_lock( TRUE );					// Lock
+			drv_lock( TRUE, &lock );				// Lock
 			devreq = req[rd];					// Read Device Request
 			if( ++rd == CFN_MAX_REQDEV+1 )				// Read Pointer is Max ?
 				rd = 0;						// Clear Read Pointer
 			if( wt != rd )						// Nothing Device Request ?
 				tk_set_flg( ObjID[FLGID], EXECCMD );		// Set Execute Command Bit
-			sd_lock( FALSE );					// UnLock
+			drv_lock( FALSE, &lock );				// UnLock
 			if( devreq->abort )					// Abort request ?
 				devreq->error = E_ABORT;			// Set Error Code
 			else if( devreq->cmd == TDC_READ )			// Command is Read ?
 				devreq->error = SDC_Read( devreq );		// SD Card Read
 			else							// Write Command
 				devreq->error = SDC_Write( devreq );		// SD Card Write
-			sd_lock( TRUE );					// Lock
+			drv_lock( TRUE, &lock );				// Lock
 			now &= ~((UINT)devreq->exinf);				// Clear Flag Pattern
 			tk_set_flg( ObjID[FLGID], (UINT)devreq->exinf );	// Wakeup Request Task
-			sd_lock( FALSE );					// UnLock
+			drv_lock( FALSE, &lock );				// UnLock
 		}
 		if( flgptn & CARD_REJECT )  {					// SD Card Reject ?
 			tm_putstring("Reject SD Card.\n");

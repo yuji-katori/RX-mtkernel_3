@@ -5,8 +5,9 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
- *    Modified by Yuji Katori at 2023/9/8.
- *    Modified by Yuji Katori at 2023/9/11.
+ *    Modified by Yuji Katori at 2023/09/08.
+ *    Modified by Yuji Katori at 2023/09/11.
+ *    Modified by Yuji Katori at 2024/04/25.
  *----------------------------------------------------------------------
  */
 
@@ -271,7 +272,7 @@ EXPORT void SDC_CardReject(void)
 	SDCard.Exists = 0;					// SD Card Reject
 }
 
-EXPORT void SD_Detect_hdr(void)
+LOCAL void SD_Detect_hdr(UINT dintno)
 {
 UINT flgptn;
 	flgptn = SDHI.SDSTS1.LONG << 7 & ( CARD_REJECT | CARD_INSERT );
@@ -279,7 +280,7 @@ UINT flgptn;
 	tk_set_flg( flgid, flgptn );				// Set EventFlag
 }
 
-EXPORT void SD_Int_hdr(void)
+LOCAL void SD_Int_hdr(UINT dintno)
 {
 UINT flgptn;	
 	flgptn = SDHI.SDSTS1.LONG << 7 & ( CMD_COMPLETE | TRANS_COMPLETE );
@@ -287,14 +288,6 @@ UINT flgptn;
 	flgptn += SDHI.SDSTS2.LONG & ( CMD_TIMEOUT | SDHC_ERROR );
 	SDHI.SDSTS2.LONG &= 0xFFFFFF80;				// Clear Interrupt Flag
 	tk_set_flg( flgid, flgptn );				// Set EventFlag
-}
-
-EXPORT void GroupBL1Handler(UINT dintno)
-{
-	if( IS( SDHI, CDETI ) )					// Occur SDHI CDETI Interrupt ?
-		SD_Detect_hdr( );				// Call  SDHI CDETI Interrupt
-	if( IS( SDHI, CACI ) )					// Occur SDHI CACI Interrupt ?
-		SD_Int_hdr( );					// Call  SDHI CACI Interrupt
 }
 
 EXPORT ER SDC_Init(ID objid, T_DINT *p_dint)
@@ -339,20 +332,27 @@ EXPORT ER SDC_Init(ID objid, T_DINT *p_dint)
 	SDHI.SDSWAP.LONG = 0x000000C0;				// Set Byte Swap Mode
 #endif
 
-	p_dint->intatr = TA_HLNG;				// Set Handler Attribute
+	tk_dis_dsp( );						// Dispatch Disable
+	if( ! IPR( ICU, GROUPBL1 ) )  {				// BL1 Group IPR is Zero ?
+		p_dint->intatr = TA_HLNG;			// Set Handler Attribute
 #ifdef CLANGSPEC
-	p_dint->inthdr = GroupBL1Handler;			// Set Handler Address
+		p_dint->inthdr = GroupBL1Handler;		// Set Handler Address
 #else
-	p_dint->inthdr = (FP)GroupBL1Handler;			// Set Handler Address
+		p_dint->inthdr = (FP)GroupBL1Handler;		// Set Handler Address
 #endif
-	tk_def_int( VECT( ICU, GROUPBL1 ), p_dint );		// Define Interrupt Handler
-
-	EnableInt( VECT(ICU, GROUPBL1), SD_CFG_INT_PRIORITY );	// Enable BL1 Group Interrupt
+		tk_def_int( VECT( ICU, GROUPBL1 ), p_dint );	// Define Interrupt Handler
+		EnableInt( VECT(ICU, GROUPBL1), SD_CFG_INT_PRIORITY );	// Enable BL1 Group Interrupt
+	}							// Enable BL1 Interrupt
+	GroupBL1Table[3] = SD_Detect_hdr;			// Set SDHI CACI Handler Address
+	GroupBL1Table[4] = SD_Int_hdr;				// Set SDHI CDETI Handler Address
+	EN( SDHI, CACI ) = 1;					// Enable SDHI CACI Group Interrupt
+	EN( SDHI, CDETI ) = 1;					// Enable SDHI CDETI Group Interrupt
+	tk_ena_dsp( );						// Dispatch Enable
+	if( IPR( ICU, GROUPBL1 ) != SD_CFG_INT_PRIORITY )	// BL1 Group IPR != SDC IPR ?
+		return E_IO;
 	SDHI.SDIMSK1.LONG &= 0xFFFFFFFA;			// Enable RSPEND,ACEND Interrupt
 	SDHI.SDIMSK2.LONG &= 0xFFFFFF80;			// Enable Error Interrupt
-	EN( SDHI, CACI ) = 1;					// Enable SDHI CACI Group Interrupt
 	SDHI.SDIMSK1.LONG &= 0xFFFFFFE7;			// Enable SDCDRM,SDCDIN Interrupt
-	EN( SDHI, CDETI ) = 1;					// Enable SDHI CDETI Group Interrupt
 	
 	flgid = objid;						// Set Interface EventFlag ID
 	return E_OK;

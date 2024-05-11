@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2024/04/28.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -129,52 +131,23 @@ void ether_set_phy_mode(UB connect)
 
 bsp_int_err_t R_BSP_InterruptWrite(bsp_int_src_t vector,  bsp_int_cb_t callback)
 {
+IMPORT void (*GroupAL1Table[])(UINT dintno);
+IMPORT void GroupAL1Handler(UINT dintno);
 T_DINT t_dint;
-	EnableInt( VECT( ICU, GROUPAL1 ), ETHER_CFG_INT_PRIORITY );
-	t_dint.intatr = TA_HLNG;			// Set Interrupt Handler Attribute
+	tk_dis_dsp( );						// Dispatch Disable
+	if( ! IPR( ICU, GROUPAL1 ) )  {				// BL1 Group IPR is Zero ?
+		t_dint.intatr = TA_HLNG;			// Set Interrupt Handler Attribute
 #ifdef CLANGSPEC
-	t_dint.inthdr = (INTFP)callback;		// Set Handler Start Address
+		t_dint.inthdr = GroupAL1Handler;		// Set Handler Start Address
 #else
-	t_dint.inthdr = (FP)callback;			// Set Handler Start Address
+		t_dint.inthdr = (FP)GroupAL1Handler;		// Set Handler Start Address
 #endif
-	if( tk_def_int( VECT( ICU, GROUPAL1 ), &t_dint ) != E_OK )	// Define Interrupt Handler
-		goto ERROR;
+		tk_def_int( VECT( ICU, GROUPAL1 ), &t_dint );	// Define Interrupt Handler
+		EnableInt( VECT( ICU, GROUPAL1 ), ETHER_CFG_INT_PRIORITY );	// Enable BL1 Group Interrupt
+	}
+	GroupAL1Table[4] = (INTFP)callback;			// Set EDMAC0, EINT0 Handler Address
+	tk_ena_dsp( );						// Dispatch Enable
+	if( IPR( ICU, GROUPAL1 ) != ETHER_CFG_INT_PRIORITY )	// AL1 Group IPR != EDMAC IPR ?
+		return BSP_INT_ERR_INVALID_IPL;
 	return BSP_INT_SUCCESS;
-ERROR:
-	while( 1 )  ;		
 }
-
-/*
-static bsp_int_cb_t eint_callback;
-void GroupAL1Handler(UINT intno)
-{
-	if( IS( EDMAC0, EINT0 ) )
-		eint_callback( NULL );			// Call EDMAC0 EINT0 Interrupt Handler
-	else if( IS( GLCDC, VPOS ) )
-		;					// Call GLCDC VPOS  Interrupt Handler
-	else if( IS( GLCDC, GR1UF ) )
-		;					// Call GLCDC GR1UF Interrupt Handler
-	else if( IS( GLCDC, GR2UF ) )
-		;					// Call GLCDC GR2UF Interrupt Handler
-	else if( IS( DRW2D, DRWIRQ ) )
-		;					// Call DRW2D DRW_IRQ Interrupt Handler
-}
-
-bsp_int_err_t R_BSP_InterruptWrite(bsp_int_src_t vector,  bsp_int_cb_t callback)
-{
-T_DINT t_dint;
-	eint_callback = callback;
-	EnableInt( VECT( ICU, GROUPAL1 ), ETHER_CFG_INT_PRIORITY );
-	t_dint.intatr = TA_HLNG;			// Set Interrupt Handler Attribute
-#ifdef CLANGSPEC
-	t_dint.inthdr = GroupAL1Handler;		// Set Handler Start Address
-#else
-	t_dint.inthdr = (FP)GroupAL1Handler;		// Set Handler Start Address
-#endif
-	if( tk_def_int( VECT( ICU, GROUPAL1 ), &t_dint ) != E_OK )	// Define Interrupt Handler
-		goto ERROR;
-	return BSP_INT_SUCCESS;
-ERROR:
-	while( 1 )  ;		
-}
-*/

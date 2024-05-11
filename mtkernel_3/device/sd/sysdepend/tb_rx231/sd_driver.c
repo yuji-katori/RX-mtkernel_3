@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2024/04/28.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -260,7 +262,7 @@ EXPORT void SDC_CardReject(void)
 	SDCard.Exists = 0;					// SD Card Reject
 }
 
-EXPORT void SD_Detect_hdr(UINT dintno)
+LOCAL void SD_Detect_hdr(UINT dintno)
 {
 UINT flgptn;
 	flgptn = SDHI.SDSTS1.LONG << 7 & ( CARD_REJECT | CARD_INSERT );
@@ -268,7 +270,7 @@ UINT flgptn;
 	tk_set_flg( flgid, flgptn );				// Set EventFlag
 }
 
-EXPORT void SD_Int_hdr(UINT dintno)
+LOCAL void SD_Int_hdr(UINT dintno)
 {
 UINT flgptn;	
 	flgptn = SDHI.SDSTS1.LONG << 7 & ( CMD_COMPLETE | TRANS_COMPLETE );

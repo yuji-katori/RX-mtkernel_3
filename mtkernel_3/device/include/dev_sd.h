@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2024/04/25.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -67,6 +69,9 @@
 #define MINIMUM			0x00002000
 #define MAXIMUM			0x80000000
 
+IMPORT void drv_lock(INT mode, W *lock);
+IMPORT void (*GroupBL1Table[])(UINT dintno);
+IMPORT void GroupBL1Handler(UINT dintno);
 IMPORT INT  SDC_GetStatus(void);
 IMPORT UINT SDC_GetBlockCount(void);
 IMPORT ER   SDC_ReadBlock(void *buf, W start, SZ size);
