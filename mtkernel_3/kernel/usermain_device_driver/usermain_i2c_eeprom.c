@@ -32,9 +32,8 @@ ID dd;
 SZ asize;	
 INT i, j;
 
-	if( ( dd = tk_opn_dev( "siica", TD_UPDATE ) ) <= E_OK )	// Open IIC or SIIC Driver
+	if( ( dd = tk_opn_dev( "iica", TD_UPDATE ) ) <= E_OK )	// Open IIC or SIIC Driver
 		goto Err;
-	tk_srea_dev( dd, 0x10, buf, 128, &asize );	// Read Data (Mac Address)
 	tk_swri_dev( dd, 0x50, "\x00", 1, &asize );		// Set Random Read Address
 	tk_srea_dev( dd, 0x50, buf, 128*BSIZE, &asize );	// Read Data (Mac Address)
 	tm_printf(" %02X:%02X:%02X:%02X:%02X:%02X\n",buf[0],buf[1],buf[2],buf[3],buf[4],buf[5]);

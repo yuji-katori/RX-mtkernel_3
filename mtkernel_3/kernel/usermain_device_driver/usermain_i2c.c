@@ -35,7 +35,7 @@ INT data;
 			continue;				// Read Measurement Result
 		data = ( buf[0] << 8 ) + buf[1];		// Make Measurement Result
 		tm_printf("%d\n",data);				// Output Console
-		tk_dly_tsk( 1000 );				// Wait 500ms
+		tk_dly_tsk( 1000 );				// Wait 1000ms
 	}
 Err1:
 	tk_cls_dev( dd, 0 );					// Close IIC or SIIC Driver
@@ -76,7 +76,7 @@ LOCAL const VB *msg[] = { "down", "up", "right", "left", "near", "far", "R turn"
 		tk_srea_dev( dd, 0x73, &buf, 1, &asize );	// Dummy Read
 	}
 	while( 1 )  {
-		tk_dly_tsk( 250 );
+		tk_dly_tsk( 250 );				// Wait 250ms
 		tk_swri_dev( dd, 0x73, "\x43", 1, &asize );	// Indicate Upper Register
 		data = 0;					// Data Clear
 		tk_srea_dev( dd, 0x73, &data, 2, &asize );	// Read Sensor Value

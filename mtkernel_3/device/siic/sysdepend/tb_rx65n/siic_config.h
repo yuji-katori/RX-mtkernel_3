@@ -87,7 +87,7 @@
 #define		USE_SSDA11_PB7			/* Use SCI11 SSDA11 is PB7 */
 #define		SIIC11_FSCL	400000		/* SIIC11 SCL Frequency(Hz) */
 
-#define	USE_SIIC12			/* Use SCI12 */
+//#define	USE_SIIC12			/* Use SCI12 */
 #define		USE_SSCL12_PE2			/* Use SCI12 SSCL12 is PE2 */
 #define		USE_SSDA12_PE1			/* Use SCI12 SSDA12 is PE1 */
 #define		SIIC12_FSCL	400000		/* SIIC12 SCL Frequency(Hz) */
