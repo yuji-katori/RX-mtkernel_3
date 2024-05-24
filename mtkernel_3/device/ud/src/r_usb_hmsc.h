@@ -5,6 +5,8 @@
  *    Copyright (C) 2023 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2024/5/24.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -86,7 +88,7 @@ typedef struct usb_msc_csw {
 	uint32_t	dcsw_signature;
 	uint32_t	dcsw_tag;
 	uint8_t		dcsw_status;
-	uint8_t		work;
+	uint8_t		work[7];
 } usb_msc_csw_t;
 
 // ERROR CODE

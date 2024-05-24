@@ -2408,6 +2408,7 @@ CLANGSPEC
       <LinkOptionCommandLine-DefaultValue>-entry=_start
 -noprelink
 -output=%BuildModeName%\%ProjectName%.abs
+-map=%BuildModeName%\1st\%ProjectName%.bls
 -list=%BuildModeName%\%ProjectName%.map
 -show=symbol,xreference,total_size
 -optimize=speed
@@ -2430,7 +2431,7 @@ CLANGSPEC
 </LinkOptionCommandLine-DefaultValue>
       <LinkOptionSplitVect-DefaultValue>False</LinkOptionSplitVect-DefaultValue>
       <IsLockedByUser>False</IsLockedByUser>
-      <TimeTagModified--0>-8584875754158080594</TimeTagModified--0>
+      <TimeTagModified--0>-8584850766191883755</TimeTagModified--0>
       <LinkOptionCpu-0>False</LinkOptionCpu-0>
       <LinkOptionForm-0>Absolute</LinkOptionForm-0>
       <LinkOptionFormConvert-0>Stype</LinkOptionFormConvert-0>
@@ -2469,7 +2470,7 @@ D=R
       <LinkOptionBinary-0 />
       <LinkOptionChangeMessageInformationNumber-0 />
       <LinkOptionConvertFolder-0>%BuildModeName%</LinkOptionConvertFolder-0>
-      <LinkOptionMap-0>False</LinkOptionMap-0>
+      <LinkOptionMap-0>True</LinkOptionMap-0>
       <LinkOptionOptimizeShortFormat-0>False</LinkOptionOptimizeShortFormat-0>
       <LinkOptionShowTotalSize-0>True</LinkOptionShowTotalSize-0>
       <LinkOptionChangeMessageWarning-0>None</LinkOptionChangeMessageWarning-0>
@@ -2531,6 +2532,7 @@ _cfn_max_almid
       <LinkOptionCommandLine-0>-entry=_start
 -noprelink
 -output=%BuildModeName%\%ProjectName%.abs
+-map=%BuildModeName%\1st\%ProjectName%.bls
 -list=%BuildModeName%\%ProjectName%.map
 -show=symbol,xreference,total_size
 -optimize=speed
