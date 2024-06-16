@@ -27,6 +27,9 @@ typedef enum {
 #ifdef USE_SIIC5
  SIIC5,
 #endif /* USE_SIIC5 */
+#ifdef USE_SIIC6
+ SIIC6,
+#endif /* USE_SIIC6 */
 #ifdef USE_SIIC8
  SIIC8,
 #endif /* USE_SIIC8 */
@@ -170,6 +173,25 @@ LOCAL void sci5_tei5_hdr(UINT dintno)
 	SIIC_Handler( SIIC5, SIIC_STI_INT );			// Call SIIC_Handler
 }
 #endif /* USE_SIIC5 */
+
+#ifdef USE_SIIC6
+LOCAL void sci6_rxi6_hdr(UINT dintno)
+{
+	SCI6.SCR.BIT.RIE = 0;					// SCI6 RIE Disable
+	SIIC_Handler( SIIC6, SIIC_RXI_INT );			// Call SIIC_Handler
+}
+
+LOCAL void sci6_txi6_hdr(UINT dintno)
+{
+	SIIC_Handler( SIIC6, SIIC_TXI_INT );			// Call SIIC_Handler
+}
+
+LOCAL void sci6_tei6_hdr(UINT dintno)
+{
+	SCI6.SIMR3.BIT.IICSTIF = 0;				// Clear SCI6 IICSTIF of SIMR3
+	SIIC_Handler( SIIC6, SIIC_STI_INT );			// Call SIIC_Handler
+}
+#endif /* USE_SIIC6 */
 
 #ifdef USE_SIIC8
 LOCAL void sci8_rxi8_hdr(UINT dintno)
@@ -523,6 +545,89 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	if( ( ercd = siicDriverEntry( siic_tbl[SIIC5].drvname, SIIC5, &u.t_ddev ) ) < E_OK )
 		goto ERROR;					// Define Device Driver
 #endif /* USE_SIIC5 */
+
+#ifdef USE_SIIC6
+	tk_dis_dsp( );						// Dispatch Disable
+	if( ! MSTP( SCI6 ) )  {					// SCI6 is Already Enable ?
+		tk_ena_dsp( );					// Dispatch Enable
+		return E_OK;					// SCI6 is Already Enable
+	}
+	SYSTEM.PRCR.WORD = 0xA502;				// Protect Disable
+	MSTP( SCI6 ) = 0;					// Enable SCI6
+	SYSTEM.PRCR.WORD = 0xA500;				// Protect Enable
+	tk_ena_dsp( );						// Dispatch Enable
+	SCI6.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
+	SCI6.SCMR.BIT.SDIR = 1;					// MSB First Transmit
+	SCI6.BRR = PCLKB / 32.0F / SIIC6_FSCL - 1;		// SCL Frequency
+	SCI6.MDDR = (SCI6.BRR+1) * 8192.0F * SIIC6_FSCL / PCLKB;// Analize Modulation Duty
+	if( SCI6.MDDR < 0x80 )					// Check  Modulation Duty
+		return E_IO;
+	SCI6.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
+	SCI6.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
+	SCI6.SIMR1.BYTE = 0x01;					// Simple I2C Mode
+	SCI6.SIMR2.BYTE = 0x23;					// Syncronization, NACK Transmission
+	SCI6.SCR.BYTE = 0xB4;					// TX/RX Enable TIE,TEIE Enable
+	tk_dis_dsp( );						// Dispatch Disable
+	MPC.PWPR.BIT.B0WI = 0;					// PFSWE Write Enable
+	MPC.PWPR.BIT.PFSWE = 1;					// PmnPFS Write Enable
+#if defined(USE_SSCL6_P33)
+	MPC.P33PFS.BYTE = 0x0B;					// P33 is SSCL6 Pin
+#elif defined(USE_SSCL6_PB0)
+	MPC.PB0PFS.BYTE = 0x0B;					// PB0 is SSCL6 Pin
+#endif
+#if defined(USE_SSDA6_P32)
+	MPC.P32PFS.BYTE = 0x0B;					// P32 is SSDA6 Pin
+#elif defined(USE_SSDA6_PB1)
+	MPC.PB1PFS.BYTE = 0x0B;					// PB1 is SSDA6 Pin
+#endif
+	MPC.PWPR.BYTE = 0x80;					// Write Disable
+	tk_ena_dsp( );						// Dispatch Enable
+#if defined(USE_SSCL6_P33)
+	PORT3.ODR0.BIT.B6 = 1;					// SSCL6 is Open Drain
+	PORT3.PMR.BIT.B3 = 1;					// P33 is Peripheral Pin
+#elif defined(USE_SSCL6_PB0)
+	PORTB.ODR0.BIT.B0 = 1;					// SSCL6 is Open Drain
+	PORTB.PMR.BIT.B0 = 1;					// PB0 is Peripheral Pin
+#endif
+#if defined(USE_SSDA6_P32)
+	PORT3.ODR0.BIT.B4 = 1;					// SSDA6 is Open Drain
+	PORT3.PMR.BIT.B2 = 1;					// P32 is Peripheral Pin
+#elif defined(USE_SSDA6_PB1)
+	PORTB.ODR0.BIT.B2 = 1;					// SSDA6 is Open Drain
+	PORTB.PMR.BIT.B1 = 1;					// PB1 is Peripheral Pin
+#endif
+	u.t_dint.intatr = TA_HLNG;				// Set Handler Attribute
+#ifdef CLANGSPEC
+	u.t_dint.inthdr = sci6_rxi6_hdr;			// Set Handler Address
+#else
+	u.t_dint.inthdr = (FP)sci6_rxi6_hdr;			// Set Handler Address
+#endif
+	tk_def_int( VECT( SCI6, RXI6 ), &u.t_dint );		// Define Interrupt Handler
+#ifdef CLANGSPEC
+	u.t_dint.inthdr = sci6_txi6_hdr;			// Set Handler Address
+#else
+	u.t_dint.inthdr = (FP)sci6_txi6_hdr;			// Set Handler Address
+#endif
+	tk_def_int( VECT( SCI6, TXI6 ), &u.t_dint );		// Define Interrupt Handler
+#ifdef CLANGSPEC
+	u.t_dint.inthdr = sci6_tei6_hdr;			// Set Handler Address
+#else
+	u.t_dint.inthdr = (FP)sci6_tei6_hdr;			// Set Handler Address
+#endif
+	tk_def_int( VECT( SCI6, TXI6 ), &u.t_dint );		// Define Interrupt Handler
+	EnableInt( VECT( SCI6, RXI6 ), SIIC_CFG_INT_PRIORITY );	// Enable SCI6 RXI6 Interrupt
+	EnableInt( VECT( SCI6, TXI6 ), SIIC_CFG_INT_PRIORITY );	// Enable SCI6 TXI6 Interrupt
+	EnableInt( VECT( SCI6, TEI6 ), SIIC_CFG_INT_PRIORITY );	// Enable SCI6 TEI6 Interrupt
+	siic_tbl[SIIC6].drvname = "siicg";			// Set Driver Name
+	siic_tbl[SIIC6].siic = (void*)&SCI6;			// Set SCI Channel Address
+	siic_tbl[SIIC6].next = SIIC_MAXIMUM;			// Set Next Command Pointer
+	if( ( ercd = siicCreFlg( &siic_tbl[SIIC6], &u.t_cflg ) ) < E_OK )
+		goto ERROR;					// Create SIIC EventFlag
+	if( ( ercd = siicCreTsk( &siic_tbl[SIIC6], SIIC6, &u.t_ctsk ) ) < E_OK )
+		goto ERROR;					// Create SIIC Task
+	if( ( ercd = siicDriverEntry( siic_tbl[SIIC6].drvname, SIIC6, &u.t_ddev ) ) < E_OK )
+		goto ERROR;					// Define Device Driver
+#endif /* USE_SIIC6 */
 
 #ifdef USE_SIIC8
 	tk_dis_dsp( );						// Dispatch Disable

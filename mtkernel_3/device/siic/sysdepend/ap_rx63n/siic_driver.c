@@ -1031,7 +1031,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	MPC.PWPR.BIT.B0WI = 0;					// PFSWE Write Enable
 	MPC.PWPR.BIT.PFSWE = 1;					// PmnPFS Write Enable
 #if defined(USE_SSCL7_P92)
-	MPC.P92PFS.BYTE = 0x0A;					// P92 is SSDL7 Pin
+	MPC.P92PFS.BYTE = 0x0A;					// P92 is SSCL7 Pin
 #endif
 #if defined(USE_SSDA7_P90)
 	MPC.P90PFS.BYTE = 0x0A;					// P90 is SSDA7 Pin

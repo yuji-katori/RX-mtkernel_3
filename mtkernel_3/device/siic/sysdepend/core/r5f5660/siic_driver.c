@@ -1110,7 +1110,9 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_dis_dsp( );						// Dispatch Disable
 	MPC.PWPR.BIT.B0WI = 0;					// PFSWE Write Enable
 	MPC.PWPR.BIT.PFSWE = 1;					// PmnPFS Write Enable
+#if defined(USE_SSCL7_P92)
 	MPC.P92PFS.BYTE = 0x0A;					// P92 is SSCL7 Pin
+#endif
 #if defined(USE_SSDA7_P55)
 	MPC.P55PFS.BYTE = 0x0A;					// P55 is SSDA7 Pin
 #elif defined(USE_SSDA7_P90)
@@ -1118,8 +1120,10 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 #endif
 	MPC.PWPR.BYTE = 0x80;					// Write Disable
 	tk_ena_dsp( );						// Dispatch Enable
+#if defined(USE_SSCL7_P92)
 	PORT9.ODR0.BIT.B4 = 1;					// SSCL7 is Open Drain
 	PORT9.PMR.BIT.B2 = 1;					// P92 is Peripheral Pin
+#endif
 #if defined(USE_SSDA7_P55)
 	PORT5.ODR1.BIT.B2 = 1;					// SSDA7 is Open Drain
 	PORT5.PMR.BIT.B5 = 1;					// P55 is Peripheral Pin

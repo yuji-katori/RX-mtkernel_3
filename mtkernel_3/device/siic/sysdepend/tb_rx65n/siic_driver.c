@@ -1113,7 +1113,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 #if defined(USE_SSCL7_P57)
 	MPC.P57PFS.BYTE = 0x0A;					// P57 is SSCL7 Pin
 #elif defined(USE_SSCL7_P92)
-	MPC.P92PFS.BYTE = 0x0A;					// P92 is SSDL7 Pin
+	MPC.P92PFS.BYTE = 0x0A;					// P92 is SSCL7 Pin
 #endif
 #if defined(USE_SSDA7_P55)
 	MPC.P55PFS.BYTE = 0x0A;					// P55 is SSDA7 Pin
@@ -1204,7 +1204,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 #if defined(USE_SSCL8_PC6)
 	MPC.PC6PFS.BYTE = 0x0A;					// PC6 is SSCL8 Pin
 #elif defined(USE_SSCL8_PJ1)
-	MPC.PJ1PFS.BYTE = 0x0A;					// PJ1 is SSDL8 Pin
+	MPC.PJ1PFS.BYTE = 0x0A;					// PJ1 is SSCL8 Pin
 #endif
 #if defined(USE_SSDA8_PC7)
 	MPC.PC7PFS.BYTE = 0x0A;					// PC7 is SSDA8 Pin

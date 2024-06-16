@@ -89,7 +89,7 @@
 //#define	USE_SSDA8_PK2			/* Use SCI8 SSDA8 is PK2 */
 #define		SIIC8_FSCL	400000		/* SIIC8 SCL Frequency(Hz) */
 
-#define	USE_SIIC9			/* Use SCI9 */
+//#define	USE_SIIC9			/* Use SCI9 */
 #define		USE_SSCL9_PB6			/* Use SCI9 SSCL9 is PB6 */
 //#define	USE_SSCL9_PL1			/* Use SCI9 SSCL9 is PL1 */
 #define		USE_SSDA9_PB7			/* Use SCI9 SSDA9 is PB7 */

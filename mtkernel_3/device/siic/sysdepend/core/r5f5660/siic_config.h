@@ -72,6 +72,7 @@
 #define		SIIC6_FSCL	400000		/* SIIC6 SCL Frequency(Hz) */
 
 //#define	USE_SIIC7			/* Use SCI7 */
+#define		USE_SSCL7_P92			/* Use SCI7 SSCL7 is P92 */
 #define		USE_SSDA7_P55			/* Use SCI7 SSDA7 is P55 */
 //#define	USE_SSDA7_P90			/* Use SCI7 SSDA7 is P90 */
 #define		SIIC7_FSCL	400000		/* SIIC7 SCL Frequency(Hz) */
