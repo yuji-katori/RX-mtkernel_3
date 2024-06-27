@@ -8,7 +8,7 @@
  */
 
 /*
- *	usermain_i2c.c (usermain)
+ *	usermain_sci.c (usermain)
  *	User Main
  */
 
