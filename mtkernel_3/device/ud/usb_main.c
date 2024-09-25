@@ -6,6 +6,7 @@
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
  *    Modified by Yuji Katori at 2023/10/15.
+ *    Modified by Yuji Katori at 2024/09/13.
  *----------------------------------------------------------------------
  */
 
@@ -31,20 +32,6 @@ LOCAL UINT now, next=MAXIMUM;
 LOCAL INT usb_task_stack[400/sizeof(INT)];
 #endif /* USE_IMALLOC */
 
-LOCAL void usb_lock(INT mode)
-{
-W work;
-	if( mode == TRUE )  {						// Lock Process
-		work = TRUE;						// Set Lock Value
-		while( __xchg( &lock, &work ), work == TRUE )		// Wait Unlock
-			tk_dly_tsk( 1 );				// Wait 1ms
-	}
-	else  {								// Unlock Process
-		work = FALSE;						// Set Unlock Value
-		__xchg(	&lock, &work );					// Unlock
-	}
-}
-
 LOCAL ER ud_open(ID devid, UINT omode, void *exinf)
 {
 	return E_OK;
@@ -58,7 +45,7 @@ LOCAL ER ud_close(ID devid, UINT option, void *exinf)
 LOCAL ER ud_exec(T_DEVREQ *devreq, TMO tmout, void *exinf)
 {
 ER ercd;
-	usb_lock( TRUE );							// Lock
+	drv_lock( TRUE, &lock );						// Lock
 	if( now & next )							// Check Request Count
 		ercd = E_LIMIT;							// Over Request Count
 	else  {
@@ -71,7 +58,7 @@ ER ercd;
 		tk_set_flg( ObjID[FLGID], EXECCMD );				// Wakeup sdc_tsk
 		ercd = E_OK;							// Normal return
 	}
-	usb_lock( FALSE );							// UnLock
+	drv_lock( FALSE, &lock );						// UnLock
 	return ercd;
 }
 
@@ -86,12 +73,12 @@ ER ercd;
 
 LOCAL ER ud_abort(ID tskid, T_DEVREQ *devreq, INT nreq, void *exinf)
 {
-	usb_lock( TRUE );							// Lock
+	drv_lock( TRUE, &lock );						// Lock
 	now &= ~((UINT)devreq->exinf);						// Clear Flag Pattern
 	tk_set_flg( ObjID[FLGID], (UINT)devreq->exinf );			// Wakeup Request Task
 	devreq->exinf = NULL;							// Clear Flag Pattern
 	devreq->error = E_ABORT;						// Set Error Code
-	usb_lock( FALSE );							// UnLock
+	drv_lock( FALSE, &lock );						// UnLock
 	return E_OK;
 }
 
@@ -169,23 +156,23 @@ T_DEVREQ *devreq;
 	while( 1 )  {
 		tk_wai_flg( ObjID[FLGID], TSK_WAIT_ALL, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
 		if( flgptn & EXECCMD )  {					// Execute Commond ?
-			usb_lock( TRUE );					// Lock
+			drv_lock( TRUE, &lock );				// Lock
 			devreq = req[rd];					// Read Device Request
 			if( ++rd == CFN_MAX_REQDEV+1 )				// Read Pointer is Max ?
 				rd = 0;						// Clear Read Pointer
 			if( wt != rd )						// Nothing Device Request ?
 				tk_set_flg( ObjID[FLGID], EXECCMD );		// Set Execute Command Bit
-			usb_lock( FALSE );					// UnLock
+			drv_lock( FALSE, &lock );				// UnLock
 			if( devreq->abort )					// Abort request ?
 				devreq->error = E_ABORT;			// Set Error Code
 			else if( devreq->cmd == TDC_READ )			// Command is Read ?
 				devreq->error = USB_Read( devreq );		// USB Memory Read
 			else							// Write Command
 				devreq->error = USB_Write( devreq );		// USB Memory Write
-			usb_lock( TRUE );					// Lock
+			drv_lock( TRUE, &lock );				// Lock
 			now &= ~((UINT)devreq->exinf);				// Clear Flag Pattern
 			tk_set_flg( ObjID[FLGID], (UINT)devreq->exinf );	// Wakeup Request Task
-			usb_lock( FALSE );					// UnLock
+			drv_lock( FALSE, &lock );				// UnLock
 		}
 		if( flgptn & USBEVENT )  {					// USB Event ?
 			USB_Task( );						// USB Task

@@ -5,6 +5,8 @@
  *    Copyright (C) 2022 by Yuji Katori.
  *    This software is distributed under the T-License 2.1.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2024/09/13.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -50,6 +52,7 @@ IMPORT void usb_cstd_dma_driver(void);
 IMPORT void R_USB_Open(void);
 IMPORT void R_USB_Close(void);
 
+IMPORT void drv_lock(INT mode, W *lock);
 IMPORT INT  USB_GetStatus(void);
 IMPORT UINT USB_GetBlockCount(void);
 IMPORT ER   USB_ReadBlock(void *buf, W start, SZ size);

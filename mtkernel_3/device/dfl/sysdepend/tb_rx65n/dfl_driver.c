@@ -97,11 +97,6 @@ EXPORT void DFL_Write(T_DEVREQ *devreq)
 UW *src, *dst, data;
 INT i;
 	ObjID = tk_get_tid( );						// Get Request Task ID
-	if( tk_slp_tsk( TMO_POL ) == E_OK )  {				// Check Wakeup Count
-		tk_wup_tsk( ObjID );					// Release Wakeup Count
-		devreq->error = E_OBJ;					// Set Object Status Error
-		return;
-	}
 	src = devreq->buf;						// Make Source Address
 	dst = (UW *)devreq->start;					// Make Destination Address
 	devreq->asize = 0;						// Initialize Actual Size
@@ -113,8 +108,13 @@ INT i;
 		FACI.BYTE = 0xE8;					// Set Program Command
 		FACI.BYTE = 0x02;					// Set Write Count
 		data = *src++;						// Read Write Data
+#ifdef __BIG
+		data =__revl( data );					// Byte Reverse
+		data =__revw( data );					// Word Reverse
+#endif
 		FACI.WORD = data;					// Write Lower Word
-		data =__revl( data );					// Word Reverse
+		data =__revl( data );					// Byte Reverse
+		data =__revw( data );					// Word Reverse
 		FACI.WORD = data;					// Write Higher Word
 		FACI.BYTE = 0xD0;					// Set Execute Command
 		if( tk_slp_tsk( tDP4 ) == E_OK )  {			// Check FRDY Flag
@@ -137,10 +137,6 @@ EXPORT ER DFL_Blank_Check(UW fsaddr, UW feaddr)
 {
 ER ercd;
 	ObjID = tk_get_tid( );						// Get Request Task ID
-	if( tk_slp_tsk( TMO_POL ) == E_OK )  {				// Check Wakeup Count
-		tk_wup_tsk( ObjID );					// Release Wakeup Count
-		return E_OBJ;						// Set Object Status Error
-	}
 	FLASH.FWEPROR.BYTE = 0x01;					// Enable P/E
 	FLASH.FENTRYR.WORD = 0xAA80;					// Migrate P/E Mode
 	while( FLASH.FENTRYR.WORD != 0x0080 )  ;			// Check Write Value
@@ -169,10 +165,6 @@ EXPORT ER DFL_Block_Erase(UW fsaddr, UW feaddr)
 ER ercd;
 TMO tmout;
 	ObjID = tk_get_tid( );						// Get Request Task ID
-	if( tk_slp_tsk( TMO_POL ) == E_OK )  {				// Check Wakeup Count
-		tk_wup_tsk( ObjID );					// Release Wakeup Count
-		return E_OBJ;						// Set Object Status Error
-	}
 	switch( feaddr - fsaddr )  {					// Erase Length
 	case 60:	tmout = tDP64;		break;			//  64 Byte Erase
 	case 124:	tmout = tDP128;		break;			// 128 Byte Erase

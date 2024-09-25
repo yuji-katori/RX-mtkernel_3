@@ -17,7 +17,7 @@
 #include <tm/tmonitor.h>
 #include "dev_dfl.h"
 
-char buf[64];
+VB buf[64];
 
 EXPORT void flash_tsk(INT stacd, void *exinf)
 {
@@ -75,9 +75,9 @@ T_CTSK t_ctsk;
 	t_ctsk.itskpri = 10;					// Set Task Priority
 	t_ctsk.task =  flash_tsk;				// Set Task Start Address
 	strcpy( t_ctsk.dsname, "D flash" );			// Set Debugger Support Name
-	if( (objid = tk_cre_tsk( &t_ctsk )) <= E_OK )		// Create Gesture Task
+	if( (objid = tk_cre_tsk( &t_ctsk )) <= E_OK )		// Create Data Flash Task
 		goto Err;
-	if( tk_sta_tsk( objid, 0 ) < E_OK )			// Start Gesture Task
+	if( tk_sta_tsk( objid, 0 ) < E_OK )			// Start Data Flash Task
 		goto Err;
 	tk_slp_tsk( TMO_FEVR );					// Sleep
 Err:

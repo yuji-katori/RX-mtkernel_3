@@ -56,6 +56,11 @@
       <TreeImageGuid>03cad1e8-2eb3-4cde-a8a3-982423631122</TreeImageGuid>
       <ParentItem>1b03a8c6-0d5a-4331-81ee-4ef337941490</ParentItem>
     </Instance>
+    <Instance Guid="b409aec9-e9c4-4e51-a393-d3deb1832f27">
+      <Name>common</Name>
+      <Type>Category</Type>
+      <ParentItem>2db84c0c-5dd0-4325-b100-2ca55561809a</ParentItem>
+    </Instance>
     <Instance Guid="898e4299-1811-4642-acbd-4430d4be2134">
       <Name>include</Name>
       <Type>Category</Type>
@@ -75,6 +80,13 @@
       <Name>rtc</Name>
       <Type>Category</Type>
       <ParentItem>2db84c0c-5dd0-4325-b100-2ca55561809a</ParentItem>
+    </Instance>
+    <Instance Guid="476ea24b-41d4-4969-9da8-c99c7d7c7db0">
+      <Name>drv_lock.c</Name>
+      <Type>File</Type>
+      <RelativePath>..\..\device\common\drv_lock.c</RelativePath>
+      <TreeImageGuid>941832c1-fc3b-4e1b-94e8-01ea17128b42</TreeImageGuid>
+      <ParentItem>b409aec9-e9c4-4e51-a393-d3deb1832f27</ParentItem>
     </Instance>
     <Instance Guid="765ba1db-6682-4207-b979-182d4784ee59">
       <Name>dev_disk.h</Name>
@@ -1780,7 +1792,9 @@
       <SourceItemType80>CSource</SourceItemType80>
       <SourceItemGuid81>62e7eab0-ecf5-4461-a861-ba78c7674e7f</SourceItemGuid81>
       <SourceItemType81>CSource</SourceItemType81>
-      <SourceItemCount>82</SourceItemCount>
+      <SourceItemGuid82>476ea24b-41d4-4969-9da8-c99c7d7c7db0</SourceItemGuid82>
+      <SourceItemType82>CSource</SourceItemType82>
+      <SourceItemCount>83</SourceItemCount>
       <LastDeviceChangedCounter>0</LastDeviceChangedCounter>
     </Instance>
     <Instance Guid="9e208646-ccba-4100-a676-29b1efe6545f">
@@ -2362,7 +2376,7 @@ CLANGSPEC
 </LinkOptionCommandLine-DefaultValue>
       <LinkOptionSplitVect-DefaultValue>False</LinkOptionSplitVect-DefaultValue>
       <IsLockedByUser>False</IsLockedByUser>
-      <TimeTagModified--0>-8584943222239134871</TimeTagModified--0>
+      <TimeTagModified--0>-8584753989921580755</TimeTagModified--0>
       <LinkOptionCpu-0>False</LinkOptionCpu-0>
       <LinkOptionForm-0>Absolute</LinkOptionForm-0>
       <LinkOptionFormConvert-0>Stype</LinkOptionFormConvert-0>
@@ -3537,6 +3551,10 @@ _cfn_max_almid
       <ItemAddTime>638375432072887257</ItemAddTime>
       <ItemAddTimeCount>0</ItemAddTimeCount>
     </Instance>
+    <Instance Guid="476ea24b-41d4-4969-9da8-c99c7d7c7db0">
+      <ItemAddTime>638618370855717650</ItemAddTime>
+      <ItemAddTimeCount>0</ItemAddTimeCount>
+    </Instance>
     <Instance Guid="a7be515f-f007-45ed-9059-4e1500c0f74d">
       <TimeTagModified-SourceItem0--0>-8585335093747236267</TimeTagModified-SourceItem0--0>
       <SourceItem0-IsLockedByUser>False</SourceItem0-IsLockedByUser>
@@ -3846,6 +3864,10 @@ _cfn_max_almid
       <SourceItem81-IsLockedByUser>False</SourceItem81-IsLockedByUser>
       <SourceItem81-BuildingTarget-0>True</SourceItem81-BuildingTarget-0>
       <SourceItem81-IndividualCompileOption-0>False</SourceItem81-IndividualCompileOption-0>
+      <TimeTagModified-SourceItem82--0>-8584753989999058158</TimeTagModified-SourceItem82--0>
+      <SourceItem82-IsLockedByUser>False</SourceItem82-IsLockedByUser>
+      <SourceItem82-BuildingTarget-0>True</SourceItem82-BuildingTarget-0>
+      <SourceItem82-IndividualCompileOption-0>False</SourceItem82-IndividualCompileOption-0>
     </Instance>
     <Instance Guid="c20a78d9-8038-46fe-9b87-bc2fa2aa9bdc">
       <TimeTagModified-SourceItem27--0>-8585727022459886753</TimeTagModified-SourceItem27--0>
