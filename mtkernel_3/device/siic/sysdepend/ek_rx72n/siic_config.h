@@ -19,6 +19,11 @@
 /* SIIC interrupt priority level. */
 #define	SIIC_CFG_INT_PRIORITY				(9)
 
+#define		USE_SIIC6			/* Use SCI6 */
+#define		USE_SSCL6_P33			/* Use SCI6 SSCL6 is P33 */
+#define		USE_SSDA6_P32			/* Use SCI6 SSDA6 is P32 */
+#define		SIIC6_FSCL	400000		/* SIIC6 SCL Frequency(Hz) */
+
 #define		USE_SIIC11			/* Use SCI11 */
 #define		USE_SSCL11_PB6			/* Use SCI11 SSCL11 is PB6 */
 #define		USE_SSDA11_PB7			/* Use SCI11 SSDA11 is PB7 */
