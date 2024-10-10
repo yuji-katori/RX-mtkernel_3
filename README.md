@@ -39,3 +39,5 @@
 　- シリアルドライバ（内蔵SCI利用、RX231、RX23W、RX65N、RX660、RX66N、RX72N）
 
 　- データフラッシュドライバ（内蔵FLASH利用、RX65N）
+
+■ RX72N Envision KitにおけるTouch PanelとTFT Displayのサンプルをプレリリースしました。
