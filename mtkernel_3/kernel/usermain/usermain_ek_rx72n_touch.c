@@ -54,7 +54,7 @@ EXPORT void touch_tsk(INT stacd, void *exinf)
 ID dd;
 UB num, buf[4];
 SZ asize;
-INT i, x, y;
+INT i, x, y, id;
 
 	dd = tk_opn_dev( "siicg", TD_UPDATE );				// Open Simple IIC Driver
 	PORT6.PODR.BIT.B6 = 1;						// Output VAlue is High
@@ -68,9 +68,9 @@ INT i, x, y;
 	tk_ena_dsp( );							// Dispatch Enable
 	PORT3.PMR.BIT.B4 = 1;						// P34 is Peripheral Pin
 	EnableInt( VECT( ICU, IRQ4 ), 1 );				// IRQ4 Interrupt Level is 4
-	PORT6.PDR.BIT.B6 = 0;						// Wakuep Signal is Low
+	PORT6.PDR.BIT.B6 = 0;						// Wakeup Signal is Low
 	tk_dly_tsk( 5 );						// 5ms Wait
-	PORT6.PDR.BIT.B6 = 1;						// Wakuep Signal is High
+	PORT6.PDR.BIT.B6 = 1;						// Wakeup Signal is High
 	while( 1 )  {
 		tm_putstring("Gesture Mode.\n\r");			// Gesture Mode
 		while( 1 )  {
@@ -105,10 +105,12 @@ INT i, x, y;
 				case 0x00: tm_putstring("Put Down "); break;
 				case 0x40: tm_putstring("Put Up   "); break;
 				case 0x80: tm_putstring("Contact  "); break;
+				case 0xC0: tm_putstring("         "); break;
 				}
+				id = buf[2] >> 4;			// Make Touch ID
 				x = ( ( buf[0] & 0x0F ) << 8 ) + buf[1];// Make X Position
 				y = ( ( buf[2] & 0x0F ) << 8 ) + buf[3];// Make Y Position
-				tm_printf(" #%d x =%4d, y =%4d\n\r", i+1, x, y);
+				tm_printf(" #%d ID = %2d, x =%4d, y =%4d\n\r", i+1, id, x, y);
 			}
 		}
 	}

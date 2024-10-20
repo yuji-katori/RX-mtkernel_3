@@ -46,13 +46,14 @@ UB buf[2];
 SZ asize;
 INT data;
 	dd = tk_opn_dev( "siicl", TD_UPDATE );			// Open Simple IIC Driver
-	tk_swri_dev( dd, 0x88, "\x0F\x28", 2, &asize );		// Initialize ISL29034
-	tk_swri_dev( dd, 0x88, "\x00\xC0", 2, &asize );		// Set Measures IR Mode
+	tk_swri_dev( dd, 0x44, "\x0F\x28", 2, &asize );		// Initialize ISL29034
+	tk_swri_dev( dd, 0x44, "\x00\xC0", 2, &asize );		// Set Measures IR Mode
 	while( 1 )  {
-		tk_swri_dev( dd, 0x88, "\x02",  1, &asize );	// Select Data(LSB)
-		tk_srea_dev( dd, 0x88, &buf[0], 1, &asize );	// Read D7-D0
-		tk_swri_dev( dd, 0x88, "\x03",  1, &asize );	// Select Data(MSB)
-		tk_srea_dev( dd, 0x88, &buf[1], 1, &asize );	// Read D15-D8
+		tk_swri_dev( dd, 0x44, "\x02",  1, &asize );	// Select Data(LSB)
+//		tk_srea_dev( dd, 0x44, &buf[0], 1, &asize );	// Read D7-D0
+//		tk_swri_dev( dd, 0x44, "\x03",  1, &asize );	// Select Data(MSB)
+//		tk_srea_dev( dd, 0x44, &buf[1], 1, &asize );	// Read D15-D8
+		tk_srea_dev( dd, 0x44, buf, 2, &asize );	// Read D7-D0,D15-D8
 		data = ( buf[1] << 8 ) + buf[0];		// Make Light Sensor Value
 		tm_printf("%d\n",data);				// Output Console
 		tk_dly_tsk( 500 );				// Wait 500ms
