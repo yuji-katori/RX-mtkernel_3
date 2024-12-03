@@ -42,6 +42,6 @@
 
 ■ RX72N Envision KitにおけるTouch PanelとTFT Displayのサンプルをリリースしました。
 
-■ RX72N Envision KitのTFT Displayをキャラクタスクロールとして使用するサンプルをプレスリリースしました。
+■ RX72N Envision KitのTFT Displayをキャラクタスクロールとして使用するサンプルをプレリリースしました。
 
-■ RX72N Envision KitのQSPI接続Serial Flash Memoryを操作するドライバのサンプルをプレスリリースしました。
+■ RX72N Envision KitのQSPI接続Serial Flash Memoryを操作するドライバのサンプルをプレリリースしました。
