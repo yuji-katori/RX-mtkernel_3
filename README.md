@@ -40,4 +40,8 @@
 
 　- データフラッシュドライバ（内蔵FLASH利用、RX65N）
 
-■ RX72N Envision KitにおけるTouch PanelとTFT Displayのサンプルをプレリリースしました。
+■ RX72N Envision KitにおけるTouch PanelとTFT Displayのサンプルをリリースしました。
+
+■ RX72N Envision KitのTFT Displayをキャラクタスクロールとして使用するサンプルをプレスリリースしました。
+
+■ RX72N Envision KitのQSPI接続Serial Flash Memoryを操作するドライバのサンプルをプレスリリースしました。
