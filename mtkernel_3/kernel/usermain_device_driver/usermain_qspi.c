@@ -40,8 +40,7 @@ INT i, j;
 	}
 			
 	tm_putstring(" Write Data\n\r");
-	tk_swri_dev( dd, DN_PP, buf[0], sizeof(buf[0]), &asize );				// Write Data
-	tk_swri_dev( dd, DN_WTADDR, &addr, sizeof(UW), &asize );		// Set Write Address
+	tk_swri_dev( dd, DN_PP, buf[0], sizeof(buf[0]), &asize );		// Write Data
 	tk_swri_dev( dd, DN_RDADDR, &addr, sizeof(UW), &asize );		// Set Read Address
 	tm_putstring(" Read Data\n\r");
 	tk_srea_dev( dd, DN_DREAD, buf[1], sizeof(buf[1]), &asize );		// Dual Read

@@ -76,7 +76,7 @@ INT i;
 		CMD += 0x30;						// Set QREAD Command Code Offset
 	case DN_DREAD:							// (R) Dual Read
 		CMD += 0x30;						// Set DREAD Command Code Offset
-	case DN_FREAD:							// (R) Frst Read
+	case DN_FREAD:							// (R) Fast Read
 		CMD += 0x0B;						// Set FREAD Command Code Offset
 		if( devreq->size > 0x400000UL || devreq->buf == NULL )  {
 			devreq->error = E_PAR;				// Set Error Code
@@ -285,9 +285,9 @@ UB SR, CR;
 	QSPI.SPCMD1.WORD = 0xE013;				// Single, Byte, Read Operation
 	QSPI.SPBMUL1 = 1;					// 1 Count
 	QSPI.SPSCR.BYTE = 0x01;					// CMD0 --> CMD1
-	QSPI.SPDR.BYTE.HH = 0x15;				// Set RDSR Command
+	QSPI.SPDR.BYTE.HH = 0x15;				// Set RDCR Command
 	QSPI_EndCheck( );					// Operation End Check
-	CR = QSPI.SPDR.WORD.H;					// Read SR Value
+	CR = QSPI.SPDR.WORD.H;					// Read CR Value
 //	QSPI.SPCMD0.WORD = 0xE083;				// Single, Byte, Write Operation
 //	QSPI.SPBMUL0 = 1;					// 1 Count
 //	QSPI.SPCMD1.WORD = 0xE013;				// Single, Byte, Read Operation

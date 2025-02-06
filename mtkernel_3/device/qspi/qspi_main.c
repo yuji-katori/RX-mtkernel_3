@@ -23,7 +23,7 @@ LOCAL UB rd, wt;
 LOCAL T_DEVREQ *req[CFN_MAX_REQDEV+1];
 LOCAL UINT now, next = QSPI_MAXIMUM;
 #if !USE_IMALLOC
-LOCAL INT qspi_task_stack[400/sizeof(INT)];
+LOCAL INT qspi_task_stack[260/sizeof(INT)];
 #endif /* USE_IMALLOC */
 
 LOCAL ER qspi_open(ID devid, UINT omode, void *exinf)
@@ -127,7 +127,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; } u;
 	u.t_ctsk.tskatr |= TA_USERBUF;				// Set Task Attribute
 	u.t_ctsk.bufptr = qspi_task_stack;			// Set Stack Top Address
 #endif /* USE_OBJECT_NAME */
-	u.t_ctsk.stksz = 320;					// Set Task StackSize
+	u.t_ctsk.stksz = 260;					// Set Task StackSize
 	u.t_ctsk.itskpri = QSPI_GetTaskPri( );			// Set Task Priority
 #ifdef CLANGSPEC
 	u.t_ctsk.task =  qspi_tsk;				// Set Task Start Address

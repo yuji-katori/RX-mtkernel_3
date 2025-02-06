@@ -32,7 +32,7 @@ typedef enum {
 	DN_BE     = -107,	// (W) Block Erase (64K Byte)
 	DN_CE     = -108,	// (W) Chip Erase
 	DN_PP     =    0,	// (W) Page Program
-	DN_FREAD  =    1,	// (R) Frst Read
+	DN_FREAD  =    1,	// (R) Fast Read
 	DN_DREAD  =    2,	// (R) Dual Read
 	DN_QREAD  =    3,	// (R) Quad Read
 } SeriFlashComm;

@@ -1,9 +1,9 @@
 ﻿<CubeSuiteProject>
-  <ProductVersion>9.11.00.00</ProductVersion>
+  <ProductVersion>9.12.00.00</ProductVersion>
   <Class Guid="68f4a651-b9cd-473b-a595-b00447132ffa">
     <Instance Guid="00000000-0000-0000-0000-000000000000">
       <FormatVersion>2.0</FormatVersion>
-      <FileVersion>9.11</FileVersion>
+      <FileVersion>9.12</FileVersion>
       <ProjectGuid>fa1d2ca9-a414-4b03-9058-e035f2122761</ProjectGuid>
       <ProjectItemGuid>f6fc3a3e-a060-427a-9671-45dfe9355524</ProjectItemGuid>
       <FileCategoryGuid>70305a64-83e0-48ac-86e4-02a06f3a4f73</FileCategoryGuid>
@@ -1516,20 +1516,21 @@
       <SetAllBuildModeValue-DefaultValue>False</SetAllBuildModeValue-DefaultValue>
       <AsmOptionDefine-DefaultValue />
       <COptionDefine-DefaultValue />
-      <DependencyFileExistCheckingType-DefaultValue>Rebuild</DependencyFileExistCheckingType-DefaultValue>
       <GeneralOptionFpu-DefaultValue>Fpu</GeneralOptionFpu-DefaultValue>
+      <GeneralOptionGroupMessages-DefaultValue>False</GeneralOptionGroupMessages-DefaultValue>
       <GeneralOptionNousePidRegister-DefaultValue>True</GeneralOptionNousePidRegister-DefaultValue>
       <LinkOptionConvertFolder-DefaultValue>%BuildModeName%</LinkOptionConvertFolder-DefaultValue>
       <LinkOptionOptimize-DefaultValue>None</LinkOptionOptimize-DefaultValue>
       <AsmOptionDebug-DefaultValue>True</AsmOptionDebug-DefaultValue>
       <COptionDebug-DefaultValue>True</COptionDebug-DefaultValue>
-      <EnsureCompatibilityOfPathAndLinkageOrder-DefaultValue>False</EnsureCompatibilityOfPathAndLinkageOrder-DefaultValue>
+      <DependencyFileExistCheckingType-DefaultValue>Rebuild</DependencyFileExistCheckingType-DefaultValue>
       <GeneralOptionDpfpu-DefaultValue>Dpfpu</GeneralOptionDpfpu-DefaultValue>
       <LinkOptionConvertFileName-DefaultValue>%ProjectName%.mot</LinkOptionConvertFileName-DefaultValue>
       <LinkOptionOptimizeSymbolDelete-DefaultValue>False</LinkOptionOptimizeSymbolDelete-DefaultValue>
       <PreBuildCommands-DefaultValue />
       <AsmOptionGoptimize-DefaultValue>False</AsmOptionGoptimize-DefaultValue>
       <COptionOptimize-DefaultValue>Level2</COptionOptimize-DefaultValue>
+      <EnsureCompatibilityOfPathAndLinkageOrder-DefaultValue>False</EnsureCompatibilityOfPathAndLinkageOrder-DefaultValue>
       <GeneralOptionEndian-DefaultValue>Little</GeneralOptionEndian-DefaultValue>
       <LinkOptionMultiConvertFileName-DefaultValue />
       <LinkOptionOptimizeSameCode-DefaultValue>False</LinkOptionOptimizeSameCode-DefaultValue>
@@ -1571,7 +1572,7 @@
       <GeneralOptionSaveAcc-DefaultValue>False</GeneralOptionSaveAcc-DefaultValue>
       <GeneralOptionNoSaveTfu-DefaultValue>True</GeneralOptionNoSaveTfu-DefaultValue>
       <IsLockedByUser>False</IsLockedByUser>
-      <TimeTagModified--0>-8584708364443522986</TimeTagModified--0>
+      <TimeTagModified--0>-8584656383874485242</TimeTagModified--0>
       <BuildMode-0>DefaultBuild</BuildMode-0>
       <Memo-0 />
       <OutputMessageFormat-0>%TargetFiles%</OutputMessageFormat-0>
@@ -1590,14 +1591,15 @@
       <GeneralOptionEnableParallelBuilding-0>True</GeneralOptionEnableParallelBuilding-0>
       <GeneralOptionOutputFolder-0>%BuildModeName%</GeneralOptionOutputFolder-0>
       <GeneralOptionPid-0>None</GeneralOptionPid-0>
-      <DependencyFileExistCheckingType-0>Rebuild</DependencyFileExistCheckingType-0>
       <GeneralOptionFpu-0>Fpu</GeneralOptionFpu-0>
+      <GeneralOptionGroupMessages-0>False</GeneralOptionGroupMessages-0>
       <GeneralOptionNousePidRegister-0>True</GeneralOptionNousePidRegister-0>
       <LinkOptionConvertFolder-0>%BuildModeName%</LinkOptionConvertFolder-0>
-      <EnsureCompatibilityOfPathAndLinkageOrder-0>False</EnsureCompatibilityOfPathAndLinkageOrder-0>
+      <DependencyFileExistCheckingType-0>Rebuild</DependencyFileExistCheckingType-0>
       <GeneralOptionDpfpu-0>Dpfpu</GeneralOptionDpfpu-0>
       <LinkOptionConvertFileName-0>%ProjectName%.mot</LinkOptionConvertFileName-0>
       <AsmOptionGoptimize-0>True</AsmOptionGoptimize-0>
+      <EnsureCompatibilityOfPathAndLinkageOrder-0>False</EnsureCompatibilityOfPathAndLinkageOrder-0>
       <GeneralOptionEndian-0>Little</GeneralOptionEndian-0>
       <LinkOptionMultiConvertFileName-0 />
       <AsmOptionListFile-0>False</AsmOptionListFile-0>
@@ -2078,7 +2080,7 @@ D_1=R_1
 </LinkOptionCommandLine-DefaultValue>
       <LinkOptionSplitVect-DefaultValue>False</LinkOptionSplitVect-DefaultValue>
       <IsLockedByUser>False</IsLockedByUser>
-      <TimeTagModified--0>-8584684162841357415</TimeTagModified--0>
+      <TimeTagModified--0>-8584656362182378019</TimeTagModified--0>
       <LinkOptionCpu-0>False</LinkOptionCpu-0>
       <LinkOptionForm-0>Absolute</LinkOptionForm-0>
       <LinkOptionFormConvert-0>Stype</LinkOptionFormConvert-0>
@@ -2429,7 +2431,7 @@ _cfn_max_almid
       <LbgOptionFloatOrder-DefaultValue>False</LbgOptionFloatOrder-DefaultValue>
       <LbgOptionBranchChaining-DefaultValue>None</LbgOptionBranchChaining-DefaultValue>
       <IsLockedByUser>False</IsLockedByUser>
-      <TimeTagModified--0>-8584684162841357415</TimeTagModified--0>
+      <TimeTagModified--0>-8584656362182378019</TimeTagModified--0>
       <LbgOptionLanguage-0>C99</LbgOptionLanguage-0>
       <LbgOptionLibraryMode-0>MakeOptionChanged</LbgOptionLibraryMode-0>
       <LbgOptionLogo-0>False</LbgOptionLogo-0>
@@ -3299,13 +3301,13 @@ _cfn_max_almid
       <SourceItem51-IsLockedByUser>False</SourceItem51-IsLockedByUser>
       <SourceItem51-BuildingTarget-0>True</SourceItem51-BuildingTarget-0>
       <SourceItem51-IndividualCompileOption-0>False</SourceItem51-IndividualCompileOption-0>
-      <TimeTagModified-SourceItem52--0>-8584684162882412123</TimeTagModified-SourceItem52--0>
+      <TimeTagModified-SourceItem52--0>-8584656362233421584</TimeTagModified-SourceItem52--0>
       <SourceItem52-IsLockedByUser>False</SourceItem52-IsLockedByUser>
-      <SourceItem52-BuildingTarget-0>True</SourceItem52-BuildingTarget-0>
+      <SourceItem52-BuildingTarget-0>False</SourceItem52-BuildingTarget-0>
       <SourceItem52-IndividualCompileOption-0>False</SourceItem52-IndividualCompileOption-0>
-      <TimeTagModified-SourceItem53--0>-8584684162841357415</TimeTagModified-SourceItem53--0>
+      <TimeTagModified-SourceItem53--0>-8584656362182378019</TimeTagModified-SourceItem53--0>
       <SourceItem53-IsLockedByUser>False</SourceItem53-IsLockedByUser>
-      <SourceItem53-BuildingTarget-0>False</SourceItem53-BuildingTarget-0>
+      <SourceItem53-BuildingTarget-0>True</SourceItem53-BuildingTarget-0>
       <SourceItem53-IndividualCompileOption-0>False</SourceItem53-IndividualCompileOption-0>
       <TimeTagModified-SourceItem54--0>-8585727034543383265</TimeTagModified-SourceItem54--0>
       <SourceItem54-IsLockedByUser>False</SourceItem54-IsLockedByUser>
