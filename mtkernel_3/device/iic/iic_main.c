@@ -5,6 +5,8 @@
  *    Copyright (C) 2024 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2026/5/30.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -15,6 +17,10 @@
 
 #include <tk/tkernel.h>
 #include <dev_iic.h>
+
+#if CFN_MAX_REQDEV > 26
+#error "Over max request device. Please review CFN_MAX_REQDEV in config.h"
+#endif
 
 LOCAL ER iic_open(ID devid, UINT omode, void *exinf)
 {

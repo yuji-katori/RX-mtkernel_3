@@ -5,6 +5,8 @@
  *    Copyright (C) 2024 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2026/6/4.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -34,6 +36,7 @@ volatile struct st_riic __evenaccess *IIC = iic->iic;
 UINT flgptn;
 ER ercd;
 SZ i;
+	devreq->asize = 0;					// Clear Actual Size
 	if( IIC->ICCR2.BIT.BBSY )				// Check I2C Bus Occupation
 		return E_IO;					// I/O Error
 	IIC->ICIER.BIT.TIE = 1;					// Enable TIE
@@ -44,7 +47,7 @@ SZ i;
 	IIC->ICDRT = devreq->start << 1 | 0x01;			// Set Slave Address + R
 	tk_wai_flg( iic->flgid, IIC_RXI_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
 	if( IIC->ICDRR )  ;					// Dummy Read,	NACK Receive ?
-	if( ! tk_wai_flg( iic->flgid, IIC_EEI_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_POL ) )  {
+	if( ! tk_wai_flg( iic->flgid, IIC_NACK_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_POL ) )  {
 		IIC->ICCR2.BIT.SP = 1;				// Generate STOP Condition
 		ercd = E_IO;					// I/O Error
 	}
@@ -57,6 +60,7 @@ SZ i;
 		tk_wai_flg( iic->flgid, IIC_RXI_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
 		IIC->ICCR2.BIT.SP = 1;				// Generate STOP Condition
 		((UB*)devreq->buf)[i] = IIC->ICDRR;		// Read Receive Data
+		devreq->asize = devreq->size;			// Set Actual Size
 		ercd = E_OK;					// Nomal End
 	}
 	IIC->ICIER.BIT.RIE = 0;					// Disable RIE
@@ -72,6 +76,7 @@ volatile struct st_riic __evenaccess *IIC = iic->iic;
 UINT flgptn;
 ER ercd;
 SZ i;
+	devreq->asize = 0;					// Clear Actual Size
 	if( IIC->ICCR2.BIT.BBSY )				// Check I2C Bus Occupation
 		return E_IO;					// I/O Error
 	IIC->ICIER.BIT.TIE = 1;					// Enable TIE
@@ -84,6 +89,7 @@ SZ i;
 			break;
 		IIC->ICDRT = ((UB*)devreq->buf)[i];		// Write Send Data
 	}
+	devreq->asize = i;					// Set Actual Size
 	if( flgptn & IIC_NACK_INT )				// NACK Receive ?
 		ercd = E_IO;					// I/O Error
 	else  {
@@ -95,8 +101,6 @@ SZ i;
 	IIC->ICIER.BIT.TIE = 0;					// Disable TIE
 	IIC->ICCR2.BIT.SP = 1;					// Generate STOP Condition
 	tk_wai_flg( iic->flgid, IIC_EEI_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
-	if( flgptn & IIC_NACK_INT )
-		ercd = E_IO;
 	return ercd;
 }
 
@@ -198,8 +202,8 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	RIIC0.ICCR1.BIT.ICE = 1;				// SCL0,SDA0 Pins in Active State
 	RIIC0.ICSER.BYTE = 0x00;				// SARL0,SARU0,General ID is Ignore
 	RIIC0.ICMR1.BIT.CKS = 2;				// Base Clock = PCLKB/4(60/4=15MHz)
-	RIIC0.ICBRH.BIT.BRH = PCLKB/4.F/1000000*IIC0_HPSCL-1E-6F; // SCL0 High Pulse Width Minimum
-	RIIC0.ICBRL.BIT.BRL = PCLKB/4.F/1000000*IIC0_LPSCL-1E-6F; // SCL0 Low  Pulse Width Minimum
+	RIIC0.ICBRH.BIT.BRH = PCLKB/4.F/1000000*IIC0_HPSCL-1;	// SCL0 High Pulse Width Minimum
+	RIIC0.ICBRL.BIT.BRL = PCLKB/4.F/1000000*IIC0_LPSCL-1;	// SCL0 Low  Pulse Width Minimum
 	RIIC0.ICMR2.BYTE = 0x00;				// TMOL,TMOH is Ignore
 //	RIIC0.ICMR2.BYTE = 0x10;				// TMOL,TMOH is Ignore, SDA Delay Counter is 1
 	RIIC0.ICMR3.BYTE = 0x10;				// ACKBT Write Enable, Noise Filter is 1
