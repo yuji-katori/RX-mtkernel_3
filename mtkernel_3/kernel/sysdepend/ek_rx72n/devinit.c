@@ -9,6 +9,8 @@
  *    Released by TRON Forum(http://www.tron.org) at 2019/12/11.
  *
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2025/2/9.
+ *----------------------------------------------------------------------
  */
 #include <sys/machine.h>
 #ifdef EK_RX72N
@@ -23,7 +25,9 @@
 #include "kernel.h"
 
 #include "sysdepend.h"
+#ifndef	NOUSE_SIIC
 #include "dev_siic.h"
+#endif	/* NOUSE_SIIC */
 
 /* ------------------------------------------------------------------------ */
 
@@ -43,7 +47,9 @@ EXPORT ER knl_init_device( void )
  */
 EXPORT ER knl_start_device( void )
 {
+#ifndef	NOUSE_SIIC
 	siicDrvEntry( );			// Entry Simple I2C Driver
+#endif	/* NOUSE_SIIC */
 	return E_OK;
 }
 
@@ -61,4 +67,4 @@ EXPORT ER knl_finish_device( void )
 
 #endif /* USE_SHUTDOWN */
 
-#endif /* AP_RX72N */
+#endif /* EK_RX72N */

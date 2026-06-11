@@ -5,6 +5,8 @@
  *    Copyright (C) 2024 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2024/4/1.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -16,6 +18,10 @@
 #include <string.h>
 #include <tk/tkernel.h>
 #include <dev_qspi.h>
+
+#if CFN_MAX_REQDEV > 26
+#error "Over max request device. Please review CFN_MAX_REQDEV in config.h"
+#endif
 
 LOCAL ID flgid;
 LOCAL W lock;
