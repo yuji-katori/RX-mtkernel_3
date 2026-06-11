@@ -5,6 +5,8 @@
  *    Copyright (C) 2024 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2026/6/9.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -39,7 +41,7 @@ LOCAL INT siic_task_stack[OBJ_KIND_NUM][300/sizeof(INT)];
 EXPORT ER SIIC_Read(T_DEVREQ *devreq, void *exinf)
 {
 SIIC_TBL *siic = &siic_tbl[(UINT)exinf];
-volatile struct st_sci1 __evenaccess *SIIC = siic->siic;
+volatile struct st_sci0 __evenaccess *SIIC = siic->siic;
 UINT flgptn;
 ER ercd;
 SZ i;
@@ -75,7 +77,7 @@ SZ i;
 EXPORT ER SIIC_Write(T_DEVREQ *devreq, void *exinf)
 {
 SIIC_TBL *siic = &siic_tbl[(UINT)exinf];
-volatile struct st_sci1 __evenaccess *SIIC = siic->siic;
+volatile struct st_sci0 __evenaccess *SIIC = siic->siic;
 UINT flgptn;
 ER ercd;
 SZ i;
@@ -84,18 +86,17 @@ SZ i;
 	SIIC->SIMR3.BYTE = 0x00;				// Clear Start Condistion
 	SIIC->TDR = devreq->start << 1;				// Set Slave Address
 	tk_wai_flg( siic->flgid, SIIC_TXI_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
-	if( ! SIIC->SISR.BIT.IICACKR )  {			// Receive ACK
-		for( i=0 ; i<devreq->size ; i++ )  {
-			SIIC->TDR = ((UB*)devreq->buf)[i];	// Data Write and Wait TXI Interrupt
-			tk_wai_flg( siic->flgid, SIIC_TXI_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
-		}
-		devreq->asize = devreq->size;			// Set Write Size
-		ercd = E_OK;					// Set Error Code (E_OK)
+	for( i=0 ; i<devreq->size ; i++ )  {
+		if( SIIC->SISR.BIT.IICACKR )			// NACK Receive ?
+			break;
+		SIIC->TDR = ((UB*)devreq->buf)[i];		// Data Write and Wait TXI Interrupt
+		tk_wai_flg( siic->flgid, SIIC_TXI_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
 	}
-	else  {							// Receive NACK
-		devreq->asize = 0;				// Set Write Size
-		ercd = E_IO;					// Set Error Code (E_IO:Receive NACK)
-	}
+	devreq->asize = i;					// Set Write Size
+	if( SIIC->SISR.BIT.IICACKR )				// NACK Receive ?
+		ercd = E_IO;					// I/O Error
+	else
+		ercd = E_OK;					// Normal End
 	SIIC->SIMR3.BYTE = 0x54;				// Generates Stop Condition
 	tk_wai_flg( siic->flgid, SIIC_STI_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
 	SIIC->SIMR3.BYTE = 0xF0;				// Transmit End
@@ -248,8 +249,8 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI1.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI1.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI1.BRR = PCLKB / 32.0F / SIIC1_FSCL - 1;		// SCL Frequency
-	SCI1.MDDR = (SCI1.BRR+1) * 8192.0F * SIIC1_FSCL / PCLKB;// Analize Modulation Duty
+	SCI1.BRR = PCLKB / 32.F / SIIC1_FSCL - 1;		// SCL Frequency
+	SCI1.MDDR = (SCI1.BRR+1) * 8192.F * SIIC1_FSCL / PCLKB;	// Analize Modulation Duty
 	if( SCI1.MDDR < 0x80 )					// Check  Modulation Duty
 		return E_IO;
 	SCI1.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
@@ -331,8 +332,8 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI5.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI5.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI5.BRR = PCLKB / 32.0F / SIIC5_FSCL - 1;		// SCL Frequency
-	SCI5.MDDR = (SCI5.BRR+1) * 8192.0F * SIIC5_FSCL / PCLKB;// Analize Modulation Duty
+	SCI5.BRR = PCLKB / 32.F / SIIC5_FSCL - 1;		// SCL Frequency
+	SCI5.MDDR = (SCI5.BRR+1) * 8192.F * SIIC5_FSCL / PCLKB;	// Analize Modulation Duty
 	if( SCI5.MDDR < 0x80 )					// Check  Modulation Duty
 		return E_IO;
 	SCI5.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
@@ -404,8 +405,8 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI8.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI8.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI8.BRR = PCLKB / 32.0F / SIIC8_FSCL - 1;		// SCL Frequency
-	SCI8.MDDR = (SCI8.BRR+1) * 8192.0F * SIIC8_FSCL / PCLKB;// Analize Modulation Duty
+	SCI8.BRR = PCLKB / 32.F / SIIC8_FSCL - 1;		// SCL Frequency
+	SCI8.MDDR = (SCI8.BRR+1) * 8192.F * SIIC8_FSCL / PCLKB;	// Analize Modulation Duty
 	if( SCI8.MDDR < 0x80 )					// Check  Modulation Duty
 		return E_IO;
 	SCI8.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
@@ -477,8 +478,8 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI12.SIMR3.BYTE = 0xF0;				// SSCL,SSDA to High Impedance
 	SCI12.SCMR.BIT.SDIR = 1;				// MSB First Transmit
-	SCI12.BRR = PCLKB / 32.0F / SIIC12_FSCL - 1;		// SCL Frequency
-	SCI12.MDDR = (SCI12.BRR+1)*8192.0F*SIIC12_FSCL/PCLKB;	// Analize Modulation Duty
+	SCI12.BRR = PCLKB / 32.F / SIIC12_FSCL - 1;		// SCL Frequency
+	SCI12.MDDR = (SCI12.BRR+1)*8192.F*SIIC12_FSCL/PCLKB;	// Analize Modulation Duty
 	if( SCI12.MDDR < 0x80 )					// Check  Modulation Duty
 		return E_IO;
 	SCI12.SEMR.BYTE = 0x24;					// NFEN,BRME Enable

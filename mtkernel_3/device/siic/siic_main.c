@@ -7,6 +7,7 @@
  *----------------------------------------------------------------------
  *    Modified by Yuji Katori at 2024/3/11.
  *    Modified by Yuji Katori at 2024/4/1.
+ *    Modified by Yuji Katori at 2026/6/4.
  *----------------------------------------------------------------------
  */
 
@@ -18,6 +19,10 @@
 
 #include <tk/tkernel.h>
 #include <dev_siic.h>
+
+#if CFN_MAX_REQDEV > 28
+#error "Over max request device. Please review CFN_MAX_REQDEV in config.h"
+#endif
 
 LOCAL ER siic_open(ID devid, UINT omode, void *exinf)
 {

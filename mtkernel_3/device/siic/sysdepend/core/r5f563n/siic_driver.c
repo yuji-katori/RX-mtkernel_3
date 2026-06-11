@@ -5,6 +5,8 @@
  *    Copyright (C) 2024 by Yuji Katori.
  *    This software is distributed under the T-License 2.2.
  *----------------------------------------------------------------------
+ *    Modified by Yuji Katori at 2026/6/9.
+ *----------------------------------------------------------------------
  */
 
 /*
@@ -111,18 +113,17 @@ SZ i;
 	SIIC->SIMR3.BYTE = 0x00;				// Clear Start Condistion
 	SIIC->TDR = devreq->start << 1;				// Set Slave Address
 	tk_wai_flg( siic->flgid, SIIC_TXI_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
-	if( ! SIIC->SISR.BIT.IICACKR )  {			// Receive ACK
-		for( i=0 ; i<devreq->size ; i++ )  {
-			SIIC->TDR = ((UB*)devreq->buf)[i];	// Data Write and Wait TXI Interrupt
-			tk_wai_flg( siic->flgid, SIIC_TXI_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
-		}
-		devreq->asize = devreq->size;			// Set Write Size
-		ercd = E_OK;					// Set Error Code (E_OK)
+	for( i=0 ; i<devreq->size ; i++ )  {
+		if( SIIC->SISR.BIT.IICACKR )			// NACK Receive ?
+			break;
+		SIIC->TDR = ((UB*)devreq->buf)[i];		// Data Write and Wait TXI Interrupt
+		tk_wai_flg( siic->flgid, SIIC_TXI_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
 	}
-	else  {							// Receive NACK
-		devreq->asize = 0;				// Set Write Size
-		ercd = E_IO;					// Set Error Code (E_IO:Receive NACK)
-	}
+	devreq->asize = i;					// Set Write Size
+	if( SIIC->SISR.BIT.IICACKR )				// NACK Receive ?
+		ercd = E_IO;					// I/O Error
+	else
+		ercd = E_OK;					// Normal End
 	SIIC->SIMR3.BYTE = 0x54;				// Generates Stop Condition
 	tk_wai_flg( siic->flgid, SIIC_STI_INT, TWF_ORW | TWF_BITCLR, &flgptn, TMO_FEVR );
 	SIIC->SIMR3.BYTE = 0xF0;				// Transmit End
@@ -446,7 +447,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI0.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI0.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI0.BRR = PCLK / 32.0F / SIIC0_FSCL - 1;		// SCL Frequency
+	SCI0.BRR = PCLK / 32.F / SIIC0_FSCL - 1;		// SCL Frequency
 	SCI0.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI0.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI0.SIMR1.BYTE = 0x01;					// Simple I2C Mode
@@ -526,7 +527,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI1.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI1.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI1.BRR = PCLK / 32.0F / SIIC1_FSCL - 1;		// SCL Frequency
+	SCI1.BRR = PCLK / 32.F / SIIC1_FSCL - 1;		// SCL Frequency
 	SCI1.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI1.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI1.SIMR1.BYTE = 0x01;					// Simple I2C Mode
@@ -616,7 +617,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI2.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI2.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI2.BRR = PCLK / 32.0F / SIIC2_FSCL - 1;		// SCL Frequency
+	SCI2.BRR = PCLK / 32.F / SIIC2_FSCL - 1;		// SCL Frequency
 	SCI2.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI2.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI2.SIMR1.BYTE = 0x01;					// Simple I2C Mode
@@ -696,7 +697,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI3.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI3.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI3.BRR = PCLK / 32.0F / SIIC3_FSCL - 1;		// SCL Frequency
+	SCI3.BRR = PCLK / 32.F / SIIC3_FSCL - 1;		// SCL Frequency
 	SCI3.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI3.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI3.SIMR1.BYTE = 0x01;					// Simple I2C Mode
@@ -776,7 +777,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI4.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI4.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI4.BRR = PCLK / 32.0F / SIIC4_FSCL - 1;		// SCL Frequency
+	SCI4.BRR = PCLK / 32.F / SIIC4_FSCL - 1;		// SCL Frequency
 	SCI4.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI4.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI4.SIMR1.BYTE = 0x01;					// Simple I2C Mode
@@ -846,7 +847,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI5.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI5.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI5.BRR = PCLK / 32.0F / SIIC5_FSCL - 1;		// SCL Frequency
+	SCI5.BRR = PCLK / 32.F / SIIC5_FSCL - 1;		// SCL Frequency
 	SCI5.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI5.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI5.SIMR1.BYTE = 0x01;					// Simple I2C Mode
@@ -931,7 +932,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI6.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI6.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI6.BRR = PCLK / 32.0F / SIIC6_FSCL - 1;		// SCL Frequency
+	SCI6.BRR = PCLK / 32.F / SIIC6_FSCL - 1;		// SCL Frequency
 	SCI6.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI6.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI6.SIMR1.BYTE = 0x01;					// Simple I2C Mode
@@ -1021,7 +1022,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI7.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI7.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI7.BRR = PCLK / 32.0F / SIIC7_FSCL - 1;		// SCL Frequency
+	SCI7.BRR = PCLK / 32.F / SIIC7_FSCL - 1;		// SCL Frequency
 	SCI7.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI7.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI7.SIMR1.BYTE = 0x01;					// Simple I2C Mode
@@ -1069,7 +1070,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	EnableInt( VECT( SCI7, TXI7 ), SIIC_CFG_INT_PRIORITY );	// Enable SCI7 TXI7 Interrupt
 	EnableInt( VECT( SCI7, TEI7 ), SIIC_CFG_INT_PRIORITY );	// Enable SCI7 TEI7 Interrupt
 	siic_tbl[SIIC7].drvname = "siich";			// Set Driver Name
-	siic_tbl[SIIC7].siic = (void*)&SCI6;			// Set SCI Channel Address
+	siic_tbl[SIIC7].siic = (void*)&SCI7;			// Set SCI Channel Address
 	siic_tbl[SIIC7].next = SIIC_MAXIMUM;			// Set Next Command Pointer
 	if( ( ercd = siicCreFlg( &siic_tbl[SIIC7], &u.t_cflg ) ) < E_OK )
 		goto ERROR;					// Create SIIC EventFlag
@@ -1091,7 +1092,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI8.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI8.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI8.BRR = PCLK / 32.0F / SIIC8_FSCL - 1;		// SCL Frequency
+	SCI8.BRR = PCLK / 32.F / SIIC8_FSCL - 1;		// SCL Frequency
 	SCI8.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI8.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI8.SIMR1.BYTE = 0x01;					// Simple I2C Mode
@@ -1161,7 +1162,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI9.SIMR3.BYTE = 0xF0;					// SSCL,SSDA to High Impedance
 	SCI9.SCMR.BIT.SDIR = 1;					// MSB First Transmit
-	SCI9.BRR = PCLK / 32.0F / SIIC9_FSCL - 1;		// SCL Frequency
+	SCI9.BRR = PCLK / 32.F / SIIC9_FSCL - 1;		// SCL Frequency
 	SCI9.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI9.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI9.SIMR1.BYTE = 0x01;					// Simple I2C Mode
@@ -1231,7 +1232,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI10.SIMR3.BYTE = 0xF0;				// SSCL,SSDA to High Impedance
 	SCI10.SCMR.BIT.SDIR = 1;				// MSB First Transmit
-	SCI10.BRR = PCLK / 32.0F / SIIC10_FSCL - 1;		// SCL Frequency
+	SCI10.BRR = PCLK / 32.F / SIIC10_FSCL - 1;		// SCL Frequency
 	SCI10.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI10.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI10.SIMR1.BYTE = 0x01;				// Simple I2C Mode
@@ -1301,7 +1302,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI11.SIMR3.BYTE = 0xF0;				// SSCL,SSDA to High Impedance
 	SCI11.SCMR.BIT.SDIR = 1;				// MSB First Transmit
-	SCI11.BRR = PCLK / 32.0F / SIIC11_FSCL - 1;		// SCL Frequency
+	SCI11.BRR = PCLK / 32.F / SIIC11_FSCL - 1;		// SCL Frequency
 	SCI11.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI11.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI11.SIMR1.BYTE = 0x01;				// Simple I2C Mode
@@ -1371,7 +1372,7 @@ union { T_CTSK t_ctsk; T_CFLG t_cflg; T_DDEV t_ddev; T_DINT t_dint; } u;
 	tk_ena_dsp( );						// Dispatch Enable
 	SCI12.SIMR3.BYTE = 0xF0;				// SSCL,SSDA to High Impedance
 	SCI12.SCMR.BIT.SDIR = 1;				// MSB First Transmit
-	SCI12.BRR = PCLK / 32.0F / SIIC12_FSCL - 1;		// SCL Frequency
+	SCI12.BRR = PCLK / 32.F / SIIC12_FSCL - 1;		// SCL Frequency
 	SCI12.SEMR.BYTE = 0x24;					// NFEN,BRME Enable
 	SCI12.SNFR.BYTE = 0x01;					// 1 Use with Noise Filter
 	SCI12.SIMR1.BYTE = 0x01;				// Simple I2C Mode
